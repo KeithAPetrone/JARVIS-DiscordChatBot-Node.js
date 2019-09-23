@@ -74,6 +74,10 @@ client2.connect();
 
 client2.on("chat", (channel, userstate, message, self) => {
 
+    try{ 
+        // file not presenet
+        var data = fs.readFileSync('sample.html');
+
         //channel is which channel it comes from. Not very usable if you are in one channel only.
 
         //Userstate is an object which contains a lot of information, if the user who wrote is a subscriber, what emotes he used etc.
@@ -88,18 +92,20 @@ client2.on("chat", (channel, userstate, message, self) => {
 
 
 
-        if ((message.toLowerCase()).includes("noxtroz")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+        if ((message.toLowerCase()).includes("!redneckN3RD")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
 
-            client2.say("channel", `@${userstate.username}YOU WROTE TO THE ONE TRUE LEADER - THE STREAMER`);
+            client2.say("channel", `@${userstate.username}That's his name, don't wear it out!`);
+        }
 
-    };
 
-    if ((message.toLowerCase()).includes("bad word")) {
+        if ((message.toLowerCase()).includes("!badword")) {
 
-        client2.ban("channel", userstate.username, "He wrote a bad word"); //this is a promise so you can add .then and .catch if you want
+            client2.ban("channel", userstate.username, "He wrote a bad word"); //this is a promise so you can add .then and .catch if you want
 
-    }
-
+        }
+    } catch (err){ 
+        console.log(err); 
+    } 
 });
 
 
