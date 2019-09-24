@@ -78,7 +78,7 @@ client2.on("chat", (channel, userstate, message, self) => {
 
     try{ 
         // file not presenet
-        var data = fs.readFileSync('sample.html');
+        //var data = fs.readFileSync('sample.html');
 
         //channel is which channel it comes from. Not very usable if you are in one channel only.
 
@@ -94,9 +94,9 @@ client2.on("chat", (channel, userstate, message, self) => {
 
 
 
-        if ((message.toLowerCase()).includes("!redneckN3RD")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+        if ((message.toLowerCase()).includes("redneck")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
 
-            client2.say("channel", `@${userstate.username}That's his name, don't wear it out!`);
+            client2.say(channel, `@${userstate.username} Hello!!!`);
         }
 
 

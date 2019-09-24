@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 const options = {
     options: {
         debug: true
@@ -7,9 +9,9 @@ const options = {
     },
     identity: {
         username: "THE_JARVIS_BOT",
-        password: "oauth:y1v7xamraao6ucousfvwshak23nos4"
+        password: "oauth:msfv78j577jad2ejunus2y11miyx10"
     },
-    channels: ['redneckN3RD']
+    channels: ['#redneckN3RD']
 };
 
 module.exports = options;
