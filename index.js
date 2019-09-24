@@ -1,5 +1,7 @@
 /*jshint esversion: 6 */
 
+var port = process.env.PORT || 5000;
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
