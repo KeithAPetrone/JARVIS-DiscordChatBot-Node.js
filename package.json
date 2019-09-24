@@ -4,6 +4,7 @@
   "description": "the jarvis bot",
   "main": "index.js",
   "dependencies": {
+    "discord.js": "^11.5.1",
     "jshint": "^2.10.2",
     "tmi.js": "^1.4.5"
   },
