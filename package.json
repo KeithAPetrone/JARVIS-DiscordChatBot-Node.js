@@ -1,0 +1,24 @@
+{
+  "name": "jarvis",
+  "version": "1.0.0",
+  "description": "the jarvis bot",
+  "main": "index.js",
+  "dependencies": {
+    "jshint": "^2.10.2",
+    "tmi.js": "^1.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpetrone-accela/JARVIS.git"
+  },
+  "author": "Keith Petrone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kpetrone-accela/JARVIS/issues"
+  },
+  "homepage": "https://github.com/kpetrone-accela/JARVIS#readme"
+}
