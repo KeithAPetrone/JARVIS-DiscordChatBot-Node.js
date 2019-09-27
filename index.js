@@ -25,7 +25,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!lurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        if (msg.author in users) {
+        if (msg.author.toString().toLowerCase() in users) {
             users[msg.author.toString().toLowerCase()]++;
             msg.reply(msg.author + ' is lurking!!!');
             console.log('Discord: ' + msg.author + ' is lurking!!!');
@@ -36,7 +36,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!addmelurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        if (!(msg.author in users)) {
+        if (!(msg.author.toString().toLowerCase() in users)) {
             users[msg.author.toString().toLowerCase()] = 0;
             msg.reply(msg.author + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
