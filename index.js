@@ -1,7 +1,6 @@
 /*jshint esversion: 6 */
 
-var port = process.env.PORT || 5000;
-process.env.port = port;
+http.createServer(function (request, response) {
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -123,3 +122,5 @@ client2.on("chat", (channel, userstate, message, self) => {
 //
 //}, 300000); //Every 5 minute, your bot advertise your channel.
 //
+
+}).listen(process.env.PORT || 5000);
