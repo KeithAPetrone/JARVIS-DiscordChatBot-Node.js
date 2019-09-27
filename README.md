@@ -41,3 +41,10 @@ BOT COMMAND:
 !RAID MOD/raider
 
 !leaderboard (everyone)
+
+
+Progress:
+1. Bot responds to Discord Commands
+2. Bot responds to Twitch Commands
+3. Hosting will be done on Heroku
+4. Automatically deploys from GitHub
