@@ -39,9 +39,9 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!addmelurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        if (!(msg.author.toString().toLowerCase() in users)) {
-            users[msg.author.toString().toLowerCase()] = 0;
-            msg.reply(msg.author.toString().toLowerCase() + ' has been added to the points database!');
+        if (!(msg.author.username.toLowerCase() in users)) {
+            users[msg.author.username.toLowerCase()] = 0;
+            msg.reply(msg.author.username.toLowerCase() + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
         } else {
@@ -110,8 +110,12 @@ client2.on("chat", (channel, userstate, message, self) => {
         }
 
         if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
-            users[userstate.username.toString().toLowerCase()]++;
-            client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
+            if (!(userstate.username.toString().toLowerCase() in users)) {
+                users[userstate.username.toString().toLowerCase()]++;
+                client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
+            } else {
+                client2.say(channel, `@${userstate.username} You need to be added to the points database from the Discord server!`);
+            }
         }
 
 
