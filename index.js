@@ -26,7 +26,7 @@ client.on('message', msg => {
     if (msg.content === '!lurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         if (msg.author in users) {
-            users[msg.author.toLowerCase()]++;
+            users[msg.author.toString().toLowerCase()]++;
             msg.reply(msg.author + ' is lurking!!!');
             console.log('Discord: ' + msg.author + ' is lurking!!!');
         }
@@ -37,7 +37,7 @@ client.on('message', msg => {
     if (msg.content === '!addmelurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         if (!(msg.author in users)) {
-            users[msg.author.toLowerCase()] = 0;
+            users[msg.author.toString().toLowerCase()] = 0;
             msg.reply(msg.author + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
@@ -107,7 +107,7 @@ client2.on("chat", (channel, userstate, message, self) => {
         }
 
         if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
-            users[userstate.username.toLowerCase()]++;
+            users[userstate.username.toString().toLowerCase()]++;
             client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
         }
 
