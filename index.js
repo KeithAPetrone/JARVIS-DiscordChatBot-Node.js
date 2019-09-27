@@ -25,8 +25,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!lurk') {
         console.log('Received #' + message.id + ': ' + message.content);
-        if (msg.author in users)
-        {
+        if (msg.author in users) {
             users[msg.author]++;
             msg.reply(msg.author + ' is lurking!!!');
             console.log('Discord: ' + msg.author + ' is lurking!!!');
@@ -37,15 +36,12 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!addmelurk') {
         console.log('Received #' + message.id + ': ' + message.content);
-        if (!(msg.author in users))
-        {
+        if (!(msg.author in users)) {
             users[msg.author] = 0;
             msg.reply(msg.author + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
-        }
-        else
-        {
+        } else {
             msg.reply(msg.author + ', you are already in the databse!');
             console.log('Discord: ' + msg.author + ', you are already in the databse!');
         }
@@ -87,7 +83,7 @@ client2.connect();
 
 client2.on("chat", (channel, userstate, message, self) => {
 
-    try{ 
+    try {
         // file not presenet
         //var data = fs.readFileSync('sample.html');
 
@@ -116,9 +112,9 @@ client2.on("chat", (channel, userstate, message, self) => {
             client2.ban("channel", userstate.username, "He wrote a bad word"); //this is a promise so you can add .then and .catch if you want
 
         }
-    } catch (err){ 
-        console.log(err); 
-    } 
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 
