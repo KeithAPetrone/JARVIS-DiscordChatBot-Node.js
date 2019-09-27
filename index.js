@@ -29,6 +29,9 @@ client.on('message', msg => {
             users[msg.author.toString().toLowerCase()]++;
             msg.reply(msg.author + ' is lurking!!!');
             console.log('Discord: ' + msg.author + ' is lurking!!!');
+        } else {
+            msg.reply(msg.author + ', you need to be added to the database!');
+            console.log('Discord: ' + msg.author + ', you need to be added to the database!');
         }
     }
 });
@@ -38,7 +41,7 @@ client.on('message', msg => {
         console.log('Received #' + msg.id + ': ' + msg.content);
         if (!(msg.author.toString().toLowerCase() in users)) {
             users[msg.author.toString().toLowerCase()] = 0;
-            msg.reply(msg.author + ' has been added to the points database!');
+            msg.reply(msg.author.toString().toLowerCase() + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
         } else {
