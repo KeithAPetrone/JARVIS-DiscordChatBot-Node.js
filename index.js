@@ -1,5 +1,12 @@
 /*jshint esversion: 6 */
 
+app.listen(port, host, function() {
+
+console.log("Server started.......");
+
+const host = '0.0.0.0';
+const port = process.env.PORT || 3000;
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -120,3 +127,5 @@ client2.on("chat", (channel, userstate, message, self) => {
 //
 //}, 300000); //Every 5 minute, your bot advertise your channel.
 //
+
+});
