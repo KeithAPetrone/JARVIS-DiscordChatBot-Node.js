@@ -1,9 +1,10 @@
 /*jshint esversion: 6 */
 
-app.port = process.env.PORT || 80;
-
 const host = '0.0.0.0';
 const port = process.env.PORT || 3000;
+
+var app = require('http');
+app.createServer().listen(port, host);
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
