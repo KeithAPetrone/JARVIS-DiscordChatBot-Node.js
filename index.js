@@ -106,6 +106,11 @@ client2.on("chat", (channel, userstate, message, self) => {
             client2.say(channel, `@${userstate.username} Hello!!!`);
         }
 
+        if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+            users[msg.author]++;
+            client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
+        }
+
 
         if ((message.toLowerCase()).includes("!badword")) {
 
