@@ -17,12 +17,14 @@ client.on('ready', () => {
 
 client.on('message', msg => {
     if (msg.content === '!ping') {
+        console.log('Received #' + message.id + ': ' + message.content);
         msg.reply('Pong!');
     }
 });
 
 client.on('message', msg => {
     if (msg.content === '!lurk') {
+        console.log('Received #' + message.id + ': ' + message.content);
         if (msg.author in users)
         {
             users[msg.author]++;
@@ -34,6 +36,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
     if (msg.content === '!addmelurk') {
+        console.log('Received #' + message.id + ': ' + message.content);
         if (!(msg.author in users))
         {
             users[msg.author] = 0;
@@ -51,6 +54,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
     if (msg.content === '!scoreboard') {
+        console.log('Received #' + message.id + ': ' + message.content);
         msg.reply('Here are the results: ' + JSON.stringify(users));
         console.log('Discord: Here are the results: ' + JSON.stringify(users));
     }
@@ -58,6 +62,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
     if (msg.content === '!clearscores') {
+        console.log('Received #' + message.id + ': ' + message.content);
         users = {};
         msg.reply('Scores have been wiped! Do not forget to sign back up!');
         console.log('Discord: Scores have been wiped! Do not forget to sign back up!');
