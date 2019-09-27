@@ -17,14 +17,14 @@ client.on('ready', () => {
 
 client.on('message', msg => {
     if (msg.content === '!ping') {
-        console.log('Received #' + message.id + ': ' + message.content);
+        console.log('Received #' + msg.id + ': ' + msg.content);
         msg.reply('Pong!');
     }
 });
 
 client.on('message', msg => {
     if (msg.content === '!lurk') {
-        console.log('Received #' + message.id + ': ' + message.content);
+        console.log('Received #' + msg.id + ': ' + msg.content);
         if (msg.author in users) {
             users[msg.author]++;
             msg.reply(msg.author + ' is lurking!!!');
@@ -35,7 +35,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
     if (msg.content === '!addmelurk') {
-        console.log('Received #' + message.id + ': ' + message.content);
+        console.log('Received #' + msg.id + ': ' + msg.content);
         if (!(msg.author in users)) {
             users[msg.author] = 0;
             msg.reply(msg.author + ' has been added to the points database!');
@@ -50,7 +50,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
     if (msg.content === '!scoreboard') {
-        console.log('Received #' + message.id + ': ' + message.content);
+        console.log('Received #' + msg.id + ': ' + msg.content);
         msg.reply('Here are the results: ' + JSON.stringify(users));
         console.log('Discord: Here are the results: ' + JSON.stringify(users));
     }
@@ -58,7 +58,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
     if (msg.content === '!clearscores') {
-        console.log('Received #' + message.id + ': ' + message.content);
+        console.log('Received #' + msg.id + ': ' + msg.content);
         users = {};
         msg.reply('Scores have been wiped! Do not forget to sign back up!');
         console.log('Discord: Scores have been wiped! Do not forget to sign back up!');
