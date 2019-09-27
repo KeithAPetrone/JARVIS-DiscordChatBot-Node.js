@@ -1,8 +1,6 @@
 /*jshint esversion: 6 */
 
-app.listen(port, host, function() {
-
-console.log("Server started.......");
+app.port = process.env.PORT || 80;
 
 const host = '0.0.0.0';
 const port = process.env.PORT || 3000;
@@ -127,5 +125,3 @@ client2.on("chat", (channel, userstate, message, self) => {
 //
 //}, 300000); //Every 5 minute, your bot advertise your channel.
 //
-
-});
