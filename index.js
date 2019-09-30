@@ -62,7 +62,7 @@ client.on('message', msg => {
         console.log('Received #' + msg.id + ': ' + msg.content);
         if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => rname === "Mod")) {
             var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
-            //Not sure what to be doing here yet.
+            //Supposed to be a double points version of !lurk
         } else {
             msg.reply(msg.author + ', you do not have permission to do that!');
             console.log('Discord: ' + msg.author + ', you do not have permission to do that!');
