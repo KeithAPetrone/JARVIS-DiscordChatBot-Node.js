@@ -25,8 +25,9 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!lurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        if (msg.author.tag.toString().toLowerCase().substring(0, str.length - 5) in users) {
-            users[msg.author.tag.toString().toLowerCase().substring(0, str.length - 5)]++;
+        var name = msg.author.tag.toString().toLowerCase();
+        if (name.substring(0, name.length - 5) in users) {
+            users[name.substring(0, name.length - 5)]++;
             msg.reply(msg.author + ' is lurking!!!');
             console.log('Discord: ' + msg.author + ' is lurking!!!');
         } else {
@@ -39,9 +40,10 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!addmelurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        if (!(msg.author.tag.toLowerCase().substring(0, str.length - 5) in users)) {
-            users[msg.author.tag.toLowerCase().substring(0, str.length - 5)] = 0;
-            msg.reply(msg.author.tag.toLowerCase().substring(0, str.length - 5) + ' has been added to the points database!');
+        var name = msg.author.tag.toString().toLowerCase();
+        if (!(name.substring(0, name.length - 5) in users)) {
+            users[name.substring(0, name.length - 5)] = 0;
+            msg.reply(name.substring(0, name.length - 5) + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
         } else {
