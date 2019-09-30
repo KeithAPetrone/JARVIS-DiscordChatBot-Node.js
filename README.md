@@ -48,3 +48,4 @@ Progress:
 2. Bot responds to Twitch Commands
 3. Hosting will be done on Heroku
 4. Automatically deploys from GitHub
+5. Ranks can now be printed to Discord
