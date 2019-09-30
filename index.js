@@ -178,7 +178,7 @@ client2.on("chat", (channel, userstate, message, self) => {
         if ((message.toLowerCase()).includes("!ping")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
 
             client2.say(channel, `@${userstate.username} Pong!!!`);
-            console.log("Twitch: Pong!!!")
+            console.log("Twitch: Pong!!!");
         }
 
         if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
