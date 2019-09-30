@@ -27,11 +27,27 @@ client.on('message', msg => {
 });
 
 client.on('message', msg => {
+    if (msg.content === '!addmelurk') {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+        if (!(name in users)) {
+            users[name.substring(0, name.length - 5)] = 0;
+            msg.reply(name.substring(0, name.length - 5) + ' has been added to the points database!');
+            console.log('Discord: ' + msg.author + ' has been added to the points database!');
+            console.log(users);
+        } else {
+            msg.reply(msg.author + ', you are already in the databse!');
+            console.log('Discord: ' + msg.author + ', you are already in the databse!');
+        }
+    }
+});
+
+client.on('message', msg => {
     if (msg.content === '!lurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase();
-        if (name.substring(0, name.length - 5) in users) {
-            users[name.substring(0, name.length - 5)]++;
+        var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+        if (name in users) {
+            users[name]++;
             msg.reply(msg.author + ' is lurking!!!');
             console.log('Discord: ' + msg.author + ' is lurking!!!');
         } else {
@@ -42,17 +58,15 @@ client.on('message', msg => {
 });
 
 client.on('message', msg => {
-    if (msg.content === '!addmelurk') {
+    if (msg.content === '!raid') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase();
-        if (!(name.substring(0, name.length - 5) in users)) {
-            users[name.substring(0, name.length - 5)] = 0;
-            msg.reply(name.substring(0, name.length - 5) + ' has been added to the points database!');
-            console.log('Discord: ' + msg.author + ' has been added to the points database!');
-            console.log(users);
-        } else {
-            msg.reply(msg.author + ', you are already in the databse!');
-            console.log('Discord: ' + msg.author + ', you are already in the databse!');
+        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => rname === "Mod")) {
+            var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+            //Not sure what to be doing here yet.
+        }
+        else {
+            msg.reply(msg.author + ', you do not have permission to do that!');
+            console.log('Discord: ' + msg.author + ', you do not have permission to do that!');
         }
     }
 });
@@ -66,29 +80,62 @@ client.on('message', msg => {
 });
 
 client.on('message', msg => {
-    if (msg.content === '!rank') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase();
-        var points = users[name.substring(0, name.length - 5)];
-        var rank = "NONE";
-        if (points >= 1000) {
-            rang = "GOLD";
-        } else if (points >= 500) {
-            rank = "SILVER";
-        } else if (points >= 100) {
-            rank = "BRONZE";
-        }
-        msg.reply('Here is your rank: ' + rank);
-        console.log('Discord: Here are the results: ' + JSON.stringify(users));
-    }
-});
-
-client.on('message', msg => {
     if (msg.content === '!clearscores') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         users = {};
         msg.reply('Scores have been wiped! Do not forget to sign back up!');
         console.log('Discord: Scores have been wiped! Do not forget to sign back up!');
+    }
+});
+
+client.on('message', msg => {
+    if (msg.content === '!leaderboard') {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var response = "";
+
+        users.forEach(name => {
+
+            var points = user[name];
+            var rank = "NONE";
+            var display = 100;
+            if (points >= 1000) {
+                rank = "GOLD";
+                display = "MAXED OUT";
+            } else if (points >= 500) {
+                rank = "SILVER";
+                display = 1000;
+            } else if (points >= 100) {
+                rank = "BRONZE";
+                display = 500;
+            }
+
+            response += " | " + name + ": " + rank + " " + users[name] + "/" + display;
+        });
+
+        msg.reply(response);
+        console.log("Discord: " + response);
+    }
+});
+
+client.on('message', msg => {
+    if (msg.content === '!rank') {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+        var points = users[name];
+        var rank = "NONE";
+        var display = 100;
+        if (points >= 1000) {
+            rank = "GOLD";
+            display = "MAXED OUT";
+        } else if (points >= 500) {
+            rank = "SILVER";
+            display = 1000;
+        } else if (points >= 100) {
+            rank = "BRONZE";
+            display = 500;
+        }
+        msg.reply('Here is your rank: ' + rank + " " + points + "/" + display);
+        console.log('Discord: Here is your rank: ' + rank + " " + points + "/" + display);
     }
 });
 
@@ -128,9 +175,10 @@ client2.on("chat", (channel, userstate, message, self) => {
 
 
 
-        if ((message.toLowerCase()).includes("redneck")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+        if ((message.toLowerCase()).includes("!ping")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
 
-            client2.say(channel, `@${userstate.username} Hello!!!`);
+            client2.say(channel, `@${userstate.username} Pong!!!`);
+            console.log("Twitch: Pong!!!")
         }
 
         if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
