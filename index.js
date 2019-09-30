@@ -29,9 +29,10 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!addmelurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+        var name = msg.author.tag.toString().toLowerCase();
+        name = name.substring(0, name.length - 5);
         if (!(name in users)) {
-            users[name.substring(0, name.length - 5)] = 0;
+            users[name] = 0;
             msg.reply(name.substring(0, name.length - 5) + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
@@ -45,7 +46,8 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!lurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+        var name = msg.author.tag.toString().toLowerCase();
+        name = name.substring(0, name.length - 5);
         if (name in users) {
             users[name]++;
             msg.reply(msg.author + ' is lurking!!!');
@@ -60,8 +62,9 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!raid') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => rname === "Mod")) {
-            var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod")) {
+            var name = msg.author.tag.toString().toLowerCase();
+            name = name.substring(0, name.length - 5);
             //Supposed to be a double points version of !lurk
         } else {
             msg.reply(msg.author + ', you do not have permission to do that!');
@@ -119,7 +122,8 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!rank') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
+        var name = msg.author.tag.toString().toLowerCase();
+        name = name.substring(0, name.length - 5);
         var points = users[name];
         var rank = "NONE";
         var display = 100;
