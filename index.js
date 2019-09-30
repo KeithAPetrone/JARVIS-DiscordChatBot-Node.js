@@ -63,8 +63,7 @@ client.on('message', msg => {
         if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => rname === "Mod")) {
             var name = msg.author.tag.toString().toLowerCase().substring(0, name.length - 5);
             //Not sure what to be doing here yet.
-        }
-        else {
+        } else {
             msg.reply(msg.author + ', you do not have permission to do that!');
             console.log('Discord: ' + msg.author + ', you do not have permission to do that!');
         }
