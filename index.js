@@ -71,16 +71,11 @@ client.on('message', msg => {
         var name = msg.author.tag.toString().toLowerCase();
         var points = users[name.substring(0, name.length - 5)];
         var rank = "NONE";
-        if (points >= 1000)
-        {
+        if (points >= 1000) {
             rang = "GOLD";
-        }
-        else if (points >= 500)
-        {
+        } else if (points >= 500) {
             rank = "SILVER";
-        }
-        else if (points >= 100)
-        {
+        } else if (points >= 100) {
             rank = "BRONZE";
         }
         msg.reply('Here is your rank: ' + rank);
