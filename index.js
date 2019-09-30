@@ -9,6 +9,10 @@ app.createServer().listen(port, host);
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+const bronze = 100;
+const silver = 500;
+const gold = 1000;
+
 var users = {};
 
 client.on('ready', () => {
@@ -57,6 +61,29 @@ client.on('message', msg => {
     if (msg.content === '!scoreboard') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         msg.reply('Here are the results: ' + JSON.stringify(users));
+        console.log('Discord: Here are the results: ' + JSON.stringify(users));
+    }
+});
+
+client.on('message', msg => {
+    if (msg.content === '!rank') {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var name = msg.author.tag.toString().toLowerCase();
+        var points = users[name.substring(0, name.length - 5)];
+        var rank = "NONE";
+        if (points >= 1000)
+        {
+            rang = "GOLD";
+        }
+        else if (points >= 500)
+        {
+            rank = "SILVER";
+        }
+        else if (points >= 100)
+        {
+            rank = "BRONZE";
+        }
+        msg.reply('Here is your rank: ' + JSON.stringify(users));
         console.log('Discord: Here are the results: ' + JSON.stringify(users));
     }
 });
