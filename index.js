@@ -83,7 +83,7 @@ client.on('message', msg => {
         {
             rank = "BRONZE";
         }
-        msg.reply('Here is your rank: ' + JSON.stringify(users));
+        msg.reply('Here is your rank: ' + rank);
         console.log('Discord: Here are the results: ' + JSON.stringify(users));
     }
 });
