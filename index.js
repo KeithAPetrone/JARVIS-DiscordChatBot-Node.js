@@ -95,27 +95,28 @@ client.on('message', msg => {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var response = "Here is the leaderboard: ";
         console.log("Looping through users...")
-        users.Array.forEach(user => {
-            console.log("Entry: ")
-            console.log("Name is " + name);
-            var points = users[name];
-            console.log("Points are " + points);
-            var rank = "NONE";
-            var display = 100;
-            if (points >= 1000) {
-                rank = "GOLD";
-                display = "MAXED OUT";
-            } else if (points >= 500) {
-                rank = "SILVER";
-                display = 1000;
-            } else if (points >= 100) {
-                rank = "BRONZE";
-                display = 500;
+        for (var user in users) {
+            if (users.hasOwnProperty(user)) {
+                console.log("Entry: ");
+                console.log("Name is " + user);
+                var points = users[user];
+                console.log("Points are " + points);
+                var rank = "NONE";
+                var display = 100;
+                if (points >= 1000) {
+                    rank = "GOLD";
+                    display = "MAXED OUT";
+                } else if (points >= 500) {
+                    rank = "SILVER";
+                    display = 1000;
+                } else if (points >= 100) {
+                    rank = "BRONZE";
+                    display = 500;
+                }
+                console.log("Rank is " + rank);
+                response += " | " + user + ": " + rank + " " + users[user] + "/" + display;
             }
-            console.log("Rank is " + rank);
-            response += " | " + name + ": " + rank + " " + users[name] + "/" + display;
-        });
-
+        }
         msg.reply(response);
         console.log("Discord: " + response);
     }
