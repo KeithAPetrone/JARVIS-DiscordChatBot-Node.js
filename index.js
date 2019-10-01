@@ -33,7 +33,7 @@ client.on('message', msg => {
         name = name.substring(0, name.length - 5);
         if (!(name in users)) {
             users[name] = 0;
-            msg.reply(name.substring(0, name.length - 5) + ' has been added to the points database!');
+            msg.reply(name+ ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
         } else {
