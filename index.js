@@ -33,7 +33,7 @@ client.on('message', msg => {
         name = name.substring(0, name.length - 5);
         if (!(name in users)) {
             users[name] = 0;
-            msg.reply(name+ ' has been added to the points database!');
+            msg.reply(name + ' has been added to the points database!');
             console.log('Discord: ' + msg.author + ' has been added to the points database!');
             console.log(users);
         } else {
@@ -95,10 +95,10 @@ client.on('message', msg => {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var response = "Here is the leaderboard: ";
         console.log("Looping through users...")
-        Array.from(users).forEach(u => {
+        users.Array.forEach(user => {
             console.log("Entry: ")
-            console.log("Name is " + u);
-            var points = users[u];
+            console.log("Name is " + name);
+            var points = users[name];
             console.log("Points are " + points);
             var rank = "NONE";
             var display = 100;
@@ -113,7 +113,7 @@ client.on('message', msg => {
                 display = 500;
             }
             console.log("Rank is " + rank);
-            response += " | " + u + ": " + rank + " " + points + "/" + display;
+            response += " | " + name + ": " + rank + " " + users[name] + "/" + display;
         });
 
         msg.reply(response);
