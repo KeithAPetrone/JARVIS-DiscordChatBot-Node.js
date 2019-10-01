@@ -94,9 +94,10 @@ client.on('message', msg => {
     if (msg.content === '!leaderboard') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var response = "Here is the leaderboard: ";
-        console.log("Looping through users...")
+        console.log("Looping through users...");
         for (var user in users) {
             if (users.hasOwnProperty(user)) {
+                //Do we want this to display highest point values first?
                 console.log("Entry: ");
                 console.log("Name is " + user);
                 var points = users[user];
