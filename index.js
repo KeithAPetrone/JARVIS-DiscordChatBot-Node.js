@@ -95,10 +95,10 @@ client.on('message', msg => {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var response = "Here is the leaderboard: ";
         console.log("Looping through users...")
-        Array.from(users).forEach(name => {
+        Array.from(users).forEach(u => {
             console.log("Entry: ")
-            console.log("Name is " + name);
-            var points = user[name];
+            console.log("Name is " + u);
+            var points = users[u];
             console.log("Points are " + points);
             var rank = "NONE";
             var display = 100;
@@ -113,7 +113,7 @@ client.on('message', msg => {
                 display = 500;
             }
             console.log("Rank is " + rank);
-            response += " | " + name + ": " + rank + " " + users[name] + "/" + display;
+            response += " | " + u + ": " + rank + " " + points + "/" + display;
         });
 
         msg.reply(response);
