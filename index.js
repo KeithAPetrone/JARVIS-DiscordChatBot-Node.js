@@ -121,10 +121,12 @@ client.on('message', msg => {
                 participant[points] = points;
                 participant[rank] = rank;
                 participant[display] = display;
+                console.log("Participant added: " + JSON.stringify(participant));
                 leaderboard.push(participant);
             }
         }
         if (leaderboard.length > 0) {
+            console.log("All participants ready: " + JSON.stringify(leaderboard));
             response += makeLeaderboard(leaderboard);
             msg.reply(response);
         } else {
