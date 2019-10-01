@@ -95,7 +95,7 @@ client.on('message', msg => {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var response = "";
 
-        users.forEach(name => {
+        Array.from(users).forEach(name => {
 
             var points = user[name];
             var rank = "NONE";
