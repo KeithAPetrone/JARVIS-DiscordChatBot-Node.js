@@ -94,13 +94,17 @@ client.on('message', msg => {
     if (msg.content === '!leaderboard') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var response = "Here is the leaderboard: ";
+        var leaderboard = [];
         console.log("Looping through users...");
         for (var user in users) {
             if (users.hasOwnProperty(user)) {
                 //Do we want this to display highest point values first?
+                var participant;
                 console.log("Entry: ");
                 console.log("Name is " + user);
+                participant.name = name;
                 var points = users[user];
+                participant.points = points;
                 console.log("Points are " + points);
                 var rank = "NONE";
                 var display = 100;
@@ -115,9 +119,12 @@ client.on('message', msg => {
                     display = 500;
                 }
                 console.log("Rank is " + rank);
-                response += " | " + user + ": " + rank + " " + users[user] + "/" + display;
+                participant.rank = rank;
+                participant.display = display;
+                leaderboard.push(participant);
             }
         }
+        response += makeLeaderboard(leaderboard);
         msg.reply(response);
         console.log("Discord: " + response);
     }
@@ -218,3 +225,19 @@ client2.on("chat", (channel, userstate, message, self) => {
 //
 //}, 300000); //Every 5 minute, your bot advertise your channel.
 //
+
+function makeLeaderboard(leaderboard) {
+    console.log("Making Leaderboard...");
+    var byScore = leaderboard.slice(0);
+    console.log("Sorting by score...");
+    byScore.sort(function(a,b) {
+        return a.points - b.points;
+    });
+    console.log("Sorting done...");
+    var response = "";
+    console.log("Preparing display...");
+    for (var i = 0; i < byScore.length; i++) {
+        response += " | " + byScore.name + " Rank: " + byScore.rank + " " + byScore.points + "/" + byScore.display;
+    }
+    return response;
+}
