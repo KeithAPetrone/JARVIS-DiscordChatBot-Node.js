@@ -99,12 +99,9 @@ client.on('message', msg => {
         for (var user in users) {
             if (users.hasOwnProperty(user)) {
                 //Do we want this to display highest point values first?
-                var participant = {name, points, rank, display};
                 console.log("Entry: ");
                 console.log("Name is " + user);
-                participant.name = name;
                 var points = users[user];
-                participant.points = points;
                 console.log("Points are " + points);
                 var rank = "NONE";
                 var display = 100;
@@ -119,8 +116,12 @@ client.on('message', msg => {
                     display = 500;
                 }
                 console.log("Rank is " + rank);
-                participant.rank = rank;
-                participant.display = display;
+                let participant = Object.create(Object.prototype, {
+                    name: name,
+                    points: points,
+                    rank: rank,
+                    display: display
+                });
                 leaderboard.push(participant);
             }
         }
@@ -230,7 +231,7 @@ function makeLeaderboard(leaderboard) {
     console.log("Making Leaderboard...");
     var byScore = leaderboard.slice(0);
     console.log("Sorting by score...");
-    byScore.sort(function(a,b) {
+    byScore.sort(function (a, b) {
         return a.points - b.points;
     });
     console.log("Sorting done...");
