@@ -117,10 +117,10 @@ client.on('message', msg => {
                     display = 500;
                 }
                 console.log("Rank is " + rank);
-                participant[name] = name;
-                participant[points] = points;
-                participant[rank] = rank;
-                participant[display] = display;
+                participant.name = name;
+                participant.points = points;
+                participant.rank = rank;
+                participant.display = display;
                 console.log("Participant added: " + JSON.stringify(participant));
                 leaderboard.push(participant);
             }
