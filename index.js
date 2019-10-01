@@ -93,11 +93,13 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!leaderboard') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var response = "";
-
+        var response = "Here is the leaderboard: ";
+        console.log("Looping through users...")
         Array.from(users).forEach(name => {
-
+            console.log("Entry: ")
+            console.log("Name is " + name);
             var points = user[name];
+            console.log("Points are " + points);
             var rank = "NONE";
             var display = 100;
             if (points >= 1000) {
@@ -110,7 +112,7 @@ client.on('message', msg => {
                 rank = "BRONZE";
                 display = 500;
             }
-
+            console.log("Rank is " + rank);
             response += " | " + name + ": " + rank + " " + users[name] + "/" + display;
         });
 
