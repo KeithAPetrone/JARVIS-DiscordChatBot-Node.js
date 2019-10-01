@@ -99,7 +99,7 @@ client.on('message', msg => {
         for (var user in users) {
             if (users.hasOwnProperty(user)) {
                 //Do we want this to display highest point values first?
-                var participant;
+                var participant = {name, points, rank, display};
                 console.log("Entry: ");
                 console.log("Name is " + user);
                 participant.name = name;
