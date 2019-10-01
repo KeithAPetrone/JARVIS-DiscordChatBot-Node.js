@@ -124,6 +124,12 @@ client.on('message', msg => {
                 leaderboard.push(participant);
             }
         }
+        if (leaderboard.length > 0) {
+            response += makeLeaderboard(leaderboard);
+            msg.reply(response);
+        } else {
+            response = "There is nobody on the leaderboard yet!";
+        }
         response += makeLeaderboard(leaderboard);
         msg.reply(response);
         console.log("Discord: " + response);
@@ -228,12 +234,14 @@ client2.on("chat", (channel, userstate, message, self) => {
 
 function makeLeaderboard(leaderboard) {
     console.log("Making Leaderboard...");
+    console.log(JSON.stringify(leaderboard));
     var byScore = leaderboard.slice(0);
     console.log("Sorting by score...");
     byScore.sort(function (a, b) {
         return a.points - b.points;
     });
     console.log("Sorting done...");
+    console.log(JSON.stringify(byScore));
     var response = "";
     console.log("Preparing display...");
     for (var i = 0; i < byScore.length; i++) {
