@@ -99,6 +99,7 @@ client.on('message', msg => {
         for (var user in users) {
             if (users.hasOwnProperty(user)) {
                 var participant = {};
+                var name = user;
                 console.log("Entry: ");
                 console.log("Name is " + user);
                 var points = users[user];
