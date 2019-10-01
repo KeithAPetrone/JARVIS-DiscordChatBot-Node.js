@@ -237,7 +237,7 @@ function makeLeaderboard(leaderboard) {
     var response = "";
     console.log("Preparing display...");
     for (var i = 0; i < byScore.length; i++) {
-        response += " | " + byScore[name] + " Rank: " + byScore[rank] + " " + byScore[points] + "/" + byScore[display];
+        response += " | " + byScore[i][name] + " Rank: " + byScore[i][rank] + " " + byScore[i][score] + "/" + byScore[i][display];
     }
     return response;
 }
