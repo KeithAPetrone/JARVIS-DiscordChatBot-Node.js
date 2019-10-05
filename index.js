@@ -207,6 +207,17 @@ client2.on("chat", (channel, userstate, message, self) => {
             if (userstate.username.toString().toLowerCase() in users) {
                 users[userstate.username.toString().toLowerCase()]++;
                 client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
+                timeLurker(userstate, 1);
+            } else {
+                client2.say(channel, `@${userstate.username} You need to be added to the points database from the Discord server!`);
+            }
+        }
+
+        if ((message.toLowerCase()).includes("!raid")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+            if (userstate.username.toString().toLowerCase() in users) {
+                users[userstate.username.toString().toLowerCase()]++;
+                client2.say(channel, `@${userstate.username} RAIDING!!!`);
+                timeLurker(userstate, 2);
             } else {
                 client2.say(channel, `@${userstate.username} You need to be added to the points database from the Discord server!`);
             }
@@ -251,4 +262,35 @@ function makeLeaderboard(leaderboard) {
         response += " | " + byScore[i].name + " Rank: " + byScore[i].rank + " " + byScore[i].points + "/" + byScore[i].display;
     }
     return response;
+}
+
+function timeLurker(lurker, multiplier) {
+    console.log(lurker.username + " is now lurking. Timing them now.");
+    var lurking = true;
+    while (lurking) {
+        setInterval(function () {
+            if (isLurking(lurker)) {
+                users[lurker.username.toString().toLowerCase()] += (1 * multiplier);
+            } else {
+                lurking = false;
+            }
+        }, 60000);
+    }
+}
+
+function isLurking(lurker) {
+    var info = "";
+    var request = require("request");
+
+    request("https://tmi.twitch.tv/group/user/" + streamer + "/chatters", function (error, response, body) {
+        info = JSON.stringify(body);
+    });
+
+    if (info != null) {
+        if (info.toLowerCase.includes(lurker.username.toString().toLowerCase())) {
+            return true;
+        }
+    }
+
+    return false;
 }
