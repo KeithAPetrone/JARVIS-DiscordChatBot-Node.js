@@ -62,7 +62,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!raid') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod")) {
+        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
             var name = msg.author.tag.toString().toLowerCase();
             name = name.substring(0, name.length - 5);
             //Supposed to be a double points version of !lurk
