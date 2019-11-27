@@ -27,7 +27,24 @@ client.on('message', msg => {
 });
 
 client.on('message', msg => {
-    if (msg.content === '!addmelurk') {
+    console.log('Received #' + msg.id + ': ' + msg.content);
+        var name = msg.author.tag.toString().toLowerCase();
+        name = name.substring(0, name.length - 5);
+        if (name in users) {
+            users[name]++;
+            console.log('Discord: ' + msg.author + ' gained a point');
+        }
+});
+
+client.on('message', msg => {
+    if (msg.content === '!ping') {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        msg.reply('Pong!');
+    }
+});
+
+client.on('message', msg => {
+    if (msg.content === '!addme') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var name = msg.author.tag.toString().toLowerCase();
         name = name.substring(0, name.length - 5);
