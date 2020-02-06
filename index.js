@@ -277,10 +277,10 @@ setInterval(() => {
     for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
-        Console.log("Checking if " + broadcaster + " is live...")
+        console.log("Checking if " + broadcaster + " is live...")
         if (isLive(broadcaster))
         {
-            Console.log(broadcaster + " Is live!!!")
+            console.log(broadcaster + " Is live!!!")
             client.say("#nerdy-discord-stuff-for-mostly-keef", broadcaster + " is now live! Check them out at https://www.twitch.tv/" + broadcaster)
         }
     }
