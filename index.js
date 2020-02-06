@@ -345,9 +345,9 @@ function getUserID(channelName) {
         'Accept': 'application/vnd.twitchtv.v5+json'
     }
     };
-
-    var response = JSON.parse(request.get(options.url, options)).users[0]._id;
-    return response;
+    var response = request.get(options.url, options);
+    console.log("Received: " + response);
+    return JSON.parse(response).users[0]._id;
 }
 
 function isLive(channelName) {
