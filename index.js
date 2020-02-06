@@ -338,7 +338,7 @@ function isLurking(lurker) {
 
 function getUserID(channelName) {
     const request = require('request');
-
+    console.log("Getting user ID for " + channelName);
     const options = {
     url: "https://api.twitch.tv/kraken/users?client_id=" + twitchClientId + "&login=" + channelName,
     headers: {
@@ -352,7 +352,7 @@ function getUserID(channelName) {
 
 function isLive(channelName) {
     var userId = getUserID(channelName);
-
+    console.log("Checking live status for " + channelName);
     const request = require('request');
 
     const options = {
