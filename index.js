@@ -226,7 +226,10 @@ client2.on("chat", (channel, userstate, message, self) => {
                 client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
                 timeLurker(userstate, 1);
             } else {
-                client2.say(channel, `@${userstate.username} You need to be added to the points database from the Discord server!`);
+                users[userstate.username] = 0;
+                console.log('Twitch: ' + msg.author + ' has been added to the points database!');
+                console.log(users);
+                client2.say(channel, `@${userstate.username} You have been added to the points database on the Discord server!`);
             }
         }
 
@@ -236,7 +239,10 @@ client2.on("chat", (channel, userstate, message, self) => {
                 client2.say(channel, `@${userstate.username} RAIDING!!!`);
                 timeLurker(userstate, 2);
             } else {
-                client2.say(channel, `@${userstate.username} You need to be added to the points database from the Discord server!`);
+                users[userstate.username] = 0;
+                console.log('Twitch: ' + msg.author + ' has been added to the points database!');
+                console.log(users);
+                client2.say(channel, `@${userstate.username} You have been added to the points database on the Discord server!`);
             }
         }
 
@@ -261,6 +267,23 @@ client2.on("chat", (channel, userstate, message, self) => {
 //
 //}, 300000); //Every 5 minute, your bot advertise your channel.
 //
+
+url = "https://api.twitch.tv/kraken/streams/";
+twitchClientId = "thwzykk3l7cckshmybn0vwf0ijww85";
+twitchClientSecret = "698iwyzok0qh9yr7nakj61yo33rsv5";
+
+//Check if stream is live
+setInterval(() => {
+    for (i = 0, i < users.length, i++)
+    {
+        var broadcaster = users[i].toString();
+        if (isLive(broadcaster))
+        {
+            client2.say("channel", "Looks like you're live! Notifying the Discord!");
+            client.say("#twitch-stream-notifications", broadcaster + " is now live! Check them out at https://www.twitch.tv/" + broadcaster)
+        }
+    }
+}, 300000)
 
 function makeLeaderboard(leaderboard) {
     console.log("Making Leaderboard...");
@@ -310,4 +333,8 @@ function isLurking(lurker) {
     }
 
     return false;
+}
+
+function isLive(channelName) {
+    client2.on.
 }
