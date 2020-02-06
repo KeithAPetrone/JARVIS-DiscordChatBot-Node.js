@@ -274,13 +274,13 @@ twitchClientSecret = "698iwyzok0qh9yr7nakj61yo33rsv5";
 
 //Check if stream is live
 setInterval(() => {
-    for (i = 0, i < users.length, i++)
+    for (i = 0, i < options.channels.length, i++)
     {
-        var broadcaster = users[i].toString();
+        var broadcaster = options.channels[i].toString();
         if (isLive(broadcaster))
         {
             client2.say("channel", "Looks like you're live! Notifying the Discord!");
-            client.say("#twitch-stream-notifications", broadcaster + " is now live! Check them out at https://www.twitch.tv/" + broadcaster)
+            client.say("#nerdy-discord-stuff-for-mostly-keef", broadcaster + " is now live! Check them out at https://www.twitch.tv/" + broadcaster)
         }
     }
 }, 300000)
@@ -335,6 +335,37 @@ function isLurking(lurker) {
     return false;
 }
 
+function getUserID(channelName) {
+    const request = require('request');
+
+    const options = {
+    url: "https://api.twitch.tv/kraken/users?client_id=" + twitchClientId + "&login=" + channelName,
+    headers: {
+        'Accept': 'application/vnd.twitchtv.v5+json'
+    }
+    };
+
+    var response = JSON.parse(request.get(options.url, options)).users[0]._id;
+    return response;
+}
+
 function isLive(channelName) {
-    client2.on.
+    var userId = getUserID(channelName);
+
+    const request = require('request');
+
+    const options = {
+    url: "https://api.twitch.tv/kraken/streams/" + userId + "?client_id=" + twitchClientId,
+    headers: {
+        'Accept': 'application/vnd.twitchtv.v5+json'
+    }
+    };
+
+    var response = JSON.stringify(request.get(options.url, options));
+
+    if (response.includes("null"))
+    {
+        return true;
+    }
+    return false;
 }
