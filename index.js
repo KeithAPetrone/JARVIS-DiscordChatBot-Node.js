@@ -274,7 +274,7 @@ twitchClientSecret = "698iwyzok0qh9yr7nakj61yo33rsv5";
 
 //Check if stream is live
 setInterval(() => {
-    for (i = 0, i < options.channels.length, i++)
+    for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
         if (isLive(broadcaster))
