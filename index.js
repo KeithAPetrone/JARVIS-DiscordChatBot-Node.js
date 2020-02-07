@@ -338,41 +338,43 @@ function isLurking(lurker) {
 }
 
 function getUserID(channelName) {
-    const request = require('request');
+    var response;
+
     console.log("Getting user ID for " + channelName);
+
     const options = {
-    url: "https://api.twitch.tv/kraken/users?client_id=" + twitchClientId + "&login=" + channelName,
-    headers: {
-        'Accept': 'application/vnd.twitchtv.v5+json'
-    }
+        host: "https://api.twitch.tv/kraken/users?client_id=" + twitchClientId + "&login=" + channelName,
+        path: "/kraken/users?client_id=" + twitchClientId + "&login=" + channelName,
+        headers: {
+            'Accept': 'application/vnd.twitchtv.v5+json'
+        }
     };
 
-    request(options, (error, response, body)=> {
-        if (!error && response.statusCode === 200) {
-          const response = JSON.parse(body)
-          console.log("Got a response: ", response)
-        } else {
-          console.log("Got an error: ", error, ", status code: ", response.statusCode)
-        }
-      });
-
-    request.get(options, (err, res, body) => {
-        if (err) {
-            return console.log(err);
-        }
-    }).on('response', function(response) {
-        console.log("Status: " + response.statusCode);
-        console.log("Headers: " + response.headers['content-type']);
-    }).on('end', function() {
-        try {
-            var stringified = JSON.stringify(json);
-            console.log(stringified);
-        } catch (e) {
-            console.log('Error stringifying JSON!');
-        }
+    https.get(options, function (res) {
+        var json = '';
+    
+        res.on('data', function (chunk) {
+            json += chunk;
+        });
+    
+        res.on('end', function () {
+            if (res.statusCode === 200) {
+                try {
+                    var data = JSON.parse(json);
+                    // data is available here:
+                    response = data;
+                    console.log(json);
+                } catch (e) {
+                    console.log('Error parsing JSON!');
+                }
+            } else {
+                console.log('Status:', res.statusCode);
+            }
+        });
+    }).on('error', function (err) {
+        console.log('Error:', err);
     });
 
-    console.log("Response: " + JSON.stringify(stringified));
     return JSON.parse(response).users[0]._id;
 }
 
