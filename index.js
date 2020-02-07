@@ -354,10 +354,16 @@ function getUserID(channelName) {
     }).on('response', function(response) {
         console.log("Status: " + response.statusCode);
         console.log("Headers: " + response.headers['content-type']);
-        console.log(JSON.stringify(response));
+    }).on('end', function() {
+        try {
+            var stringified = JSON.stringify(json);
+            console.log(stringified);
+        } catch (e) {
+            console.log('Error stringifying JSON!');
+        }
     });
 
-    console.log("Response: " + JSON.stringify(response));
+    console.log("Response: " + JSON.stringify(stringified));
     return JSON.parse(response).users[0]._id;
 }
 
