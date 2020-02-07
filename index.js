@@ -279,11 +279,7 @@ setInterval(() => {
     {
         var broadcaster = options.channels[i].toString();
         console.log("Checking if " + broadcaster + " is live...");
-        if (isLive(broadcaster))
-        {
-            console.log(broadcaster + " Is live!!!");
-            client.say("#nerdy-discord-stuff-for-mostly-keef", broadcaster + " is now live! Check them out at https://www.twitch.tv/" + broadcaster);
-        }
+        isLive(broadcaster);
     }
 }, 10000);
 
@@ -365,6 +361,7 @@ function isLive(channelName) {
                     }
                     else {
                         console.log(channelName + " is live!!!");
+                        client.channels.get("671768133652054073").sendMessage(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
                         return true;
                     }
                 }
