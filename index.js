@@ -337,64 +337,38 @@ function isLurking(lurker) {
     return false;
 }
 
-function getUserID(channelName) {
-    var response;
-
-    console.log("Getting user ID for " + channelName);
-
-    const options = {
-        host: "https://api.twitch.tv/kraken/users?client_id=" + twitchClientId + "&login=" + channelName,
-        path: "/kraken/users?client_id=" + twitchClientId + "&login=" + channelName,
-        headers: {
-            'Accept': 'application/vnd.twitchtv.v5+json'
-        }
-    };
-
-    https.get(options, function (res) {
-        var json = '';
-    
-        res.on('data', function (chunk) {
-            json += chunk;
-        });
-    
-        res.on('end', function () {
-            if (res.statusCode === 200) {
-                try {
-                    var data = JSON.parse(json);
-                    // data is available here:
-                    response = data;
-                    console.log(json);
-                } catch (e) {
-                    console.log('Error parsing JSON!');
-                }
-            } else {
-                console.log('Status:', res.statusCode);
-            }
-        });
-    }).on('error', function (err) {
-        console.log('Error:', err);
-    });
-
-    return JSON.parse(response).users[0]._id;
-}
-
 function isLive(channelName) {
-    var userId = getUserID(channelName);
-    console.log("Checking live status for " + channelName);
-    const request = require('request');
+    var response;
+    
+    var api = require('twitch-api-v5');
 
-    const options = {
-    url: "https://api.twitch.tv/kraken/streams/" + userId + "?client_id=" + twitchClientId,
-    headers: {
-        'Accept': 'application/vnd.twitchtv.v5+json'
-    }
-    };
+    api.clientID = twitchClientId;
 
-    var response = JSON.stringify(request.get(options.url, options));
+    api.users.usersByName({ users: channelName.substring(1, channelName.length) }, (err, res) => {
+        if (err) {
+            console.log("Get ID Error: " + err);
+        } else {
+            response = JSON.stringify(res);
+            var id = res.users[0]["_id"];
+            console.log(channelName + "'s ID is: " + id);
+            
+            console.log("Passing in channel ID: " + id);
 
-    if (response.includes("null"))
-    {
-        return false;
-    }
-    return true;
+            api.streams.channel({ channelID: id }, (err, res) => {
+                if (err) {
+                    console.log("Get Channel Info Error: " + err);
+                } else {
+                    response = JSON.stringify(res);
+                    if (JSON.parse(response).stream === null || JSON.parse(response).stream === undefined) {
+                        console.log(channelName + " is not live.");
+                        return false;
+                    }
+                    else {
+                        console.log(channelName + " is live!!!");
+                        return true;
+                    }
+                }
+            });
+        }
+    });
 }
