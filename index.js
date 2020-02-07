@@ -15,6 +15,8 @@ const gold = 1000;
 
 var users = {};
 
+var usersCooldown = {};
+
 client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
 });
@@ -278,8 +280,26 @@ setInterval(() => {
     for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
-        console.log("Checking if " + broadcaster + " is live...");
-        isLive(broadcaster);
+        console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
+        if (broadcaster.substring(1, broadcaster.length) in usersCooldown)
+        {
+            if (usersCooldown[broadcaster.substring(1, broadcaster.length)] !== null)
+            {
+                if (typeof usersCooldown[broadcaster.substring(1, broadcaster.length)] !== undefined)
+                {
+                    var timeDifference = (new Date().getTime()) - ((usersCooldown[broadcaster.substring(1, broadcaster.length)]).getTime());
+                    if (timeDifference >= 43200000)
+                    {
+                        usersCooldown[broadcaster.substring(1, broadcaster.length)] = null;
+                    }
+                }
+            }
+        }
+        else
+        {
+            console.log("Checking if " + broadcaster + " is live...");
+            isLive(broadcaster);
+        }
     }
 }, 10000);
 
@@ -360,8 +380,10 @@ function isLive(channelName) {
                         return false;
                     }
                     else {
+                        usersCooldown[channelName.substring(1, channelName.length)] = new Date();
+                        console.log("Adding to cooldown: " + usersCooldown);
                         console.log(channelName + " is live!!!");
-                        client.channels.get("671768133652054073").sendMessage(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
+                        client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
                         return true;
                     }
                 }
