@@ -273,18 +273,19 @@ twitchClientId = "thwzykk3l7cckshmybn0vwf0ijww85";
 twitchClientSecret = "698iwyzok0qh9yr7nakj61yo33rsv5";
 
 //Check if stream is live
+//300000 is 5 minutes
 setInterval(() => {
     for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
-        console.log("Checking if " + broadcaster + " is live...")
+        console.log("Checking if " + broadcaster + " is live...");
         if (isLive(broadcaster))
         {
-            console.log(broadcaster + " Is live!!!")
-            client.say("#nerdy-discord-stuff-for-mostly-keef", broadcaster + " is now live! Check them out at https://www.twitch.tv/" + broadcaster)
+            console.log(broadcaster + " Is live!!!");
+            client.say("#nerdy-discord-stuff-for-mostly-keef", broadcaster + " is now live! Check them out at https://www.twitch.tv/" + broadcaster);
         }
     }
-}, 300000)
+}, 10000);
 
 function makeLeaderboard(leaderboard) {
     console.log("Making Leaderboard...");
@@ -345,8 +346,18 @@ function getUserID(channelName) {
         'Accept': 'application/vnd.twitchtv.v5+json'
     }
     };
-    var response = request.get(options.url, options);
-    console.log("Received: " + response);
+
+    request.get(options, (err, res, body) => {
+        if (err) {
+            return console.log(err);
+        }
+    }).on('response', function(response) {
+        console.log("Status: " + response.statusCode);
+        console.log("Headers: " + response.headers['content-type']);
+        console.log(JSON.stringify(response));
+    });
+
+    console.log("Response: " + JSON.stringify(response));
     return JSON.parse(response).users[0]._id;
 }
 
@@ -366,7 +377,7 @@ function isLive(channelName) {
 
     if (response.includes("null"))
     {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
