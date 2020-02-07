@@ -347,6 +347,15 @@ function getUserID(channelName) {
     }
     };
 
+    request(options, (error, response, body)=> {
+        if (!error && response.statusCode === 200) {
+          const response = JSON.parse(body)
+          console.log("Got a response: ", response)
+        } else {
+          console.log("Got an error: ", error, ", status code: ", response.statusCode)
+        }
+      });
+
     request.get(options, (err, res, body) => {
         if (err) {
             return console.log(err);
