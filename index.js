@@ -9,7 +9,6 @@ app.createServer().listen(port, host);
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const bronze = 0;
 const silver = 100;
 const gold = 500;
 const diamond = 1000;
@@ -18,10 +17,12 @@ var users = {};
 
 var usersCooldown = {};
 
+//Logging into Discord
 client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
 });
 
+//!ping command should issue "Pong!" response.
 client.on('message', msg => {
     if (msg.content === '!ping') {
         console.log('Received #' + msg.id + ': ' + msg.content);
@@ -29,6 +30,7 @@ client.on('message', msg => {
     }
 });
 
+//Every message should increase exp by 1 point.
 client.on('message', msg => {
     console.log('Received #' + msg.id + ': ' + msg.content);
         var name = msg.author.tag.toString().toLowerCase();
@@ -37,13 +39,6 @@ client.on('message', msg => {
             users[name]++;
             console.log('Discord: ' + msg.author + ' gained a point');
         }
-});
-
-client.on('message', msg => {
-    if (msg.content === '!ping') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
-        msg.reply('Pong!');
-    }
 });
 
 client.on('message', msg => {
@@ -73,8 +68,9 @@ client.on('message', msg => {
             msg.reply(msg.author + ' is lurking!!!');
             console.log('Discord: ' + msg.author + ' is lurking!!!');
         } else {
-            msg.reply(msg.author + ', you need to be added to the database!');
-            console.log('Discord: ' + msg.author + ', you need to be added to the database!');
+            users[name] = 1;
+            msg.reply(msg.author + ' is lurking!!!');
+            console.log('Discord: ' + msg.author + ', you have been added to the database!');
         }
     }
 });
@@ -93,6 +89,7 @@ client.on('message', msg => {
     }
 });
 
+//Displays everyone's points to the chat.
 client.on('message', msg => {
     if (msg.content === '!scoreboard') {
         console.log('Received #' + msg.id + ': ' + msg.content);
@@ -101,6 +98,7 @@ client.on('message', msg => {
     }
 });
 
+//Wipes the scores completely.
 client.on('message', msg => {
     if (msg.content === '!clearscores') {
         console.log('Received #' + msg.id + ': ' + msg.content);
@@ -110,6 +108,7 @@ client.on('message', msg => {
     }
 });
 
+//Shows everyone's score, as well as rank.
 client.on('message', msg => {
     if (msg.content === '!leaderboard') {
         console.log('Received #' + msg.id + ': ' + msg.content);
@@ -158,6 +157,7 @@ client.on('message', msg => {
     }
 });
 
+//Displays that user's rank and score.
 client.on('message', msg => {
     if (msg.content === '!rank') {
         console.log('Received #' + msg.id + ': ' + msg.content);
@@ -185,11 +185,10 @@ client.login('NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c');
 
 const tmi = require("tmi.js");
 
-const options = require("./option"); //Your options file
+const options = require("./option"); //The options file
 
 
 //Connect to twitch server
-
 const client2 = new tmi.client(options);
 
 client2.connect();
@@ -304,6 +303,12 @@ setInterval(() => {
     }
 }, 10000);
 
+/**
+ * Creates the leaderboard and sorts it so the users with the highest scores are first.
+ *
+ * @param {string[]} leaderboard
+ * @returns {string[]} (The sorted leaderboard)
+ */
 function makeLeaderboard(leaderboard) {
     console.log("Making Leaderboard...");
     console.log(JSON.stringify(leaderboard));
@@ -323,6 +328,12 @@ function makeLeaderboard(leaderboard) {
     return response;
 }
 
+/**
+ * Times how long someone is lurking in a Twitch live stream.
+ *
+ * @param {string} lurker
+ * @param {number} multiplier
+ */
 function timeLurker(lurker, multiplier) {
     console.log(lurker.username + " is now lurking. Timing them now.");
     var lurking = true;
@@ -337,6 +348,12 @@ function timeLurker(lurker, multiplier) {
     }
 }
 
+/**
+ * Checks to verify that a user is or still is lurking.
+ *
+ * @param {string} lurker
+ * @returns {boolean}
+ */
 function isLurking(lurker) {
     var info = "";
     var request = require("request");
@@ -354,6 +371,11 @@ function isLurking(lurker) {
     return false;
 }
 
+/**
+ * Checks if Twitch channel went live and announces it to the Discord channel if true.
+ *
+ * @param {string} channelName
+ */
 function isLive(channelName) {
     var response;
     
