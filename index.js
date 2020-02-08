@@ -1,4 +1,13 @@
-/*jshint esversion: 6 */
+/**
+ * @application JARVIS
+ * @version 0.5
+ * @author Keith Petrone
+ * @email keithapetrone@gmail.com
+ * @create date 2019-09-16 11:02:24
+ * @modify date 2020-02-08 00:18:39
+ * @desc JARVIS is a bot designed around assisting the Fortify Streaming communinity.
+ */
+
 
 const host = '0.0.0.0';
 const port = process.env.PORT || 3000;
