@@ -42,23 +42,6 @@ client.on('message', msg => {
 });
 
 client.on('message', msg => {
-    if (msg.content === '!addme') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase();
-        name = name.substring(0, name.length - 5);
-        if (!(name in users)) {
-            users[name] = 0;
-            msg.reply(name + ' has been added to the points database!');
-            console.log('Discord: ' + msg.author + ' has been added to the points database!');
-            console.log(users);
-        } else {
-            msg.reply(msg.author + ', you are already in the databse!');
-            console.log('Discord: ' + msg.author + ', you are already in the databse!');
-        }
-    }
-});
-
-client.on('message', msg => {
     if (msg.content === '!lurk') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var name = msg.author.tag.toString().toLowerCase();
@@ -228,10 +211,10 @@ client2.on("chat", (channel, userstate, message, self) => {
                 client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
                 timeLurker(userstate, 1);
             } else {
-                users[userstate.username] = 0;
+                users[userstate.username] = 1;
                 console.log('Twitch: ' + msg.author + ' has been added to the points database!');
                 console.log(users);
-                client2.say(channel, `@${userstate.username} You have been added to the points database on the Discord server!`);
+                client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
             }
         }
 
@@ -241,7 +224,7 @@ client2.on("chat", (channel, userstate, message, self) => {
                 client2.say(channel, `@${userstate.username} RAIDING!!!`);
                 timeLurker(userstate, 2);
             } else {
-                users[userstate.username] = 0;
+                users[userstate.username] = 1;
                 console.log('Twitch: ' + msg.author + ' has been added to the points database!');
                 console.log(users);
                 client2.say(channel, `@${userstate.username} You have been added to the points database on the Discord server!`);
