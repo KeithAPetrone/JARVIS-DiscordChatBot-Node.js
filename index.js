@@ -9,9 +9,10 @@ app.createServer().listen(port, host);
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const bronze = 100;
-const silver = 500;
-const gold = 1000;
+const bronze = 0;
+const silver = 100;
+const gold = 500;
+const diamond = 1000;
 
 var users = {};
 
@@ -123,15 +124,15 @@ client.on('message', msg => {
                 console.log("Name is " + user);
                 var points = users[user];
                 console.log("Points are " + points);
-                var rank = "NONE";
+                var rank = "BRONZE";
                 var display = 100;
-                if (points >= 1000) {
+                if (points >= diamond) {
                     rank = "GOLD";
                     display = "MAXED OUT";
-                } else if (points >= 500) {
+                } else if (points >= gold) {
                     rank = "SILVER";
                     display = 1000;
-                } else if (points >= 100) {
+                } else if (points >= silver) {
                     rank = "BRONZE";
                     display = 500;
                 }
@@ -377,6 +378,7 @@ function isLive(channelName) {
                     response = JSON.stringify(res);
                     if (JSON.parse(response).stream === null || JSON.parse(response).stream === undefined) {
                         console.log(channelName + " is not live.");
+                        usersCooldown[channelName.substring(1, channelName.length)] = null;
                         return false;
                     }
                     else {
