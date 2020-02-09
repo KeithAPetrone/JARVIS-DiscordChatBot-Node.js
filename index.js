@@ -385,6 +385,7 @@ function isLive(channelName) {
                             console.log(channelName + " is live!!!");
                             client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
                             return true;
+                        }
                     }
                 }
             });
