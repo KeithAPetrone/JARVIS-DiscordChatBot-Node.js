@@ -4,7 +4,7 @@
  * @author Keith Petrone
  * @email keithapetrone@gmail.com
  * @create date 2019-09-16 11:02:24
- * @modify date 2020-02-08 00:18:39
+ * @modify date 2020-02-09 12:29:04
  * @desc JARVIS is a bot designed around assisting the Fortify Streaming communinity.
  */
 
@@ -274,25 +274,8 @@ setInterval(() => {
     {
         var broadcaster = options.channels[i].toString();
         console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
-        if (broadcaster.substring(1, broadcaster.length) in usersCooldown)
-        {
-            if (usersCooldown[broadcaster.substring(1, broadcaster.length)] !== null)
-            {
-                if (typeof usersCooldown[broadcaster.substring(1, broadcaster.length)] !== undefined)
-                {
-                    var timeDifference = (new Date().getTime()) - ((usersCooldown[broadcaster.substring(1, broadcaster.length)]).getTime());
-                    if (timeDifference >= 43200000)
-                    {
-                        usersCooldown[broadcaster.substring(1, broadcaster.length)] = null;
-                    }
-                }
-            }
-        }
-        else
-        {
-            console.log("Checking if " + broadcaster + " is live...");
-            isLive(broadcaster);
-        }
+        console.log("Checking if " + broadcaster + " is live...");
+        isLive(broadcaster);
     }
 }, 10000);
 
@@ -397,11 +380,13 @@ function isLive(channelName) {
                         return false;
                     }
                     else {
-                        usersCooldown[channelName.substring(1, channelName.length)] = new Date();
-                        console.log("Adding to cooldown: " + usersCooldown);
-                        console.log(channelName + " is live!!!");
-                        client.channels.get("675458066979880963").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
-                        return true;
+                        if (usersCooldown[channelName.substring(1, channelName.length)] === null || typeof usersCooldown[channelName.substring(1, channelName.length)] === undefined) {
+                            usersCooldown[channelName.substring(1, channelName.length)] = new Date();
+                            console.log("Adding to cooldown: " + usersCooldown);
+                            console.log(channelName + " is live!!!");
+                            client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
+                            return true;
+                        }
                     }
                 }
             });
