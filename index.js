@@ -273,19 +273,9 @@ setInterval(() => {
     {
         var broadcaster = options.channels[i].toString();
         console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
-        if (broadcaster.substring(1, broadcaster.length) in usersCooldown)
+        if (broadcaster.substring(1, broadcaster.length) in usersCooldown && usersCooldown[broadcaster.substring(1, broadcaster.length)] !== null && typeof usersCooldown[broadcaster.substring(1, broadcaster.length)] !== undefined)
         {
-            if (usersCooldown[broadcaster.substring(1, broadcaster.length)] !== null)
-            {
-                if (typeof usersCooldown[broadcaster.substring(1, broadcaster.length)] !== undefined)
-                {
-                    var timeDifference = (new Date().getTime()) - ((usersCooldown[broadcaster.substring(1, broadcaster.length)]).getTime());
-                    if (timeDifference >= 43200000)
-                    {
-                        usersCooldown[broadcaster.substring(1, broadcaster.length)] = null;
-                    }
-                }
-            }
+            usersCooldown[broadcaster.substring(1, broadcaster.length)] = null;
         }
         else
         {
