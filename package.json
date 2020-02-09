@@ -4,10 +4,11 @@
   "description": "the jarvis bot",
   "main": "index.js",
   "dependencies": {
+    "browser": "^0.2.6",
     "discord.js": "^11.5.1",
-    "jshint": "^2.10.2",
+    "jshint": "^2.11.0",
     "request": "^2.88.0",
-    "tmi.js": "^1.4.5",
+    "tmi.js": "^1.5.0",
     "twitch-api-v5": "^2.0.4"
   },
   "devDependencies": {
