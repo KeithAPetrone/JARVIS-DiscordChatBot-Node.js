@@ -409,6 +409,29 @@ function isLive(channelName) {
     });
 }
 
-function generateImage() {
-    console.log("Generating image...");    
+function generateImage(channelName) {
+    console.log("Generating image...");
+    const gulp = require("gulp");
+    const puppeteer = require("puppeteer");
+    const tap = require("gulp-tap");
+    const path = require("path");
+
+    console.log("Grabbing directory");
+    return gulp.src(["**/*.html", "!node_modules/**/*"])
+        .pipe(tap(async (file) => {
+            console.log("Found file");
+            const browser = await puppeteer.launch({ headless: true });
+            const page = await browser.newPage();
+            console.log("Setting viewport");
+            await page.setViewport({
+                width: 1200,
+                height: 600,
+                deviceScaleFactor: 1,
+            });
+            await page.goto("file://" + file.path);
+            console.log("Screenshotting");
+            await page.screenshot({ path: path.basename(file.basename, ".html") + ".png" });
+            await browser.close();
+            console.log("Image generated!")
+        }));
 }

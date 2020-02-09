@@ -10,7 +10,11 @@
     "tmi.js": "^1.4.5",
     "twitch-api-v5": "^2.0.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-tap": "^2.0.0",
+    "puppeteer": "^2.1.1"
+  },
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
