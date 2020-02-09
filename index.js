@@ -221,9 +221,9 @@ client2.on("chat", (channel, userstate, message, self) => {
                 client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
                 timeLurker(userstate, 1);
             } else {
-                users[userstate.username] = 1;
-                console.log('Twitch: ' + msg.author + ' has been added to the points database!');
-                console.log(users);
+                // users[userstate.username] = 1;
+                // console.log('Twitch: ' + msg.author + ' has been added to the points database!');
+                // console.log(users);
                 client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
             }
         }
@@ -234,9 +234,9 @@ client2.on("chat", (channel, userstate, message, self) => {
                 client2.say(channel, `@${userstate.username} RAIDING!!!`);
                 timeLurker(userstate, 2);
             } else {
-                users[userstate.username] = 1;
-                console.log('Twitch: ' + msg.author + ' has been added to the points database!');
-                console.log(users);
+                // users[userstate.username] = 1;
+                // console.log('Twitch: ' + msg.author + ' has been added to the points database!');
+                // console.log(users);
                 client2.say(channel, `@${userstate.username} You have been added to the points database on the Discord server!`);
             }
         }
@@ -400,6 +400,9 @@ function isLive(channelName) {
  * @returns Gulp output. May be useful for logging.
  */
 function generateImage(discordName) {
+    console.log("Customizing HTML for " + discordName);
+    customizeHTML(discordName);
+
     console.log("Generating image for " + discordName);
     const gulp = require("gulp");
     const puppeteer = require("puppeteer");
@@ -427,12 +430,34 @@ function customizeHTML(discordName) {
 
     let fs = require("fs-extra");
     let path = require("path");
+    
+    var file = fs.readFileSync(path.join(__dirname, "badgeBanner.html"), "utf8");
+    
+    file = file.replace("{{NAME}}", discordName.substring(0, discordName.length - 5));
+    var points = users[discordName];
+    if (users === undefined || points === undefined || typeof points === "undefined" || points.toString() == "undefined" || points == null) {
+        points = "0";
+    }
+    file = file.replace("{{POINTS}}", points);
+    var cap = 100;
+    var rank = "BRONZE";
+    if (users[discordName] >= diamond) {
+        cap = "MAXED";
+        rank = "DIAMOND";
+        file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
+    } else if (users[discordName] >= 500) {
+        cap = "1000";
+        rank = "GOLD";
+        file = file.replace("id=\"gold\" style=\"display: none;\"", "id=\"gold\"");
+    } else if (users[discordName] >= 100) {
+        cap = "500";
+        rank = "SILVER";
+        file = file.replace("id=\"silver\" style=\"display: none;\"", "id=\"silver\"");
+    } else {
+        file = file.replace("id=\"bronze\" style=\"display: none;\"", "id=\"bronze\"");
+    }
+    file = file.replace("{{CAP}}", cap);
+    file = file.replace("{{RANK}}", rank);
 
-    fs.readFile(path.join(__dirname, "filePath"), "utf8",(data, err) => {
-    console.log(data); // logs file content in string 
-    });
-
-    fs.readFile(path.join(__dirname, "filePath"), (data, err) => {
-    console.log(data); // logs file content in buffer
-    });
+    fs.writeFile(discordName + ".html", file, "utf8");
 }
