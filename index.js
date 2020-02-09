@@ -1,10 +1,10 @@
 /**
  * @application JARVIS
- * @version 0.5
+ * @version 0.75
  * @author Keith Petrone
  * @email keithapetrone@gmail.com
  * @create date 2019-09-16 11:02:24
- * @modify date 2020-02-09 12:29:04
+ * @modify date 2020-02-09 16:09:35
  * @desc JARVIS is a bot designed around assisting the Fortify Streaming communinity.
  */
 
@@ -45,8 +45,15 @@ client.on('message', msg => {
         var name = msg.author.tag.toString().toLowerCase();
         name = name.substring(0, name.length - 5);
         if (name in users) {
-            users[name]++;
+            if (typeof users[name.toString().toLowerCase()] === "undefined")
+            {
+                users[name.toString().toLowerCase()] = 0;
+            }
+            users[name.toString().toLowerCase()]++;
             console.log('Discord: ' + msg.author + ' gained a point');
+        } else {
+            users[name] = 1;
+            console.log('Discord: ' + msg.author + ' is added to database and gained a point');
         }
 });
 
@@ -119,7 +126,7 @@ client.on('message', msg => {
                 var display = 100;
                 if (points >= diamond) {
                     rank = "GOLD";
-                    display = "MAXED OUT";
+                    display = "MAX";
                 } else if (points >= gold) {
                     rank = "SILVER";
                     display = 1000;
@@ -154,23 +161,6 @@ client.on('message', msg => {
     if (msg.content === '!rank') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         generateImage(msg.author.tag.toString().toLowerCase());
-        var name = msg.author.tag.toString().toLowerCase();
-        name = name.substring(0, name.length - 5);
-        var points = users[name];
-        var rank = "NONE";
-        var display = 100;
-        if (points >= 1000) {
-            rank = "GOLD";
-            display = "MAXED OUT";
-        } else if (points >= 500) {
-            rank = "SILVER";
-            display = 1000;
-        } else if (points >= 100) {
-            rank = "BRONZE";
-            display = 500;
-        }
-        msg.reply('Here is your rank: ' + rank + " " + points + "/" + display);
-        console.log('Discord: Here is your rank: ' + rank + " " + points + "/" + display);
     }
 });
 
@@ -273,8 +263,6 @@ setInterval(() => {
     for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
-        console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
-        console.log("Checking if " + broadcaster + " is live...");
         isLive(broadcaster);
     }
 }, 10000);
@@ -365,17 +353,12 @@ function isLive(channelName) {
         } else {
             response = JSON.stringify(res);
             var id = res.users[0]["_id"];
-            console.log(channelName + "'s ID is: " + id);
-            
-            console.log("Passing in channel ID: " + id);
-
             api.streams.channel({ channelID: id }, (err, res) => {
                 if (err) {
                     console.log("Get Channel Info Error: " + err);
                 } else {
                     response = JSON.stringify(res);
                     if (JSON.parse(response).stream === null || JSON.parse(response).stream === undefined) {
-                        console.log(channelName + " is not live.");
                         usersCooldown[channelName.substring(1, channelName.length)] = null;
                         return false;
                     }
@@ -407,24 +390,32 @@ function generateImage(discordName) {
     const gulp = require("gulp");
     const puppeteer = require("puppeteer");
     const tap = require("gulp-tap");
-    const path = require("path");
+    const fs = require("fs");
+    let path = require("path");
 
-    console.log("Grabbing directory");
-    return gulp.src(["**/*.html", "!node_modules/**/*"])
+    return gulp.src(["**/*.html", "!node_modules/**/*", "!badgeBanner.html"])
         .pipe(tap(async (file) => {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
             await page.setViewport({
-                width: 1200,
-                height: 600,
+                width: 950,
+                height: 300,
                 deviceScaleFactor: 1,
             });
             await page.goto("file://" + file.path);
             await page.screenshot({ path: path.basename(file.basename, ".html") + ".png" });
+            console.log("Sending file for " + discordName);
+            await client.channels.get("675458066979880963").send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
+            fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".png");
+            fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".html");
             await browser.close();
         }));
 }
-
+/**
+ * Generates a custom html page for the user.
+ *
+ * @param {string} discordName
+ */
 function customizeHTML(discordName) {
     console.log("Writing custom HTML for " + discordName);
 
@@ -434,22 +425,22 @@ function customizeHTML(discordName) {
     var file = fs.readFileSync(path.join(__dirname, "badgeBanner.html"), "utf8");
     
     file = file.replace("{{NAME}}", discordName.substring(0, discordName.length - 5));
-    var points = users[discordName];
+    var points = users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()];
     if (users === undefined || points === undefined || typeof points === "undefined" || points.toString() == "undefined" || points == null) {
         points = "0";
     }
     file = file.replace("{{POINTS}}", points);
     var cap = 100;
     var rank = "BRONZE";
-    if (users[discordName] >= diamond) {
+    if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= diamond) {
         cap = "MAXED";
         rank = "DIAMOND";
         file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
-    } else if (users[discordName] >= 500) {
+    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 500) {
         cap = "1000";
         rank = "GOLD";
         file = file.replace("id=\"gold\" style=\"display: none;\"", "id=\"gold\"");
-    } else if (users[discordName] >= 100) {
+    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 100) {
         cap = "500";
         rank = "SILVER";
         file = file.replace("id=\"silver\" style=\"display: none;\"", "id=\"silver\"");
@@ -459,5 +450,5 @@ function customizeHTML(discordName) {
     file = file.replace("{{CAP}}", cap);
     file = file.replace("{{RANK}}", rank);
 
-    fs.writeFile(discordName + ".html", file, "utf8");
+    fs.writeFile(discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
 }
