@@ -379,7 +379,7 @@ function isLive(channelName) {
                         return false;
                     }
                     else {
-                        if (usersCooldown[channelName.substring(1, channelName.length)] === null || typeof usersCooldown[broadcaster.substring(1, broadcaster.length)] === undefined) {
+                        if (usersCooldown[channelName.substring(1, channelName.length)] === null || typeof usersCooldown[channelName.substring(1, channelName.length)] === undefined) {
                             usersCooldown[channelName.substring(1, channelName.length)] = new Date();
                             console.log("Adding to cooldown: " + usersCooldown);
                             console.log(channelName + " is live!!!");
