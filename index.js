@@ -273,15 +273,8 @@ setInterval(() => {
     {
         var broadcaster = options.channels[i].toString();
         console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
-        if (broadcaster.substring(1, broadcaster.length) in usersCooldown && usersCooldown[broadcaster.substring(1, broadcaster.length)] !== null && typeof usersCooldown[broadcaster.substring(1, broadcaster.length)] !== undefined)
-        {
-            usersCooldown[broadcaster.substring(1, broadcaster.length)] = null;
-        }
-        else
-        {
-            console.log("Checking if " + broadcaster + " is live...");
-            isLive(broadcaster);
-        }
+        console.log("Checking if " + broadcaster + " is live...");
+        isLive(broadcaster);
     }
 }, 10000);
 
@@ -386,11 +379,12 @@ function isLive(channelName) {
                         return false;
                     }
                     else {
-                        usersCooldown[channelName.substring(1, channelName.length)] = new Date();
-                        console.log("Adding to cooldown: " + usersCooldown);
-                        console.log(channelName + " is live!!!");
-                        client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
-                        return true;
+                        if (usersCooldown[channelName.substring(1, channelName.length)] === null || typeof usersCooldown[broadcaster.substring(1, broadcaster.length)] === undefined) {
+                            usersCooldown[channelName.substring(1, channelName.length)] = new Date();
+                            console.log("Adding to cooldown: " + usersCooldown);
+                            console.log(channelName + " is live!!!");
+                            client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
+                            return true;
                     }
                 }
             });
