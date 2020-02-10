@@ -111,7 +111,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!rankall') {
         for (var user in users) {
-            generateImage(user);
+            generateImage(user, msg.channel);
         }
     }
 });
@@ -169,7 +169,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!rank') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        generateImage(msg.author.tag.toString().toLowerCase());
+        generateImage(msg.author.tag.toString().toLowerCase(), msg.channel);
     }
 });
 
@@ -391,7 +391,7 @@ function isLive(channelName) {
  * @param {string} discordName
  * @returns Gulp output. May be useful for logging.
  */
-function generateImage(discordName) {
+function generateImage(discordName, replyChannel) {
     console.log("Customizing HTML for " + discordName);
     customizeHTML(discordName);
 
@@ -402,7 +402,7 @@ function generateImage(discordName) {
     const fs = require("fs");
     let path = require("path");
 
-    return gulp.src(["**/*.html", "!node_modules/**/*", "!badgeBanner.html"])
+    return gulp.src([discordName.substring(0, discordName.length - 5) + ".html"])
         .pipe(tap(async (file) => {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
@@ -411,10 +411,11 @@ function generateImage(discordName) {
                 height: 300,
                 deviceScaleFactor: 1,
             });
-            await page.goto("file://" + file.path);
+            console.log("set viewport");
+            await page.goto(file.path);
             await page.screenshot({ path: path.basename(file.basename, ".html") + ".png" });
             console.log("Sending file for " + discordName);
-            await client.channels.get("671051203723132941").send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
+            await replyChannel.send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".png");
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".html");
             await browser.close();
@@ -430,7 +431,7 @@ function customizeHTML(discordName) {
 
     let fs = require("fs-extra");
     let path = require("path");
-    
+
     var file = fs.readFileSync(path.join(__dirname, "badgeBanner.html"), "utf8");
     
     file = file.replace("{{NAME}}", discordName.substring(0, discordName.length - 5));
@@ -465,5 +466,6 @@ function customizeHTML(discordName) {
     file = file.replace("{{CAP}}", cap);
     file = file.replace("{{RANK}}", rank);
 
-    fs.writeFile(discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
+    fs.writeFile("C:/Users/keith/" + discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
+    console.log("Created html file");
 }
