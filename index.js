@@ -29,6 +29,8 @@ var usersCooldown = {};
 //Logging into Discord
 client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
+    users = JSON.parse(fs.readFileSync("C:/Users/keith/users.js"));
+    console.log("Database has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -55,6 +57,7 @@ client.on('message', msg => {
             users[name] = 1;
             console.log('Discord: ' + msg.author + ' is added to database and gained a point');
         }
+        fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
 });
 
 client.on('message', msg => {
@@ -111,7 +114,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!rankall') {
         for (var user in users) {
-            generateImage(user);
+            generateImage(user, msg.channel);
         }
     }
 });
@@ -169,7 +172,7 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content === '!rank') {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        generateImage(msg.author.tag.toString().toLowerCase());
+        generateImage(msg.author.tag.toString().toLowerCase(), msg.channel);
     }
 });
 
@@ -272,11 +275,6 @@ setInterval(() => {
     for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
-<<<<<<< HEAD
-        console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
-        console.log("Checking if " + broadcaster + " is live...");
-=======
->>>>>>> 9e9bac256b37ae6150fd8b569c8c3366ebd46bd1
         isLive(broadcaster);
     }
 }, 10000);
@@ -396,7 +394,7 @@ function isLive(channelName) {
  * @param {string} discordName
  * @returns Gulp output. May be useful for logging.
  */
-function generateImage(discordName) {
+function generateImage(discordName, replyChannel) {
     console.log("Customizing HTML for " + discordName);
     customizeHTML(discordName);
 
@@ -407,7 +405,7 @@ function generateImage(discordName) {
     const fs = require("fs");
     let path = require("path");
 
-    return gulp.src(["**/*.html", "!node_modules/**/*", "!badgeBanner.html"])
+    return gulp.src([discordName.substring(0, discordName.length - 5) + ".html"])
         .pipe(tap(async (file) => {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
@@ -416,10 +414,11 @@ function generateImage(discordName) {
                 height: 300,
                 deviceScaleFactor: 1,
             });
-            await page.goto("file://" + file.path);
+            console.log("set viewport");
+            await page.goto(file.path);
             await page.screenshot({ path: path.basename(file.basename, ".html") + ".png" });
             console.log("Sending file for " + discordName);
-            await client.channels.get("675458066979880963").send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
+            await replyChannel.send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".png");
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".html");
             await browser.close();
@@ -435,7 +434,7 @@ function customizeHTML(discordName) {
 
     let fs = require("fs-extra");
     let path = require("path");
-    
+
     var file = fs.readFileSync(path.join(__dirname, "badgeBanner.html"), "utf8");
     
     file = file.replace("{{NAME}}", discordName.substring(0, discordName.length - 5));
@@ -470,5 +469,6 @@ function customizeHTML(discordName) {
     file = file.replace("{{CAP}}", cap);
     file = file.replace("{{RANK}}", rank);
 
-    fs.writeFile(discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
+    fs.writeFile("C:/Users/keith/" + discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
+    console.log("Created html file");
 }
