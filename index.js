@@ -272,8 +272,6 @@ setInterval(() => {
     for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
-        console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
-        console.log("Checking if " + broadcaster + " is live...");
         isLive(broadcaster);
     }
 }, 10000);
