@@ -29,6 +29,8 @@ var usersCooldown = {};
 //Logging into Discord
 client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
+    users = JSON.parse(fs.readFileSync("C:/Users/keith/users.js"));
+    console.log("Database has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -55,6 +57,7 @@ client.on('message', msg => {
             users[name] = 1;
             console.log('Discord: ' + msg.author + ' is added to database and gained a point');
         }
+        fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
 });
 
 client.on('message', msg => {
