@@ -272,11 +272,8 @@ setInterval(() => {
     for (i = 0; i < options.channels.length; i++)
     {
         var broadcaster = options.channels[i].toString();
-<<<<<<< HEAD
         console.log("Current cooldown list: " + JSON.stringify(usersCooldown));
         console.log("Checking if " + broadcaster + " is live...");
-=======
->>>>>>> 9e9bac256b37ae6150fd8b569c8c3366ebd46bd1
         isLive(broadcaster);
     }
 }, 10000);
@@ -381,7 +378,7 @@ function isLive(channelName) {
                             usersCooldown[channelName.substring(1, channelName.length)] = new Date();
                             console.log("Adding to cooldown: " + usersCooldown);
                             console.log(channelName + " is live!!!");
-                            client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
+                            client.channels.get("671051203723132941").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
                             return true;
                         }
                     }
@@ -419,7 +416,7 @@ function generateImage(discordName) {
             await page.goto("file://" + file.path);
             await page.screenshot({ path: path.basename(file.basename, ".html") + ".png" });
             console.log("Sending file for " + discordName);
-            await client.channels.get("675458066979880963").send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
+            await client.channels.get("671051203723132941").send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".png");
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".html");
             await browser.close();
