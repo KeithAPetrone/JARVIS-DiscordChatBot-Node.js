@@ -378,7 +378,7 @@ function isLive(channelName) {
                             usersCooldown[channelName.substring(1, channelName.length)] = new Date();
                             console.log("Adding to cooldown: " + usersCooldown);
                             console.log(channelName + " is live!!!");
-                            client.channels.get("671051203723132941").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
+                            client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
                             return true;
                         }
                     }
