@@ -1,3 +1,49 @@
+<a name="2.11.0"></a>
+# [2.11.0](https://github.com/jshint/jshint/compare/2.11.0-rc1...v2.11.0) (2020-01-13)
+
+This release was previously published using the "release candidate" pattern. No
+regressions were reported in the four weeks that followed, so the change set is
+being promoted to a true "minor" release.
+
+The release notes for version 2.11.0-rc1 completely describes the changes
+included in this version.
+
+<a name="2.11.0-rc1"></a>
+# [2.11.0-rc1](https://github.com/jshint/jshint/compare/2.10.3...v2.11.0-rc1) (2019-12-11)
+
+In addition to bug fixes and new features, this release candidate includes a
+few refactorings which are not expected to influence JSHint's behavior.
+
+### Bug Fixes
+
+* Expose new `typeof` value experimentally ([dcef79a](https://github.com/jshint/jshint/commit/dcef79a))
+* Improve parsing of `yield` ([6fdb4f6](https://github.com/jshint/jshint/commit/6fdb4f6))
+* Improve parsing of comma operator ([897e035](https://github.com/jshint/jshint/commit/897e035))
+* Support spaces in /*global ... */ ([e542f67](https://github.com/jshint/jshint/commit/e542f67))
+
+### Features
+
+* Add support for "bigint" typeof value ([ce0b7b3](https://github.com/jshint/jshint/commit/ce0b7b3))
+* Add support for BigInt literals ([c340e55](https://github.com/jshint/jshint/commit/c340e55))
+* Add support for ES2019 opt. catch param ([43b6354](https://github.com/jshint/jshint/commit/43b6354))
+
+<a name="2.10.3"></a>
+## [2.10.3](https://github.com/jshint/jshint/compare/2.10.2...v2.10.3) (2019-11-04)
+
+### Bug Fixes
+
+* Allow more escapes with RegExp `u` flag ([5ac5c46](https://github.com/jshint/jshint/commit/5ac5c46))
+* Correct binding power of AwaitExpression ([af04b1e](https://github.com/jshint/jshint/commit/af04b1e))
+* Correct interpretation of commas ([691dbdc](https://github.com/jshint/jshint/commit/691dbdc))
+* Correct restrictions on class method names ([f670aeb](https://github.com/jshint/jshint/commit/f670aeb))
+* Correctly interpret class method names ([82b49c4](https://github.com/jshint/jshint/commit/82b49c4))
+* Do not crash on invalid program code ([b14acca](https://github.com/jshint/jshint/commit/b14acca))
+* Interpret "object rest" ident as a binding ([c0e9a5b](https://github.com/jshint/jshint/commit/c0e9a5b))
+* Relax `singleGroups` for async functions ([c5dcd90](https://github.com/jshint/jshint/commit/c5dcd90))
+* Tolerate `static` as class method name ([9cb3b20](https://github.com/jshint/jshint/commit/9cb3b20))
+* Tolerate valid assignments ([0a60c9e](https://github.com/jshint/jshint/commit/0a60c9e))
+* Validate lone arrow function parameter ([38285cd](https://github.com/jshint/jshint/commit/38285cd))
+
 <a name="2.10.2"></a>
 ## [2.10.2](https://github.com/jshint/jshint/compare/2.10.1...v2.10.2) (2019-03-13)
 
