@@ -107,6 +107,15 @@ client.on('message', msg => {
     }
 });
 
+//This is gonna slow the bot down, but will generate everyone's rank.
+client.on('message', msg => {
+    if (msg.content === '!rankall') {
+        for (var user in users) {
+            generateImage(user);
+        }
+    }
+});
+
 //Shows everyone's score, as well as rank.
 client.on('message', msg => {
     if (msg.content === '!leaderboard') {
@@ -425,6 +434,12 @@ function customizeHTML(discordName) {
     var file = fs.readFileSync(path.join(__dirname, "badgeBanner.html"), "utf8");
     
     file = file.replace("{{NAME}}", discordName.substring(0, discordName.length - 5));
+
+    var name = discordName.substring(0, discordName.length - 5);
+    var centering = 300;
+
+    file = file.replace("class=\"name\" style=\"left: 300px;\"", "class=\"name\" style=\"left: " + centering + "px;\"")
+
     var points = users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()];
     if (users === undefined || points === undefined || typeof points === "undefined" || points.toString() == "undefined" || points == null) {
         points = "0";
