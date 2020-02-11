@@ -28,8 +28,9 @@ var usersCooldown = {};
 
 //Logging into Discord
 client.on('ready', () => {
+    let fs = require("fs-extra");
     console.log(`Discord: Logged in as ${client.user.tag}!`);
-    users = JSON.parse(fs.readFileSync("C:/Users/keith/users.js"));
+    users = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
     console.log("Database has been loaded...");
 });
 
@@ -43,6 +44,7 @@ client.on('message', msg => {
 
 //Every message should increase exp by 1 point.
 client.on('message', msg => {
+    let fs = require("fs-extra");
     console.log('Received #' + msg.id + ': ' + msg.content);
         var name = msg.author.tag.toString().toLowerCase();
         name = name.substring(0, name.length - 5);
