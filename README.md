@@ -15,3 +15,4 @@ Progress:
 6. Points can be earned simply by chatting in the Discord. With enough points you can rank up.
 7. Bot is able to grab Twitch stream info.
 8. Bot can now announce when a Twitch channel goes live.
+9. Ranking system is now pretty. Generates an image banner on the fly for users.
