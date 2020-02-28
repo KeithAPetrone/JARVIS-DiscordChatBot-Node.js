@@ -32,6 +32,8 @@ client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
     users = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
     console.log("Database has been loaded...");
+    options.channels = JSON.parse(fs.readFileSync("C:/Users/keith/twitch.json"));
+    console.log("Twitch user list has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -112,15 +114,6 @@ client.on('message', msg => {
     }
 });
 
-//This is gonna slow the bot down, but will generate everyone's rank.
-client.on('message', msg => {
-    if (msg.content === '!rankall') {
-        for (var user in users) {
-            generateImage(user, msg.channel);
-        }
-    }
-});
-
 //Shows everyone's score, as well as rank.
 client.on('message', msg => {
     if (msg.content === '!leaderboard') {
@@ -175,6 +168,53 @@ client.on('message', msg => {
     if (msg.content === '!rank') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         generateImage(msg.author.tag.toString().toLowerCase(), msg.channel);
+    }
+});
+
+//Adds twitch streamer to the announcements.
+client.on('message', msg => {
+    if (msg.content.includes('!twitch')) {
+        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
+            console.log('Received #' + msg.id + ': ' + msg.content);
+            var addedUser = msg.content.replace("!twitch ", "");
+            var exists = false;
+            for (i = 0; i < options.channels.length; i++) {
+                if (options.channels[i] === ("#" + addedUser)) {
+                    exists = true;
+                }
+            }
+            if (!exists) {
+                options.channels.push('#' + addedUser);
+                fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
+                msg.reply("Twitch user " + addedUser + " has been added.");
+            } else {
+                msg.reply("Twitch user " + addedUser + " is already in the list.")
+            }
+        } else {
+            msg.reply("You don't have necessary privileges to use this command.");
+        }
+    }
+});
+
+//Removes twitch streamer from the announcements.
+client.on('message', msg => {
+    if (msg.content.includes('!twitch')) {
+        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
+            console.log('Received #' + msg.id + ': ' + msg.content);
+            var addedUser = msg.content.replace("!twitch ", "");
+            var exists = false;
+            for (i = 0; i < options.channels.length; i++) {
+                if (options.channels[i] === ("#" + addedUser)) {
+                    arr.splice(i, 1); 
+                    fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
+                    msg.reply("Twitch user " + addedUser + " has been removed.");
+                } else {
+                    msg.reply("Twitch user " + addedUser + " isn't in the list.")
+                }
+            }
+        } else {
+            msg.reply("You don't have necessary privileges to use this command.");
+        }
     }
 });
 
