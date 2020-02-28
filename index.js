@@ -50,15 +50,16 @@ client.on('message', msg => {
     console.log('Received #' + msg.id + ': ' + msg.content);
         var name = msg.author.tag.toString().toLowerCase();
         name = name.substring(0, name.length - 5);
+        var pointsEarned = msg.content.split(' ').length;
         if (name in users) {
             if (typeof users[name.toString().toLowerCase()] === "undefined")
             {
                 users[name.toString().toLowerCase()] = 0;
             }
-            users[name.toString().toLowerCase()]++;
+            users[name.toString().toLowerCase()] += pointsEarned;
             console.log('Discord: ' + msg.author + ' gained a point');
         } else {
-            users[name] = 1;
+            users[name] = pointsEarned;
             console.log('Discord: ' + msg.author + ' is added to database and gained a point');
         }
         fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
@@ -188,7 +189,7 @@ client.on('message', msg => {
                 fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
                 msg.reply("Twitch user " + addedUser + " has been added.");
             } else {
-                msg.reply("Twitch user " + addedUser + " is already in the list.")
+                msg.reply("Twitch user " + addedUser + " is already in the list.");
             }
         } else {
             msg.reply("You don't have necessary privileges to use this command.");
@@ -209,7 +210,7 @@ client.on('message', msg => {
                     fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
                     msg.reply("Twitch user " + addedUser + " has been removed.");
                 } else {
-                    msg.reply("Twitch user " + addedUser + " isn't in the list.")
+                    msg.reply("Twitch user " + addedUser + " isn't in the list.");
                 }
             }
         } else {
