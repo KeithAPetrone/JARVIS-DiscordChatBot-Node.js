@@ -18,9 +18,9 @@ app.createServer().listen(port, host);
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const silver = 100;
-const gold = 500;
-const diamond = 1000;
+const silver = 500;
+const gold = 2500;
+const diamond = 5000;
 
 var users = {};
 
@@ -131,16 +131,16 @@ client.on('message', msg => {
                 var points = users[user];
                 console.log("Points are " + points);
                 var rank = "BRONZE";
-                var display = 100;
+                var display = 500;
                 if (points >= diamond) {
-                    rank = "GOLD";
+                    rank = "DIAMOND";
                     display = "MAX";
                 } else if (points >= gold) {
-                    rank = "SILVER";
-                    display = 1000;
+                    rank = "GOLD";
+                    display = 5000;
                 } else if (points >= silver) {
-                    rank = "BRONZE";
-                    display = 500;
+                    rank = "SILVER";
+                    display = 2500;
                 }
                 console.log("Rank is " + rank);
                 participant.name = name;
@@ -492,18 +492,18 @@ function customizeHTML(discordName) {
         points = "0";
     }
     file = file.replace("{{POINTS}}", points);
-    var cap = 100;
+    var cap = 500;
     var rank = "BRONZE";
     if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= diamond) {
         cap = "MAXED";
         rank = "DIAMOND";
         file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
     } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 500) {
-        cap = "1000";
+        cap = "5000";
         rank = "GOLD";
         file = file.replace("id=\"gold\" style=\"display: none;\"", "id=\"gold\"");
     } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 100) {
-        cap = "500";
+        cap = "2500";
         rank = "SILVER";
         file = file.replace("id=\"silver\" style=\"display: none;\"", "id=\"silver\"");
     } else {
