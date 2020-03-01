@@ -26,6 +26,8 @@ var users = {};
 
 var usersCooldown = {};
 
+var questionsOfTheDay = [];
+
 //Logging into Discord
 client.on('ready', () => {
     let fs = require("fs-extra");
@@ -34,6 +36,11 @@ client.on('ready', () => {
     console.log("Database has been loaded...");
     options.channels = JSON.parse(fs.readFileSync("C:/Users/keith/twitch.json"));
     console.log("Twitch user list has been loaded...");
+    var fs = require("fs");
+    var text = fs.readFileSync("C:/Users/keith/questions.txt");
+    var textByLine = text.split("\n");
+    questionsOfTheDay = textByLine;
+    console.log("Questions of the day have been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -333,6 +340,23 @@ setInterval(() => {
         isLive(broadcaster);
     }
 }, 10000);
+
+setTimeout(function(){
+    var qod = questionsOfTheDay.pop;
+    client.channels.get("671051203723132941").send(qod);
+    var text = "";
+    for (i = 0; i < qod.length; i++) {
+        text += qod[i] + "\n";
+    }
+    var fs = require('fs');
+    fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log('Questions File written!');
+        }
+    });
+}, (1000*60*60*24));
 
 /**
  * Creates the leaderboard and sorts it so the users with the highest scores are first.
