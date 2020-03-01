@@ -345,7 +345,7 @@ setInterval(() => {
 //Question of the day logic
 setTimeout(function(){
     var qod = questionsOfTheDay.pop;
-    client.channels.get("671051203723132941").send(qod);
+    client.channels.get("683773761102807089").send(qod);
     var text = "";
     for (i = 0; i < qod.length; i++) {
         text += qod[i] + "\n";
