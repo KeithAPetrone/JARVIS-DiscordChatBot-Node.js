@@ -36,7 +36,6 @@ client.on('ready', () => {
     console.log("Database has been loaded...");
     options.channels = JSON.parse(fs.readFileSync("C:/Users/keith/twitch.json"));
     console.log("Twitch user list has been loaded...");
-    let fs = require("fs");
     var text = fs.readFileSync("C:/Users/keith/questions.txt");
     var textByLine = text.split("\n");
     questionsOfTheDay = textByLine;
