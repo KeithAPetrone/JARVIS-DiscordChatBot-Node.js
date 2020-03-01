@@ -36,7 +36,7 @@ client.on('ready', () => {
     console.log("Database has been loaded...");
     options.channels = JSON.parse(fs.readFileSync("C:/Users/keith/twitch.json"));
     console.log("Twitch user list has been loaded...");
-    var fs = require("fs");
+    let fs = require("fs");
     var text = fs.readFileSync("C:/Users/keith/questions.txt");
     var textByLine = text.split("\n");
     questionsOfTheDay = textByLine;
@@ -350,7 +350,7 @@ setTimeout(function(){
     for (i = 0; i < qod.length; i++) {
         text += qod[i] + "\n";
     }
-    var fs = require('fs');
+    let fs = require('fs');
     fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
         if(err) {
             console.log(err);
