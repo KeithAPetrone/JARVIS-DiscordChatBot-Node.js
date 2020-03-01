@@ -117,8 +117,8 @@ client.on('message', msg => {
     if (msg.content === '!clearscores') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         users = {};
-        msg.reply('Scores have been wiped! Do not forget to sign back up!');
-        console.log('Discord: Scores have been wiped! Do not forget to sign back up!');
+        msg.reply('Scores have been wiped!');
+        console.log('Discord: Scores have been wiped!');
     }
 });
 
