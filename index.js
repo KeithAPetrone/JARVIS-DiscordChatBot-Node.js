@@ -360,6 +360,7 @@ setTimeout(function(){
     });
 }, (1000*60*60*24));
 
+/*
 //Meme of the day logic
 setTimeout(function(){
 var keyword = "meme";
@@ -378,6 +379,7 @@ var keyword = "meme";
             client.channels.get("671054702632501248").send(image_src);
         });
 }, (1000*60*60*24));
+*/
 
 /**
  * Creates the leaderboard and sorts it so the users with the highest scores are first.
