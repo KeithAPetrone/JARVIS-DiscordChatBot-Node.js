@@ -341,6 +341,8 @@ setInterval(() => {
     }
 }, 10000);
 
+
+//Question of the day logic
 setTimeout(function(){
     var qod = questionsOfTheDay.pop;
     client.channels.get("671051203723132941").send(qod);
