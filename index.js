@@ -172,6 +172,18 @@ client.on('message', msg => {
     }
 });
 
+//Magic 8ball command
+client.on('message', msg => {
+    if (msg.content === '!8jarvis') {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var question = msg.content.replace("!8jarvis ", "");
+        var responses = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful.", "That's such a Wisty question."];
+        var answer = responses[Math.floor(Math.random() * responses.length)];
+        var response = "You asked: " + question + " I say: " + answer;
+        msg.reply(response);
+    }
+});
+
 //Adds twitch streamer to the announcements.
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
