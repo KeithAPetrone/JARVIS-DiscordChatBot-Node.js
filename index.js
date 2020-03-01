@@ -18,13 +18,15 @@ app.createServer().listen(port, host);
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const silver = 100;
-const gold = 500;
-const diamond = 1000;
+const silver = 500;
+const gold = 2500;
+const diamond = 5000;
 
 var users = {};
 
 var usersCooldown = {};
+
+var questionsOfTheDay = [];
 
 //Logging into Discord
 client.on('ready', () => {
@@ -32,6 +34,13 @@ client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
     users = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
     console.log("Database has been loaded...");
+    options.channels = JSON.parse(fs.readFileSync("C:/Users/keith/twitch.json"));
+    console.log("Twitch user list has been loaded...");
+    var fs = require("fs");
+    var text = fs.readFileSync("C:/Users/keith/questions.txt");
+    var textByLine = text.split("\n");
+    questionsOfTheDay = textByLine;
+    console.log("Questions of the day have been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -48,15 +57,16 @@ client.on('message', msg => {
     console.log('Received #' + msg.id + ': ' + msg.content);
         var name = msg.author.tag.toString().toLowerCase();
         name = name.substring(0, name.length - 5);
+        var pointsEarned = msg.content.split(' ').length;
         if (name in users) {
             if (typeof users[name.toString().toLowerCase()] === "undefined")
             {
                 users[name.toString().toLowerCase()] = 0;
             }
-            users[name.toString().toLowerCase()]++;
+            users[name.toString().toLowerCase()] += pointsEarned;
             console.log('Discord: ' + msg.author + ' gained a point');
         } else {
-            users[name] = 1;
+            users[name] = pointsEarned;
             console.log('Discord: ' + msg.author + ' is added to database and gained a point');
         }
         fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
@@ -107,17 +117,8 @@ client.on('message', msg => {
     if (msg.content === '!clearscores') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         users = {};
-        msg.reply('Scores have been wiped! Do not forget to sign back up!');
-        console.log('Discord: Scores have been wiped! Do not forget to sign back up!');
-    }
-});
-
-//This is gonna slow the bot down, but will generate everyone's rank.
-client.on('message', msg => {
-    if (msg.content === '!rankall') {
-        for (var user in users) {
-            generateImage(user, msg.channel);
-        }
+        msg.reply('Scores have been wiped!');
+        console.log('Discord: Scores have been wiped!');
     }
 });
 
@@ -137,16 +138,16 @@ client.on('message', msg => {
                 var points = users[user];
                 console.log("Points are " + points);
                 var rank = "BRONZE";
-                var display = 100;
+                var display = 500;
                 if (points >= diamond) {
-                    rank = "GOLD";
+                    rank = "DIAMOND";
                     display = "MAX";
                 } else if (points >= gold) {
-                    rank = "SILVER";
-                    display = 1000;
+                    rank = "GOLD";
+                    display = 5000;
                 } else if (points >= silver) {
-                    rank = "BRONZE";
-                    display = 500;
+                    rank = "SILVER";
+                    display = 2500;
                 }
                 console.log("Rank is " + rank);
                 participant.name = name;
@@ -175,6 +176,65 @@ client.on('message', msg => {
     if (msg.content === '!rank') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         generateImage(msg.author.tag.toString().toLowerCase(), msg.channel);
+    }
+});
+
+//Magic 8ball command
+client.on('message', msg => {
+    if (msg.content === '!8jarvis') {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var question = msg.content.replace("!8jarvis ", "");
+        var responses = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful.", "That's such a Wisty question."];
+        var answer = responses[Math.floor(Math.random() * responses.length)];
+        var response = "You asked: " + question + " I say: " + answer;
+        msg.reply(response);
+    }
+});
+
+//Adds twitch streamer to the announcements.
+client.on('message', msg => {
+    if (msg.content.includes('!twitch')) {
+        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
+            console.log('Received #' + msg.id + ': ' + msg.content);
+            var addedUser = msg.content.replace("!twitch ", "");
+            var exists = false;
+            for (i = 0; i < options.channels.length; i++) {
+                if (options.channels[i] === ("#" + addedUser)) {
+                    exists = true;
+                }
+            }
+            if (!exists) {
+                options.channels.push('#' + addedUser);
+                fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
+                msg.reply("Twitch user " + addedUser + " has been added.");
+            } else {
+                msg.reply("Twitch user " + addedUser + " is already in the list.");
+            }
+        } else {
+            msg.reply("You don't have necessary privileges to use this command.");
+        }
+    }
+});
+
+//Removes twitch streamer from the announcements.
+client.on('message', msg => {
+    if (msg.content.includes('!removetwitch')) {
+        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
+            console.log('Received #' + msg.id + ': ' + msg.content);
+            var addedUser = msg.content.replace("!twitch ", "");
+            var exists = false;
+            for (i = 0; i < options.channels.length; i++) {
+                if (options.channels[i] === ("#" + addedUser)) {
+                    arr.splice(i, 1); 
+                    fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
+                    msg.reply("Twitch user " + addedUser + " has been removed.");
+                } else {
+                    msg.reply("Twitch user " + addedUser + " isn't in the list.");
+                }
+            }
+        } else {
+            msg.reply("You don't have necessary privileges to use this command.");
+        }
     }
 });
 
@@ -280,6 +340,46 @@ setInterval(() => {
         isLive(broadcaster);
     }
 }, 10000);
+
+
+//Question of the day logic
+setTimeout(function(){
+    var qod = questionsOfTheDay.pop;
+    client.channels.get("683773761102807089").send(qod);
+    var text = "";
+    for (i = 0; i < qod.length; i++) {
+        text += qod[i] + "\n";
+    }
+    var fs = require('fs');
+    fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log('Questions File written!');
+        }
+    });
+}, (1000*60*60*24));
+
+/*
+//Meme of the day logic
+setTimeout(function(){
+var keyword = "meme";
+
+    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+        {
+            tags: keyword,
+            tagmode: "any",
+            format: "json"
+        },
+        function(data) {
+            var rnd = Math.floor(Math.random() * data.items.length);
+
+            var image_src = data.items[rnd]['media']['m'].replace("_m", "_b");
+
+            client.channels.get("671054702632501248").send(image_src);
+        });
+}, (1000*60*60*24));
+*/
 
 /**
  * Creates the leaderboard and sorts it so the users with the highest scores are first.
@@ -451,18 +551,18 @@ function customizeHTML(discordName) {
         points = "0";
     }
     file = file.replace("{{POINTS}}", points);
-    var cap = 100;
+    var cap = 500;
     var rank = "BRONZE";
     if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= diamond) {
         cap = "MAXED";
         rank = "DIAMOND";
         file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
     } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 500) {
-        cap = "1000";
+        cap = "5000";
         rank = "GOLD";
         file = file.replace("id=\"gold\" style=\"display: none;\"", "id=\"gold\"");
     } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 100) {
-        cap = "500";
+        cap = "2500";
         rank = "SILVER";
         file = file.replace("id=\"silver\" style=\"display: none;\"", "id=\"silver\"");
     } else {
