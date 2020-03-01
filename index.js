@@ -211,7 +211,7 @@ client.on('message', msg => {
 
 //Removes twitch streamer from the announcements.
 client.on('message', msg => {
-    if (msg.content.includes('!twitch')) {
+    if (msg.content.includes('!removetwitch')) {
         if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
