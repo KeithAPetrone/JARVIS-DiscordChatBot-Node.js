@@ -22,6 +22,8 @@ const silver = 500;
 const gold = 2500;
 const diamond = 5000;
 
+const options = require("./option"); //The options file
+
 var users = {};
 
 var usersCooldown = {};
@@ -34,13 +36,13 @@ client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
     users = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
     console.log("Database has been loaded...");
-    options.channels = JSON.parse(fs.readFileSync("C:/Users/keith/twitch.json"));
-    console.log("Twitch user list has been loaded...");
-    var fs = require("fs");
     var text = fs.readFileSync("C:/Users/keith/questions.txt");
-    var textByLine = text.split("\n");
+    var textByLine = text.toString().split("\n");
     questionsOfTheDay = textByLine;
-    console.log("Questions of the day have been loaded...");
+    text = fs.readFileSync("C:/Users/keith/twitch.txt");
+    textByLine = text.toString().split("\n");
+    options.channels = textByLine;
+    console.log("Twitch user list has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -72,102 +74,17 @@ client.on('message', msg => {
         fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
 });
 
-client.on('message', msg => {
-    if (msg.content === '!lurk') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase();
-        name = name.substring(0, name.length - 5);
-        if (name in users) {
-            users[name]++;
-            msg.reply(msg.author + ' is lurking!!!');
-            console.log('Discord: ' + msg.author + ' is lurking!!!');
-        } else {
-            users[name] = 1;
-            msg.reply(msg.author + ' is lurking!!!');
-            console.log('Discord: ' + msg.author + ', you have been added to the database!');
-        }
-    }
-});
-
-client.on('message', msg => {
-    if (msg.content === '!raid') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
-        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
-            var name = msg.author.tag.toString().toLowerCase();
-            name = name.substring(0, name.length - 5);
-            //Supposed to be a double points version of !lurk
-        } else {
-            msg.reply(msg.author + ', you do not have permission to do that!');
-            console.log('Discord: ' + msg.author + ', you do not have permission to do that!');
-        }
-    }
-});
-
 //Displays everyone's points to the chat.
 client.on('message', msg => {
     if (msg.content === '!scoreboard') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         msg.reply('Here are the results: ' + JSON.stringify(users));
         console.log('Discord: Here are the results: ' + JSON.stringify(users));
-    }
-});
-
-//Wipes the scores completely.
-client.on('message', msg => {
-    if (msg.content === '!clearscores') {
+    } else if (msg.content === '!clearscores') {
         console.log('Received #' + msg.id + ': ' + msg.content);
         users = {};
         msg.reply('Scores have been wiped!');
         console.log('Discord: Scores have been wiped!');
-    }
-});
-
-//Shows everyone's score, as well as rank.
-client.on('message', msg => {
-    if (msg.content === '!leaderboard') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
-        var response = "Here is the leaderboard: ";
-        var leaderboard = [];
-        console.log("Looping through users...");
-        for (var user in users) {
-            if (users.hasOwnProperty(user)) {
-                var participant = {};
-                var name = user;
-                console.log("Entry: ");
-                console.log("Name is " + user);
-                var points = users[user];
-                console.log("Points are " + points);
-                var rank = "BRONZE";
-                var display = 500;
-                if (points >= diamond) {
-                    rank = "DIAMOND";
-                    display = "MAX";
-                } else if (points >= gold) {
-                    rank = "GOLD";
-                    display = 5000;
-                } else if (points >= silver) {
-                    rank = "SILVER";
-                    display = 2500;
-                }
-                console.log("Rank is " + rank);
-                participant.name = name;
-                participant.points = points;
-                participant.rank = rank;
-                participant.display = display;
-                console.log("Participant added: " + JSON.stringify(participant));
-                leaderboard.push(participant);
-            }
-        }
-        if (leaderboard.length > 0) {
-            console.log("All participants ready: " + JSON.stringify(leaderboard));
-            response += makeLeaderboard(leaderboard);
-            msg.reply(response);
-        } else {
-            response = "There is nobody on the leaderboard yet!";
-        }
-        response += makeLeaderboard(leaderboard);
-        msg.reply(response);
-        console.log("Discord: " + response);
     }
 });
 
@@ -181,7 +98,7 @@ client.on('message', msg => {
 
 //Magic 8ball command
 client.on('message', msg => {
-    if (msg.content === '!8jarvis') {
+    if (msg.content.includes('!8jarvis')) {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var question = msg.content.replace("!8jarvis ", "");
         var responses = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful.", "That's such a Wisty question."];
@@ -205,7 +122,18 @@ client.on('message', msg => {
             }
             if (!exists) {
                 options.channels.push('#' + addedUser);
-                fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
+                var text = "";
+                for (i = 0; i < options.channels.length; i++) {
+                    text += options.channels[i] + "\n";
+                }
+                let fs = require('fs');
+                fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log('Twitch File written!');
+                    }
+                });
                 msg.reply("Twitch user " + addedUser + " has been added.");
             } else {
                 msg.reply("Twitch user " + addedUser + " is already in the list.");
@@ -213,12 +141,7 @@ client.on('message', msg => {
         } else {
             msg.reply("You don't have necessary privileges to use this command.");
         }
-    }
-});
-
-//Removes twitch streamer from the announcements.
-client.on('message', msg => {
-    if (msg.content.includes('!removetwitch')) {
+    } else if (msg.content.includes('!removetwitch')) {
         if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
@@ -226,7 +149,18 @@ client.on('message', msg => {
             for (i = 0; i < options.channels.length; i++) {
                 if (options.channels[i] === ("#" + addedUser)) {
                     arr.splice(i, 1); 
-                    fs.writeFileSync("C:/Users/keith/twitch.json", JSON.stringify(options.channels));
+                    var text = "";
+                    for (i = 0; i < options.channels.length; i++) {
+                        text += options.channels[i] + "\n";
+                    }
+                    let fs = require('fs');
+                    fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
+                        if(err) {
+                            console.log(err);
+                        } else {
+                            console.log('Twitch File written!');
+                        }
+                    });
                     msg.reply("Twitch user " + addedUser + " has been removed.");
                 } else {
                     msg.reply("Twitch user " + addedUser + " isn't in the list.");
@@ -242,8 +176,10 @@ client.login('NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c');
 
 const tmi = require("tmi.js");
 
-const options = require("./option"); //The options file
-
+var fs = require('fs');
+var text = fs.readFileSync("C:/Users/keith/twitch.txt");
+var textByLine = text.toString().split("\n");
+options.channels = textByLine;
 
 //Connect to twitch server
 const client2 = new tmi.client(options);
@@ -350,7 +286,7 @@ setTimeout(function(){
     for (i = 0; i < qod.length; i++) {
         text += qod[i] + "\n";
     }
-    var fs = require('fs');
+    let fs = require('fs');
     fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
         if(err) {
             console.log(err);
