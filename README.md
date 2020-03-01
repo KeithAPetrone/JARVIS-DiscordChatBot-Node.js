@@ -16,3 +16,5 @@ Progress:
 7. Bot is able to grab Twitch stream info.
 8. Bot can now announce when a Twitch channel goes live.
 9. Ranking system is now pretty. Generates an image banner on the fly for users.
+10. Can now easily add/remove users to Twitch notifications.
+11. Question of the Day will be sent out for chances for bonus points!
