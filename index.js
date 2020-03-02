@@ -280,7 +280,7 @@ setInterval(() => {
 
 //Question of the day logic
 setTimeout(function(){
-    var qod = questionsOfTheDay.pop;
+    var qod = questionsOfTheDay.pop.toString();
     client.channels.get("683773761102807089").send(qod);
     var text = "";
     for (i = 0; i < qod.length; i++) {
