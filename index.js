@@ -283,8 +283,8 @@ setTimeout(function(){
     var qod = questionsOfTheDay.pop.toString();
     client.channels.get("683773761102807089").send(qod);
     var text = "";
-    for (i = 0; i < qod.length; i++) {
-        text += qod[i] + "\n";
+    for (i = 0; i < questionsOfTheDay.length; i++) {
+        text += questionsOfTheDay[i] + "\n";
     }
     let fs = require('fs');
     fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
