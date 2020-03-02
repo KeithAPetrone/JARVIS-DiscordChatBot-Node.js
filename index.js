@@ -493,11 +493,11 @@ function customizeHTML(discordName) {
         cap = "MAXED";
         rank = "DIAMOND";
         file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
-    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 500) {
+    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= gold) {
         cap = "5000";
         rank = "GOLD";
         file = file.replace("id=\"gold\" style=\"display: none;\"", "id=\"gold\"");
-    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 100) {
+    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= silver) {
         cap = "2500";
         rank = "SILVER";
         file = file.replace("id=\"silver\" style=\"display: none;\"", "id=\"silver\"");
