@@ -18,3 +18,4 @@ Progress:
 9. Ranking system is now pretty. Generates an image banner on the fly for users.
 10. Can now easily add/remove users to Twitch notifications.
 11. Question of the Day will be sent out for chances for bonus points!
+12. !8jarvis command allows JARVIS to act as a Magic 8-Ball.
