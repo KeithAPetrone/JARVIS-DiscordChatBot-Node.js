@@ -108,6 +108,13 @@ client.on('message', msg => {
     }
 });
 
+//Question of the day override
+client.on('message', msg => {
+    if (msg.content === '!qod') {
+        AskQuestion();
+    }
+});
+
 //Adds twitch streamer to the announcements.
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
@@ -279,22 +286,9 @@ setInterval(() => {
 
 
 //Question of the day logic
-setTimeout(function(){
-    var qod = questionsOfTheDay.pop;
-    client.channels.get("683773761102807089").send(qod);
-    var text = "";
-    for (i = 0; i < qod.length; i++) {
-        text += qod[i] + "\n";
-    }
-    let fs = require('fs');
-    fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log('Questions File written!');
-        }
-    });
-}, (1000*60*60*24));
+var dailyFunction = new CronJob('0 15 * * *', function() {
+    AskQuestion();
+});
 
 /*
 //Meme of the day logic
@@ -340,6 +334,24 @@ function makeLeaderboard(leaderboard) {
         response += " | " + byScore[i].name + " Rank: " + byScore[i].rank + " " + byScore[i].points + "/" + byScore[i].display;
     }
     return response;
+}
+
+function AskQuestion() {
+    var qod = questionsOfTheDay.pop().toString();
+    console.log("Here's the question of the day: " + qod);
+    client.channels.get("683773761102807089").send(qod);
+    var text = "";
+    for (i = 0; i < questionsOfTheDay.length; i++) {
+        text += questionsOfTheDay[i] + "\n";
+    }
+    let fs = require('fs');
+    fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log('Questions File written!');
+        }
+    });
 }
 
 /**
@@ -493,11 +505,11 @@ function customizeHTML(discordName) {
         cap = "MAXED";
         rank = "DIAMOND";
         file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
-    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 500) {
+    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= gold) {
         cap = "5000";
         rank = "GOLD";
         file = file.replace("id=\"gold\" style=\"display: none;\"", "id=\"gold\"");
-    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= 100) {
+    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= silver) {
         cap = "2500";
         rank = "SILVER";
         file = file.replace("id=\"silver\" style=\"display: none;\"", "id=\"silver\"");
