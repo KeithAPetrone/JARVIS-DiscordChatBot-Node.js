@@ -286,9 +286,11 @@ setInterval(() => {
 
 
 //Question of the day logic
-var dailyFunction = new CronJob('0 15 * * *', function() {
-    AskQuestion();
-});
+setTimeout(function() {
+    if (new Date().getHours() == 14) {
+        AskQuestion();
+    }
+}, (1000*60*60));
 
 /*
 //Meme of the day logic
