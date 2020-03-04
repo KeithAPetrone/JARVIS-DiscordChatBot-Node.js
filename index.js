@@ -108,6 +108,13 @@ client.on('message', msg => {
     }
 });
 
+//Question of the day override
+client.on('message', msg => {
+    if (msg.content === '!qod') {
+        AskQuestion();
+    }
+});
+
 //Adds twitch streamer to the announcements.
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
@@ -280,20 +287,7 @@ setInterval(() => {
 
 //Question of the day logic
 setTimeout(function(){
-    var qod = questionsOfTheDay.pop.toString();
-    client.channels.get("683773761102807089").send(qod);
-    var text = "";
-    for (i = 0; i < questionsOfTheDay.length; i++) {
-        text += questionsOfTheDay[i] + "\n";
-    }
-    let fs = require('fs');
-    fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log('Questions File written!');
-        }
-    });
+    AskQuestion();
 }, (1000*60*60*24));
 
 /*
@@ -340,6 +334,23 @@ function makeLeaderboard(leaderboard) {
         response += " | " + byScore[i].name + " Rank: " + byScore[i].rank + " " + byScore[i].points + "/" + byScore[i].display;
     }
     return response;
+}
+
+function AskQuestion() {
+    var qod = questionsOfTheDay.pop.toString();
+    client.channels.get("683773761102807089").send(qod);
+    var text = "";
+    for (i = 0; i < questionsOfTheDay.length; i++) {
+        text += questionsOfTheDay[i] + "\n";
+    }
+    let fs = require('fs');
+    fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log('Questions File written!');
+        }
+    });
 }
 
 /**
