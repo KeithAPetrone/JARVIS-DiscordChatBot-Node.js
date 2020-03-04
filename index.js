@@ -337,7 +337,8 @@ function makeLeaderboard(leaderboard) {
 }
 
 function AskQuestion() {
-    var qod = questionsOfTheDay.pop.toString();
+    var qod = questionsOfTheDay.pop().toString();
+    console.log("Here's the question of the day: " + qod);
     client.channels.get("683773761102807089").send(qod);
     var text = "";
     for (i = 0; i < questionsOfTheDay.length; i++) {
