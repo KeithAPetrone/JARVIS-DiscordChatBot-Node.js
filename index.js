@@ -141,32 +141,35 @@ client.on('message', msg => {
                     }
                 });
                 msg.reply("Twitch user " + addedUser + " has been added.");
-            } else {
-                msg.reply("Twitch user " + addedUser + " is already in the list.");
             }
     } else if (msg.content.includes('!removetwitch')) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
             var exists = false;
+            var placement = 0;
             for (i = 0; i < options.channels.length; i++) {
-                if (options.channels[i] === ("#" + addedUser)) {
-                    arr.splice(i, 1); 
-                    var text = "";
-                    for (i = 0; i < options.channels.length; i++) {
-                        text += options.channels[i] + "\n";
-                    }
-                    let fs = require('fs');
-                    fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
-                        if(err) {
-                            console.log(err);
-                        } else {
-                            console.log('Twitch File written!');
-                        }
-                    });
-                    msg.reply("Twitch user " + addedUser + " has been removed.");
-                } else {
-                    msg.reply("Twitch user " + addedUser + " isn't in the list.");
+                if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
+                    exists = true;
+                    placement = i;
                 }
+            }
+            if (exists) {
+                arr.splice(placement, 1); 
+                var text = "";
+                for (i = 0; i < options.channels.length; i++) {
+                    text += options.channels[i] + "\n";
+                }
+                let fs = require('fs');
+                fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log('Twitch File written!');
+                    }
+                });
+                msg.reply("Twitch user " + addedUser + " has been removed.");
+            } else {
+                msg.reply("Twitch user " + addedUser + " isn't in the list!");
             }
     }
 });
