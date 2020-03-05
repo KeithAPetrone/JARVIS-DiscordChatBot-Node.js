@@ -143,10 +143,13 @@ client.on('message', msg => {
                 });
                 console.log("User " + addedUser + " has been added to Twitch notifications.")
                 msg.reply("Twitch user " + addedUser + " has been added.");
+            } else {
+                console.log("User " + addedUser + " has already been added to Twitch notifications.")
+                msg.reply("Twitch user " + addedUser + " already exists!");
             }
     } else if (msg.content.includes('!removetwitch')) {
             console.log('Received #' + msg.id + ': ' + msg.content);
-            var addedUser = msg.content.replace("!twitch ", "");
+            var addedUser = msg.content.replace("!removetwitch ", "");
             console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.")
             var exists = false;
             var placement = 0;
@@ -158,7 +161,7 @@ client.on('message', msg => {
                 }
             }
             if (exists) {
-                arr.splice(placement, 1); 
+                options.channels.splice(placement, 1); 
                 var text = "";
                 for (i = 0; i < options.channels.length; i++) {
                     text += options.channels[i] + "\n";
