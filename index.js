@@ -290,8 +290,9 @@ setInterval(() => {
 
 //Question of the day logic
 setTimeout(function() {
-    console.log("Checking the time...");
-    if (new Date().getHours() == 14) {
+    var hour = new Date().getHours()
+    console.log("Checking the time... Hour is " + hour);
+    if (hour === 14) {
         console.log("Time for Question of the Day!!!")
         AskQuestion();
     }
