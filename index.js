@@ -118,7 +118,6 @@ client.on('message', msg => {
 //Adds twitch streamer to the announcements.
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
-        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
             var exists = false;
@@ -145,11 +144,7 @@ client.on('message', msg => {
             } else {
                 msg.reply("Twitch user " + addedUser + " is already in the list.");
             }
-        } else {
-            msg.reply("You don't have necessary privileges to use this command.");
-        }
     } else if (msg.content.includes('!removetwitch')) {
-        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
             var exists = false;
@@ -173,9 +168,6 @@ client.on('message', msg => {
                     msg.reply("Twitch user " + addedUser + " isn't in the list.");
                 }
             }
-        } else {
-            msg.reply("You don't have necessary privileges to use this command.");
-        }
     }
 });
 
