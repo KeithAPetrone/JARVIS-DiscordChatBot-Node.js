@@ -120,6 +120,7 @@ client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
+            console.log("Attemptimg to add " + addedUser + " to Twitch notifications.")
             var exists = false;
             for (i = 0; i < options.channels.length; i++) {
                 if (options.channels[i] === ("#" + addedUser)) {
@@ -140,15 +141,18 @@ client.on('message', msg => {
                         console.log('Twitch File written!');
                     }
                 });
+                console.log("User " + addedUser + " has been added to Twitch notifications.")
                 msg.reply("Twitch user " + addedUser + " has been added.");
             }
     } else if (msg.content.includes('!removetwitch')) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
+            console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.")
             var exists = false;
             var placement = 0;
             for (i = 0; i < options.channels.length; i++) {
                 if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
+                    console.log("Found " + addedUser + " in the list.")
                     exists = true;
                     placement = i;
                 }
@@ -169,6 +173,7 @@ client.on('message', msg => {
                 });
                 msg.reply("Twitch user " + addedUser + " has been removed.");
             } else {
+                console.log("Didn't see " + addedUser + " in the list.")
                 msg.reply("Twitch user " + addedUser + " isn't in the list!");
             }
     }
