@@ -419,7 +419,7 @@ function isLive(channelName) {
 
     api.users.usersByName({ users: channelName.substring(1, channelName.length) }, (err, res) => {
         if (err) {
-            console.log("Get ID Error: " + err);
+            return false;
         } else {
             response = JSON.stringify(res);
             var id = res.users[0]["_id"];
