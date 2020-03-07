@@ -1,10 +1,10 @@
 /**
  * @application JARVIS
- * @version 0.75
+ * @version 0.90
  * @author Keith Petrone
  * @email keithapetrone@gmail.com
  * @create date 2019-09-16 11:02:24
- * @modify date 2020-02-09 16:09:35
+ * @modify date 2020-03-04 14:16:35
  * @desc JARVIS is a bot designed around assisting the Fortify Streaming communinity.
  */
 
@@ -101,9 +101,14 @@ client.on('message', msg => {
     if (msg.content.includes('!8jarvis')) {
         console.log('Received #' + msg.id + ': ' + msg.content);
         var question = msg.content.replace("!8jarvis ", "");
-        var responses = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful.", "That's such a Wisty question."];
-        var answer = responses[Math.floor(Math.random() * responses.length)];
-        var response = "You asked: " + question + " I say: " + answer;
+        var response = "";
+        if (msg.author.tag.toString().toLowerCase().includes("devil") || msg.author.tag.toString().toLowerCase().includes("bird") || msg.author.tag.toString().toLowerCase().includes("wist")) {
+            response = "That's such a Wisty question.";
+        } else {
+            var responses = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful.", "That's such a Wisty question."];
+            var answer = responses[Math.floor(Math.random() * responses.length)];
+            response = "You asked: " + question + " I say: " + answer;
+        }
         msg.reply(response);
     }
 });
@@ -118,9 +123,9 @@ client.on('message', msg => {
 //Adds twitch streamer to the announcements.
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
-        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
             console.log('Received #' + msg.id + ': ' + msg.content);
             var addedUser = msg.content.replace("!twitch ", "");
+            console.log("Attemptimg to add " + addedUser + " to Twitch notifications.")
             var exists = false;
             for (i = 0; i < options.channels.length; i++) {
                 if (options.channels[i] === ("#" + addedUser)) {
@@ -141,41 +146,44 @@ client.on('message', msg => {
                         console.log('Twitch File written!');
                     }
                 });
+                console.log("User " + addedUser + " has been added to Twitch notifications.")
                 msg.reply("Twitch user " + addedUser + " has been added.");
             } else {
-                msg.reply("Twitch user " + addedUser + " is already in the list.");
+                console.log("User " + addedUser + " has already been added to Twitch notifications.")
+                msg.reply("Twitch user " + addedUser + " already exists!");
             }
-        } else {
-            msg.reply("You don't have necessary privileges to use this command.");
-        }
     } else if (msg.content.includes('!removetwitch')) {
-        if (msg.member.roles.find(r => r.name === "Admin") || msg.member.roles.find(r => name === "Mod" || msg.member.roles.find(r => name === "N3RDS"))) {
             console.log('Received #' + msg.id + ': ' + msg.content);
-            var addedUser = msg.content.replace("!twitch ", "");
+            var addedUser = msg.content.replace("!removetwitch ", "");
+            console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.")
             var exists = false;
+            var placement = 0;
             for (i = 0; i < options.channels.length; i++) {
-                if (options.channels[i] === ("#" + addedUser)) {
-                    arr.splice(i, 1); 
-                    var text = "";
-                    for (i = 0; i < options.channels.length; i++) {
-                        text += options.channels[i] + "\n";
-                    }
-                    let fs = require('fs');
-                    fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
-                        if(err) {
-                            console.log(err);
-                        } else {
-                            console.log('Twitch File written!');
-                        }
-                    });
-                    msg.reply("Twitch user " + addedUser + " has been removed.");
-                } else {
-                    msg.reply("Twitch user " + addedUser + " isn't in the list.");
+                if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
+                    console.log("Found " + addedUser + " in the list.")
+                    exists = true;
+                    placement = i;
                 }
             }
-        } else {
-            msg.reply("You don't have necessary privileges to use this command.");
-        }
+            if (exists) {
+                options.channels.splice(placement, 1); 
+                var text = "";
+                for (i = 0; i < options.channels.length; i++) {
+                    text += options.channels[i] + "\n";
+                }
+                let fs = require('fs');
+                fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log('Twitch File written!');
+                    }
+                });
+                msg.reply("Twitch user " + addedUser + " has been removed.");
+            } else {
+                console.log("Didn't see " + addedUser + " in the list.")
+                msg.reply("Twitch user " + addedUser + " isn't in the list!");
+            }
     }
 });
 
@@ -286,9 +294,14 @@ setInterval(() => {
 
 
 //Question of the day logic
-var dailyFunction = new CronJob('0 15 * * *', function() {
-    AskQuestion();
-});
+setInterval(function() {
+    var hour = new Date().getHours()
+    console.log("Checking the time... Hour is " + hour);
+    if (hour === 14) {
+        console.log("Time for Question of the Day!!!")
+        AskQuestion();
+    }
+}, (1000*60*60));
 
 /*
 //Meme of the day logic
@@ -411,7 +424,7 @@ function isLive(channelName) {
 
     api.users.usersByName({ users: channelName.substring(1, channelName.length) }, (err, res) => {
         if (err) {
-            console.log("Get ID Error: " + err);
+            return false;
         } else {
             response = JSON.stringify(res);
             var id = res.users[0]["_id"];
