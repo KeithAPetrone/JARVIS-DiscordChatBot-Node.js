@@ -324,6 +324,10 @@ var keyword = "meme";
 }, (1000*60*60*24));
 */
 
+var youtubeAPIKey = "AIzaSyAf-7Nul4BRCOTRGiYXaWltf3K2qRYFOG8";
+var youtubeClientId = "939904848646-2b9u1nspaq3p544bb7mup386j29r3k6v.apps.googleusercontent.com";
+var youtubeClientSecret = "ixDFoa5yJ_HZcWvp4hbfrWgl";
+
 /**
  * Creates the leaderboard and sorts it so the users with the highest scores are first.
  *
