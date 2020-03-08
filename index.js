@@ -30,6 +30,8 @@ var usersCooldown = {};
 
 var questionsOfTheDay = [];
 
+var youtubers = [];
+
 //Logging into Discord
 client.on('ready', () => {
     let fs = require("fs-extra");
@@ -43,6 +45,10 @@ client.on('ready', () => {
     textByLine = text.toString().split("\n");
     options.channels = textByLine;
     console.log("Twitch user list has been loaded...");
+    text = fs.readFileSync("C:/Users/keith/youtube.txt");
+    textByLine = text.toString().split("\n");
+    youtubers = textByLine;
+    console.log("YouTube user list has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -330,16 +336,32 @@ var youtubeAPIKey = "AIzaSyAf-7Nul4BRCOTRGiYXaWltf3K2qRYFOG8";
 var youtubeClientId = "939904848646-2b9u1nspaq3p544bb7mup386j29r3k6v.apps.googleusercontent.com";
 var youtubeClientSecret = "ixDFoa5yJ_HZcWvp4hbfrWgl";
 
+setInterval(() => {
+    for (i = 0; i < youtubers.length; i++)
+    {
+        var youtuber = youtubers[i].toString();
+        fetchVideo(client, youtuber);
+    }
+}, 10000);
+
+setInterval(() => {
+    for (i = 0; i < youtubers.length; i++)
+    {
+        var youtuber = youtubers[i].toString();
+        fetchStream(client, youtuber);
+    }
+}, 10000);
+
+
 // Polls API and checks if there is a new video release
 function fetchVideo (client) {
-	if (!config.youtube.video.enabled) return;
 	if (!latestVideo) return setLatestVideo();
 
 	fetchData().then((videoInfo) => {
 		if (videoInfo.error) return;
 		if (videoInfo.items[0].snippet.resourceId.videoId !== latestVideo) {
 
-			const path = `channels?part=snippet&id=${config.youtube.channel}&key=${config.youtube.APIkey}`;
+			const path = `channels?part=snippet&id=${config.youtube.channel}&key=${youtubeAPIKey}`;
 			callAPI(path).then((channelInfo) => {
 				if (channelInfo.error) return;
 
@@ -361,7 +383,7 @@ function setLatestVideo () {
 
 // Fetches data required to check if there is a new video release
 async function fetchData () {
-	let path = `channels?part=contentDetails&id=${config.youtube.channel}&key=${config.youtube.APIkey}`;
+	let path = `channels?part=contentDetails&id=${config.youtube.channel}&key=${youtubeAPIKey}`;
 	const channelContent = await callAPI(path);
 
 	path = `playlistItems?part=snippet&maxResults=1&playlistId=${channelContent.items[0].contentDetails.relatedPlaylists.uploads}&key=${config.youtube.APIkey}`;
@@ -372,7 +394,7 @@ async function fetchData () {
 
 // Constructs a MessageEmbed and sends it to new video announcements channel
 function sendVideoAnnouncement (client, videoInfo, channelInfo) {
-	const channel = client.channels.find((ch) => ch.id === config.youtube.video.announcementChannelID);
+	const channel = client.channels.find((ch) => ch.id === 672866885020155936);
 
 	if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
 
