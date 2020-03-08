@@ -123,7 +123,46 @@ client.on('message', msg => {
     }
 });
 
-//Adds twitch streamer to the announcements.
+//Add/Remove youtube user to announcements
+client.on('message', msg => {
+    if (msg.content.includes('!youtube')) {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var addedYouTuber = msg.content.replace("!youtube ", "");
+        var exists = false;
+        for (i = 0; i < youtubers.length; i++) {
+            if (youtubers[i].name == addedYouTuber) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            AddYouTuber(addedYouTuber);
+            console.log("User " + addedYouTuber + " has been added to YouTube notifications.")
+            msg.reply("YouTube user " + addedYouTuber + " has been added.");
+        } else {
+            console.log("User " + addedYouTuber + " has already been added to YouTube notifications.")
+            msg.reply("YouTube user " + addedYouTuber + " already exists!");
+        }
+    } else if (msg.content.includes('!removeyoutube')) {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var removedYouTuber = msg.content.replace("!removeyoutube ", "");
+        var exists = false;
+        for (i = 0; i < youtubers.length; i++) {
+            if (youtubers[i].name == removedYouTuber) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            console.log("User " + removedYouTuber + " isn't in YouTube notifications.")
+            msg.reply("YouTube user " + removedYouTuber + " isn't in notifications.");
+        } else {
+            RemoveYouTuber(removedYouTuber);
+            console.log("User " + removedYouTuber + " has been removed from YouTube notifications.")
+            msg.reply("YouTube user " + removedYouTuber + " has been removed!");
+        }
+    }
+});
+
+//Adds/Removes twitch streamer to the announcements.
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
         console.log('Received #' + msg.id + ': ' + msg.content);
@@ -333,15 +372,13 @@ var youtubeClientId = "939904848646-2b9u1nspaq3p544bb7mup386j29r3k6v.apps.google
 var youtubeClientSecret = "ixDFoa5yJ_HZcWvp4hbfrWgl";
 
 setInterval(() => {
-    for (i = 0; i < youtubers.length; i++) {
-        var youtuber = youtubers[i].toString();
+    for (youtuber = 0; i < youtubers.length; youtuber++) {
         fetchVideo(client, youtuber);
     }
 }, 10000);
 
 setInterval(() => {
-    for (i = 0; i < youtubers.length; i++) {
-        var youtuber = youtubers[i].toString();
+    for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
         fetchStream(client, youtuber);
     }
 }, 10000);
@@ -349,13 +386,13 @@ setInterval(() => {
 
 // Polls API and checks if there is a new video release
 function fetchVideo(client, youtuber) {
-    if (!youtuber.latestVideo) return setLatestVideo();
+    if (!youtubers[youtuber].latestVideo) return setLatestVideo(youtuber);
 
     fetchData().then((videoInfo) => {
         if (videoInfo.error) return;
         if (videoInfo.items[0].snippet.resourceId.videoId !== latestVideo) {
 
-            const path = `channels?part=snippet&id=${youtuber.name}&key=${youtubeAPIKey}`;
+            const path = `channels?part=snippet&id=${youtubers[youtuber].name}&key=${youtubeAPIKey}`;
             callAPI(path).then((channelInfo) => {
                 if (channelInfo.error) return;
 
@@ -367,20 +404,21 @@ function fetchVideo(client, youtuber) {
 }
 
 // At start of the bot, fetches the latest video which is compared to if an announcement needs to be sent
-function setLatestVideo() {
-    fetchData().then((videoInfo) => {
+function setLatestVideo(youtuber) {
+    fetchData(youtuber).then((videoInfo) => {
         if (videoInfo.error) return;
 
-        latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
+        youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
+        fs.writeFileSync("C:/Users/keith/youtube.json", JSON.stringify(youtubers));
     });
 }
 
 // Fetches data required to check if there is a new video release
-async function fetchData() {
-    let path = `channels?part=contentDetails&id=${config.youtube.channel}&key=${youtubeAPIKey}`;
+async function fetchData(youtuber) {
+    let path = `channels?part=contentDetails&id=${youtubers[youtuber].name}&key=${youtubeAPIKey}`;
     const channelContent = await callAPI(path);
 
-    path = `playlistItems?part=snippet&maxResults=1&playlistId=${channelContent.items[0].contentDetails.relatedPlaylists.uploads}&key=${config.youtube.APIkey}`;
+    path = `playlistItems?part=snippet&maxResults=1&playlistId=${channelContent.items[0].contentDetails.relatedPlaylists.uploads}&key=${youtubeAPIKey}`;
     const videoInfo = await callAPI(path);
 
     return videoInfo;
@@ -388,10 +426,6 @@ async function fetchData() {
 
 // Constructs a MessageEmbed and sends it to new video announcements channel
 function sendVideoAnnouncement(client, videoInfo, channelInfo) {
-    const channel = client.channels.find((ch) => ch.id === 672866885020155936);
-
-    if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
-
     // Regex to cut off the video description at the last whole word at 237 characters
     const description = (videoInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
 
@@ -405,15 +439,12 @@ function sendVideoAnnouncement(client, videoInfo, channelInfo) {
         .setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
         .setTimestamp(new Date(videoInfo.items[0].snippet.publishedAt));
 
-    return channel.send(config.youtube.video.announcementMessage, {
-        embed
-    });
+    return client.channels.get("671051742128898053").send(embed);
 }
-
 
 // Polls API and checks whether channel is currently streaming
 function fetchStream(client, youtuber) {
-    const path = `search?part=snippet&channelId=${youtuber.name}&maxResults=1&eventType=live&type=video&key=${config.youtube.APIkey}`;
+    const path = `search?part=snippet&channelId=${youtubers[youtuber].name}&maxResults=1&eventType=live&type=video&key=${config.youtube.APIkey}`;
 
     callAPI(path).then((streamInfo) => {
         if (streamInfo.error || !streamInfo.items[0]) return;
@@ -426,10 +457,6 @@ function fetchStream(client, youtuber) {
 
 // Constructs a MessageEmbed and sends it to livestream announcements channel
 function sendStreamAnnouncement(client, streamInfo) {
-    const channel = client.channels.find((ch) => ch.id === 672866885020155936);
-
-    if (!channel) return console.error(`Couldn't send YouTube livestream announcement because the announcement channel couldn't be found.`);
-
     // Regex to cut off the video description at the last whole word at 237 characters
     const description = (streamInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
 
@@ -443,11 +470,8 @@ function sendStreamAnnouncement(client, streamInfo) {
         .setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
         .setTimestamp(new Date(streamInfo.items[0].snippet.publishedAt));
 
-    return channel.send(config.youtube.stream.announcementMessage, {
-        embed
-    });
+    return client.channels.get("671051742128898053").send(embed);
 }
-
 
 // Template HTTPS get function that interacts with the YouTube API, wrapped in a Promise
 function callAPI(path) {
@@ -475,7 +499,23 @@ function callAPI(path) {
     });
 }
 
+//Add user to youtube list
+function AddYouTuber(name) {
+    var youtuber = undefined;
+    youtuber.name = name;
+    youtubers.push(youtuber);
+    fs.writeFileSync("C:/Users/keith/youtube.json", JSON.stringify(youtubers));
+}
 
+//Remove user from youtube list
+function RemoveYouTuber(name) {
+    for (i = 0; i < youtubers.length; i++) {
+        if (youtubers[i].name == name) {
+            youtubers = youtubers.splice(i, 1);
+        }
+    }
+    fs.writeFileSync("C:/Users/keith/youtube.json", JSON.stringify(youtubers));
+}
 
 function AskQuestion() {
     var qod = questionsOfTheDay.pop().toString();
