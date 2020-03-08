@@ -1,10 +1,10 @@
 /**
  * @application JARVIS
- * @version 0.90
+ * @version 1.0.0
  * @author Keith Petrone
  * @email keithapetrone@gmail.com
  * @create date 2019-09-16 11:02:24
- * @modify date 2020-03-04 14:16:35
+ * @modify date 2020-03-07 20:18:33
  * @desc JARVIS is a bot designed around assisting the Fortify Streaming communinity.
  */
 
@@ -36,16 +36,16 @@ var youtubers = {};
 client.on('ready', () => {
     let fs = require("fs-extra");
     console.log(`Discord: Logged in as ${client.user.tag}!`);
-    users = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
+    users = JSON.parse(fs.readFileSync("C:/Users/kpetrone/users.json"));
     console.log("Database has been loaded...");
-    var text = fs.readFileSync("C:/Users/keith/questions.txt");
+    var text = fs.readFileSync("C:/Users/kpetrone/questions.txt");
     var textByLine = text.toString().split("\n");
     questionsOfTheDay = textByLine;
-    text = fs.readFileSync("C:/Users/keith/twitch.txt");
+    text = fs.readFileSync("C:/Users/kpetrone/twitch.txt");
     textByLine = text.toString().split("\n");
     options.channels = textByLine;
     console.log("Twitch user list has been loaded...");
-    youtubers = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
+    youtubers = JSON.parse(fs.readFileSync("C:/Users/kpetrone/youtube.json"));
     console.log("YouTube user list has been loaded...");
 });
 
@@ -74,7 +74,7 @@ client.on('message', msg => {
         users[name] = pointsEarned;
         console.log('Discord: ' + msg.author + ' is added to database and gained a point');
     }
-    fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
+    fs.writeFileSync("C:/Users/kpetrone/users.json", JSON.stringify(users));
 });
 
 //Displays everyone's points to the chat.
@@ -130,7 +130,7 @@ client.on('message', msg => {
         var addedYouTuber = msg.content.replace("!youtube ", "");
         var exists = false;
         for (i = 0; i < youtubers.length; i++) {
-            if (youtubers[i].name == addedYouTuber) {
+            if (youtubers[i].id == addedYouTuber) {
                 exists = true;
             }
         }
@@ -147,7 +147,7 @@ client.on('message', msg => {
         var removedYouTuber = msg.content.replace("!removeyoutube ", "");
         var exists = false;
         for (i = 0; i < youtubers.length; i++) {
-            if (youtubers[i].name == removedYouTuber) {
+            if (youtubers[i].id == removedYouTuber) {
                 exists = true;
             }
         }
@@ -181,7 +181,7 @@ client.on('message', msg => {
                 text += options.channels[i] + "\n";
             }
             let fs = require('fs');
-            fs.writeFile("C:/Users/keith/twitch.txt", text, function (err) {
+            fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -214,7 +214,7 @@ client.on('message', msg => {
                 text += options.channels[i] + "\n";
             }
             let fs = require('fs');
-            fs.writeFile("C:/Users/keith/twitch.txt", text, function (err) {
+            fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -234,7 +234,7 @@ client.login('NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c');
 const tmi = require("tmi.js");
 
 var fs = require('fs');
-var text = fs.readFileSync("C:/Users/keith/twitch.txt");
+var text = fs.readFileSync("C:/Users/kpetrone/twitch.txt");
 var textByLine = text.toString().split("\n");
 options.channels = textByLine;
 
@@ -367,12 +367,10 @@ var keyword = "meme";
 
 
 //YouTube Functionality
-var youtubeAPIKey = "AIzaSyAf-7Nul4BRCOTRGiYXaWltf3K2qRYFOG8";
-var youtubeClientId = "939904848646-2b9u1nspaq3p544bb7mup386j29r3k6v.apps.googleusercontent.com";
-var youtubeClientSecret = "ixDFoa5yJ_HZcWvp4hbfrWgl";
+var youtubeAPIKey = "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ";
 
 setInterval(() => {
-    for (youtuber = 0; i < youtubers.length; youtuber++) {
+    for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
         fetchVideo(client, youtuber);
     }
 }, 10000);
@@ -388,16 +386,17 @@ setInterval(() => {
 function fetchVideo(client, youtuber) {
     if (!youtubers[youtuber].latestVideo) return setLatestVideo(youtuber);
 
-    fetchData().then((videoInfo) => {
+    fetchData(youtuber).then((videoInfo) => {
         if (videoInfo.error) return;
-        if (videoInfo.items[0].snippet.resourceId.videoId !== latestVideo) {
+        if (videoInfo.items[0].snippet.resourceId.videoId !== youtubers[youtuber].latestVideo) {
 
-            const path = `channels?part=snippet&id=${youtubers[youtuber].name}&key=${youtubeAPIKey}`;
+            const path = `channels?part=snippet&id=${youtubers[youtuber].id}&key=${youtubeAPIKey}`;
             callAPI(path).then((channelInfo) => {
                 if (channelInfo.error) return;
 
                 sendVideoAnnouncement(client, videoInfo, channelInfo);
-                latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
+                youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
+                fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
             });
         }
     });
@@ -409,13 +408,13 @@ function setLatestVideo(youtuber) {
         if (videoInfo.error) return;
 
         youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
-        fs.writeFileSync("C:/Users/keith/youtube.json", JSON.stringify(youtubers));
+        fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
     });
 }
 
 // Fetches data required to check if there is a new video release
 async function fetchData(youtuber) {
-    let path = `channels?part=contentDetails&id=${youtubers[youtuber].name}&key=${youtubeAPIKey}`;
+    let path = `channels?part=contentDetails&id=${youtubers[youtuber].id}&key=${youtubeAPIKey}`;
     const channelContent = await callAPI(path);
 
     path = `playlistItems?part=snippet&maxResults=1&playlistId=${channelContent.items[0].contentDetails.relatedPlaylists.uploads}&key=${youtubeAPIKey}`;
@@ -426,25 +425,28 @@ async function fetchData(youtuber) {
 
 // Constructs a MessageEmbed and sends it to new video announcements channel
 function sendVideoAnnouncement(client, videoInfo, channelInfo) {
+    const channel = client.channels.find((ch) => ch.id === "672866885020155936");
+
+    if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
+
     // Regex to cut off the video description at the last whole word at 237 characters
     const description = (videoInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
 
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.RichEmbed()
         .setAuthor(`${channelInfo.items[0].snippet.title} has uploaded a new YouTube video!`, channelInfo.items[0].snippet.thumbnails.high.url)
         .setTitle(videoInfo.items[0].snippet.title)
         .setURL(`https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId}`)
         .setDescription(`${description}...\n\n[**Watch the video here!**](https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId})`)
         .setColor('#FF0000')
         .setImage(videoInfo.items[0].snippet.thumbnails.maxres.url)
-        .setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
         .setTimestamp(new Date(videoInfo.items[0].snippet.publishedAt));
 
-    return client.channels.get("671051742128898053").send(embed);
+    return channel.send("A new YouTube video has been posted!!!", { embed });
 }
 
 // Polls API and checks whether channel is currently streaming
 function fetchStream(client, youtuber) {
-    const path = `search?part=snippet&channelId=${youtubers[youtuber].name}&maxResults=1&eventType=live&type=video&key=${config.youtube.APIkey}`;
+    const path = `search?part=snippet&channelId=${youtubers[youtuber].id}&maxResults=1&eventType=live&type=video&key=${youtubeAPIKey}`;
 
     callAPI(path).then((streamInfo) => {
         if (streamInfo.error || !streamInfo.items[0]) return;
@@ -457,39 +459,46 @@ function fetchStream(client, youtuber) {
 
 // Constructs a MessageEmbed and sends it to livestream announcements channel
 function sendStreamAnnouncement(client, streamInfo) {
+    const channel = client.channels.find((ch) => ch.id === "672866885020155936");
+
+    if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
+
     // Regex to cut off the video description at the last whole word at 237 characters
     const description = (streamInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
 
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.RichEmbed()
         .setAuthor(`${streamInfo.items[0].snippet.channelTitle} is now LIVE on YouTube!`)
         .setTitle(streamInfo.items[0].snippet.title)
         .setURL(`https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId}`)
         .setDescription(`${description}...\n\n[**Watch the stream here!**](https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId})`)
         .setColor('#FF0000')
         .setImage(streamInfo.items[0].snippet.thumbnails.high.url)
-        .setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
         .setTimestamp(new Date(streamInfo.items[0].snippet.publishedAt));
 
-    return client.channels.get("671051742128898053").send(embed);
+    return channel.send("Someone is live on YouTube!!!", { embed });
 }
 
 // Template HTTPS get function that interacts with the YouTube API, wrapped in a Promise
 function callAPI(path) {
     return new Promise((resolve) => {
-
+        const https = require('https');
         const options = {
             host: 'www.googleapis.com',
             path: `/youtube/v3/${path}`
         };
 
         https.get(options, (res) => {
-            if (res.statusCode !== 200) return;
-
+            if (res.statusCode !== 200) {
+                console.error("Failed, Status: " + res.statusCode + " Headers: " + res.headers.toString())
+                return;
+            }
             const rawData = [];
             res.on('data', (chunk) => rawData.push(chunk));
             res.on('end', () => {
                 try {
-                    resolve(JSON.parse(rawData));
+                    var ytjson = rawData.toString().replace(",,", ",");
+                    console.log(rawData.toString())
+                    resolve(JSON.parse(ytjson));
                 } catch (error) {
                     console.error(`An error occurred parsing the API response to JSON, ${error}`);
                 }
@@ -499,26 +508,38 @@ function callAPI(path) {
     });
 }
 
+function escapeSpecialChars(jsonString) {
+
+    return jsonString.replace(/\n/g, "\\n")
+        .replace(/\r/g, "\\r")
+        .replace(/\t/g, "\\t")
+        .replace(/\f/g, "\\f");
+
+}
+
 //Add user to youtube list
-function AddYouTuber(name) {
+function AddYouTuber(id) {
     var youtuber = undefined;
-    youtuber.name = name;
+    youtuber.id = id;
     youtubers.push(youtuber);
-    fs.writeFileSync("C:/Users/keith/youtube.json", JSON.stringify(youtubers));
+    fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
 }
 
 //Remove user from youtube list
-function RemoveYouTuber(name) {
+function RemoveYouTuber(id) {
     for (i = 0; i < youtubers.length; i++) {
-        if (youtubers[i].name == name) {
+        if (youtubers[i].id == id) {
             youtubers = youtubers.splice(i, 1);
         }
     }
-    fs.writeFileSync("C:/Users/keith/youtube.json", JSON.stringify(youtubers));
+    fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
 }
 
 function AskQuestion() {
     var qod = questionsOfTheDay.pop().toString();
+    if (qod == null || qod == undefined || qod == "") {
+        qod = questionsOfTheDay.pop().toString();
+    }
     console.log("Here's the question of the day: " + qod);
     client.channels.get("683773761102807089").send(qod);
     var text = "";
@@ -526,7 +547,7 @@ function AskQuestion() {
         text += questionsOfTheDay[i] + "\n";
     }
     let fs = require('fs');
-    fs.writeFile("C:/Users/keith/questions.txt", text, function (err) {
+    fs.writeFile("C:/Users/kpetrone/questions.txt", text, function (err) {
         if (err) {
             console.log(err);
         } else {
@@ -709,6 +730,6 @@ function customizeHTML(discordName) {
     file = file.replace("{{CAP}}", cap);
     file = file.replace("{{RANK}}", rank);
 
-    fs.writeFile("C:/Users/keith/" + discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
+    fs.writeFile("C:/Users/kpetrone/" + discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
     console.log("Created html file");
 }
