@@ -30,7 +30,7 @@ var usersCooldown = {};
 
 var questionsOfTheDay = [];
 
-var youtubers = [];
+var youtubers = {};
 
 //Logging into Discord
 client.on('ready', () => {
@@ -45,9 +45,7 @@ client.on('ready', () => {
     textByLine = text.toString().split("\n");
     options.channels = textByLine;
     console.log("Twitch user list has been loaded...");
-    text = fs.readFileSync("C:/Users/keith/youtube.txt");
-    textByLine = text.toString().split("\n");
-    youtubers = textByLine;
+    youtubers = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
     console.log("YouTube user list has been loaded...");
 });
 
@@ -63,21 +61,20 @@ client.on('message', msg => {
 client.on('message', msg => {
     let fs = require("fs-extra");
     console.log('Received #' + msg.id + ': ' + msg.content);
-        var name = msg.author.tag.toString().toLowerCase();
-        name = name.substring(0, name.length - 5);
-        var pointsEarned = msg.content.split(' ').length;
-        if (name in users) {
-            if (typeof users[name.toString().toLowerCase()] === "undefined")
-            {
-                users[name.toString().toLowerCase()] = 0;
-            }
-            users[name.toString().toLowerCase()] += pointsEarned;
-            console.log('Discord: ' + msg.author + ' gained a point');
-        } else {
-            users[name] = pointsEarned;
-            console.log('Discord: ' + msg.author + ' is added to database and gained a point');
+    var name = msg.author.tag.toString().toLowerCase();
+    name = name.substring(0, name.length - 5);
+    var pointsEarned = msg.content.split(' ').length;
+    if (name in users) {
+        if (typeof users[name.toString().toLowerCase()] === "undefined") {
+            users[name.toString().toLowerCase()] = 0;
         }
-        fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
+        users[name.toString().toLowerCase()] += pointsEarned;
+        console.log('Discord: ' + msg.author + ' gained a point');
+    } else {
+        users[name] = pointsEarned;
+        console.log('Discord: ' + msg.author + ' is added to database and gained a point');
+    }
+    fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
 });
 
 //Displays everyone's points to the chat.
@@ -129,67 +126,67 @@ client.on('message', msg => {
 //Adds twitch streamer to the announcements.
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
-            console.log('Received #' + msg.id + ': ' + msg.content);
-            var addedUser = msg.content.replace("!twitch ", "");
-            console.log("Attemptimg to add " + addedUser + " to Twitch notifications.")
-            var exists = false;
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var addedUser = msg.content.replace("!twitch ", "");
+        console.log("Attemptimg to add " + addedUser + " to Twitch notifications.")
+        var exists = false;
+        for (i = 0; i < options.channels.length; i++) {
+            if (options.channels[i] === ("#" + addedUser)) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            options.channels.push('#' + addedUser);
+            var text = "";
             for (i = 0; i < options.channels.length; i++) {
-                if (options.channels[i] === ("#" + addedUser)) {
-                    exists = true;
-                }
+                text += options.channels[i] + "\n";
             }
-            if (!exists) {
-                options.channels.push('#' + addedUser);
-                var text = "";
-                for (i = 0; i < options.channels.length; i++) {
-                    text += options.channels[i] + "\n";
+            let fs = require('fs');
+            fs.writeFile("C:/Users/keith/twitch.txt", text, function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Twitch File written!');
                 }
-                let fs = require('fs');
-                fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
-                    if(err) {
-                        console.log(err);
-                    } else {
-                        console.log('Twitch File written!');
-                    }
-                });
-                console.log("User " + addedUser + " has been added to Twitch notifications.")
-                msg.reply("Twitch user " + addedUser + " has been added.");
-            } else {
-                console.log("User " + addedUser + " has already been added to Twitch notifications.")
-                msg.reply("Twitch user " + addedUser + " already exists!");
-            }
+            });
+            console.log("User " + addedUser + " has been added to Twitch notifications.")
+            msg.reply("Twitch user " + addedUser + " has been added.");
+        } else {
+            console.log("User " + addedUser + " has already been added to Twitch notifications.")
+            msg.reply("Twitch user " + addedUser + " already exists!");
+        }
     } else if (msg.content.includes('!removetwitch')) {
-            console.log('Received #' + msg.id + ': ' + msg.content);
-            var addedUser = msg.content.replace("!removetwitch ", "");
-            console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.")
-            var exists = false;
-            var placement = 0;
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        var addedUser = msg.content.replace("!removetwitch ", "");
+        console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.")
+        var exists = false;
+        var placement = 0;
+        for (i = 0; i < options.channels.length; i++) {
+            if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
+                console.log("Found " + addedUser + " in the list.")
+                exists = true;
+                placement = i;
+            }
+        }
+        if (exists) {
+            options.channels.splice(placement, 1);
+            var text = "";
             for (i = 0; i < options.channels.length; i++) {
-                if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
-                    console.log("Found " + addedUser + " in the list.")
-                    exists = true;
-                    placement = i;
-                }
+                text += options.channels[i] + "\n";
             }
-            if (exists) {
-                options.channels.splice(placement, 1); 
-                var text = "";
-                for (i = 0; i < options.channels.length; i++) {
-                    text += options.channels[i] + "\n";
+            let fs = require('fs');
+            fs.writeFile("C:/Users/keith/twitch.txt", text, function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Twitch File written!');
                 }
-                let fs = require('fs');
-                fs.writeFile("C:/Users/keith/twitch.txt", text, function(err){
-                    if(err) {
-                        console.log(err);
-                    } else {
-                        console.log('Twitch File written!');
-                    }
-                });
-                msg.reply("Twitch user " + addedUser + " has been removed.");
-            } else {
-                console.log("Didn't see " + addedUser + " in the list.")
-                msg.reply("Twitch user " + addedUser + " isn't in the list!");
-            }
+            });
+            msg.reply("Twitch user " + addedUser + " has been removed.");
+        } else {
+            console.log("Didn't see " + addedUser + " in the list.")
+            msg.reply("Twitch user " + addedUser + " isn't in the list!");
+        }
     }
 });
 
@@ -291,8 +288,7 @@ twitchClientSecret = "698iwyzok0qh9yr7nakj61yo33rsv5";
 //Check if stream is live
 //300000 is 5 minutes
 setInterval(() => {
-    for (i = 0; i < options.channels.length; i++)
-    {
+    for (i = 0; i < options.channels.length; i++) {
         var broadcaster = options.channels[i].toString();
         isLive(broadcaster);
     }
@@ -300,14 +296,14 @@ setInterval(() => {
 
 
 //Question of the day logic
-setInterval(function() {
+setInterval(function () {
     var hour = new Date().getHours()
     console.log("Checking the time... Hour is " + hour);
     if (hour === 14) {
         console.log("Time for Question of the Day!!!")
         AskQuestion();
     }
-}, (1000*60*60));
+}, (1000 * 60 * 60));
 
 /*
 //Meme of the day logic
@@ -337,16 +333,14 @@ var youtubeClientId = "939904848646-2b9u1nspaq3p544bb7mup386j29r3k6v.apps.google
 var youtubeClientSecret = "ixDFoa5yJ_HZcWvp4hbfrWgl";
 
 setInterval(() => {
-    for (i = 0; i < youtubers.length; i++)
-    {
+    for (i = 0; i < youtubers.length; i++) {
         var youtuber = youtubers[i].toString();
         fetchVideo(client, youtuber);
     }
 }, 10000);
 
 setInterval(() => {
-    for (i = 0; i < youtubers.length; i++)
-    {
+    for (i = 0; i < youtubers.length; i++) {
         var youtuber = youtubers[i].toString();
         fetchStream(client, youtuber);
     }
@@ -354,127 +348,131 @@ setInterval(() => {
 
 
 // Polls API and checks if there is a new video release
-function fetchVideo (client) {
-	if (!latestVideo) return setLatestVideo();
+function fetchVideo(client, youtuber) {
+    if (!youtuber.latestVideo) return setLatestVideo();
 
-	fetchData().then((videoInfo) => {
-		if (videoInfo.error) return;
-		if (videoInfo.items[0].snippet.resourceId.videoId !== latestVideo) {
+    fetchData().then((videoInfo) => {
+        if (videoInfo.error) return;
+        if (videoInfo.items[0].snippet.resourceId.videoId !== latestVideo) {
 
-			const path = `channels?part=snippet&id=${config.youtube.channel}&key=${youtubeAPIKey}`;
-			callAPI(path).then((channelInfo) => {
-				if (channelInfo.error) return;
+            const path = `channels?part=snippet&id=${youtuber.name}&key=${youtubeAPIKey}`;
+            callAPI(path).then((channelInfo) => {
+                if (channelInfo.error) return;
 
-				sendVideoAnnouncement(client, videoInfo, channelInfo);
-				latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
-			});
-		}
-	});
+                sendVideoAnnouncement(client, videoInfo, channelInfo);
+                latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
+            });
+        }
+    });
 }
 
 // At start of the bot, fetches the latest video which is compared to if an announcement needs to be sent
-function setLatestVideo () {
-	fetchData().then((videoInfo) => {
-		if (videoInfo.error) return;
+function setLatestVideo() {
+    fetchData().then((videoInfo) => {
+        if (videoInfo.error) return;
 
-		latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
-	});
+        latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
+    });
 }
 
 // Fetches data required to check if there is a new video release
-async function fetchData () {
-	let path = `channels?part=contentDetails&id=${config.youtube.channel}&key=${youtubeAPIKey}`;
-	const channelContent = await callAPI(path);
+async function fetchData() {
+    let path = `channels?part=contentDetails&id=${config.youtube.channel}&key=${youtubeAPIKey}`;
+    const channelContent = await callAPI(path);
 
-	path = `playlistItems?part=snippet&maxResults=1&playlistId=${channelContent.items[0].contentDetails.relatedPlaylists.uploads}&key=${config.youtube.APIkey}`;
-	const videoInfo = await callAPI(path);
+    path = `playlistItems?part=snippet&maxResults=1&playlistId=${channelContent.items[0].contentDetails.relatedPlaylists.uploads}&key=${config.youtube.APIkey}`;
+    const videoInfo = await callAPI(path);
 
-	return videoInfo;
+    return videoInfo;
 }
 
 // Constructs a MessageEmbed and sends it to new video announcements channel
-function sendVideoAnnouncement (client, videoInfo, channelInfo) {
-	const channel = client.channels.find((ch) => ch.id === 672866885020155936);
+function sendVideoAnnouncement(client, videoInfo, channelInfo) {
+    const channel = client.channels.find((ch) => ch.id === 672866885020155936);
 
-	if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
+    if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
 
-	// Regex to cut off the video description at the last whole word at 237 characters
-	const description = (videoInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
+    // Regex to cut off the video description at the last whole word at 237 characters
+    const description = (videoInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
 
-	const embed = new Discord.MessageEmbed()
-		.setAuthor(`${channelInfo.items[0].snippet.title} has uploaded a new YouTube video!`, channelInfo.items[0].snippet.thumbnails.high.url)
-		.setTitle(videoInfo.items[0].snippet.title)
-		.setURL(`https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId}`)
-		.setDescription(`${description}...\n\n[**Watch the video here!**](https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId})`)
-		.setColor('#FF0000')
-		.setImage(videoInfo.items[0].snippet.thumbnails.maxres.url)
-		.setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
-		.setTimestamp(new Date(videoInfo.items[0].snippet.publishedAt));
+    const embed = new Discord.MessageEmbed()
+        .setAuthor(`${channelInfo.items[0].snippet.title} has uploaded a new YouTube video!`, channelInfo.items[0].snippet.thumbnails.high.url)
+        .setTitle(videoInfo.items[0].snippet.title)
+        .setURL(`https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId}`)
+        .setDescription(`${description}...\n\n[**Watch the video here!**](https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId})`)
+        .setColor('#FF0000')
+        .setImage(videoInfo.items[0].snippet.thumbnails.maxres.url)
+        .setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
+        .setTimestamp(new Date(videoInfo.items[0].snippet.publishedAt));
 
-	return channel.send(config.youtube.video.announcementMessage, { embed });
+    return channel.send(config.youtube.video.announcementMessage, {
+        embed
+    });
 }
 
 
 // Polls API and checks whether channel is currently streaming
-function fetchStream (client) {
-	if (!config.youtube.stream.enabled) return;
+function fetchStream(client, youtuber) {
+    const path = `search?part=snippet&channelId=${youtuber.name}&maxResults=1&eventType=live&type=video&key=${config.youtube.APIkey}`;
 
-	const path = `search?part=snippet&channelId=${config.youtube.channel}&maxResults=1&eventType=live&type=video&key=${config.youtube.APIkey}`;
+    callAPI(path).then((streamInfo) => {
+        if (streamInfo.error || !streamInfo.items[0]) return;
+        if (streamID === streamInfo.items[0].id.videoId) return;
 
-	callAPI(path).then((streamInfo) => {
-		if (streamInfo.error || !streamInfo.items[0]) return;
-		if (streamID === streamInfo.items[0].id.videoId) return;
-
-		streamID = streamInfo.items[0].id.videoId;
-		sendStreamAnnouncement(client, streamInfo);
-	});
+        streamID = streamInfo.items[0].id.videoId;
+        sendStreamAnnouncement(client, streamInfo);
+    });
 }
 
 // Constructs a MessageEmbed and sends it to livestream announcements channel
-function sendStreamAnnouncement (client, streamInfo) {
-	const channel = client.channels.find((ch) => ch.id === config.youtube.stream.announcementChannelID);
+function sendStreamAnnouncement(client, streamInfo) {
+    const channel = client.channels.find((ch) => ch.id === 672866885020155936);
 
-	if (!channel) return console.error(`Couldn't send YouTube livestream announcement because the announcement channel couldn't be found.`);
+    if (!channel) return console.error(`Couldn't send YouTube livestream announcement because the announcement channel couldn't be found.`);
 
-	// Regex to cut off the video description at the last whole word at 237 characters
-	const description = (streamInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
+    // Regex to cut off the video description at the last whole word at 237 characters
+    const description = (streamInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
 
-	const embed = new Discord.MessageEmbed()
-		.setAuthor(`${streamInfo.items[0].snippet.channelTitle} is now LIVE on YouTube!`)
-		.setTitle(streamInfo.items[0].snippet.title)
-		.setURL(`https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId}`)
-		.setDescription(`${description}...\n\n[**Watch the stream here!**](https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId})`)
-		.setColor('#FF0000')
-		.setImage(streamInfo.items[0].snippet.thumbnails.high.url)
-		.setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
-		.setTimestamp(new Date(streamInfo.items[0].snippet.publishedAt));
+    const embed = new Discord.MessageEmbed()
+        .setAuthor(`${streamInfo.items[0].snippet.channelTitle} is now LIVE on YouTube!`)
+        .setTitle(streamInfo.items[0].snippet.title)
+        .setURL(`https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId}`)
+        .setDescription(`${description}...\n\n[**Watch the stream here!**](https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId})`)
+        .setColor('#FF0000')
+        .setImage(streamInfo.items[0].snippet.thumbnails.high.url)
+        .setFooter(`Powered by ${client.user.username}`, client.user.avatarURL())
+        .setTimestamp(new Date(streamInfo.items[0].snippet.publishedAt));
 
-	return channel.send(config.youtube.stream.announcementMessage, { embed });
+    return channel.send(config.youtube.stream.announcementMessage, {
+        embed
+    });
 }
 
 
 // Template HTTPS get function that interacts with the YouTube API, wrapped in a Promise
-function callAPI (path) {
-	return new Promise((resolve) => {
+function callAPI(path) {
+    return new Promise((resolve) => {
 
-		const options = {
-			host: 'www.googleapis.com',
-			path: `/youtube/v3/${path}`
-		};
+        const options = {
+            host: 'www.googleapis.com',
+            path: `/youtube/v3/${path}`
+        };
 
-		https.get(options, (res) => {
-			if (res.statusCode !== 200) return;
+        https.get(options, (res) => {
+            if (res.statusCode !== 200) return;
 
-			const rawData = [];
-			res.on('data', (chunk) => rawData.push(chunk));
-			res.on('end', () => {
-				try {
-					resolve(JSON.parse(rawData));
-				} catch (error) { console.error(`An error occurred parsing the API response to JSON, ${error}`); }
-			});
+            const rawData = [];
+            res.on('data', (chunk) => rawData.push(chunk));
+            res.on('end', () => {
+                try {
+                    resolve(JSON.parse(rawData));
+                } catch (error) {
+                    console.error(`An error occurred parsing the API response to JSON, ${error}`);
+                }
+            });
 
-		}).on('error', (error) => console.error(`Error occurred while polling YouTube API, ${error}`));
-	});
+        }).on('error', (error) => console.error(`Error occurred while polling YouTube API, ${error}`));
+    });
 }
 
 
@@ -488,8 +486,8 @@ function AskQuestion() {
         text += questionsOfTheDay[i] + "\n";
     }
     let fs = require('fs');
-    fs.writeFile("C:/Users/keith/questions.txt", text, function(err){
-        if(err) {
+    fs.writeFile("C:/Users/keith/questions.txt", text, function (err) {
+        if (err) {
             console.log(err);
         } else {
             console.log('Questions File written!');
@@ -547,18 +545,22 @@ function isLurking(lurker) {
  */
 function isLive(channelName) {
     var response;
-    
+
     var api = require('twitch-api-v5');
 
     api.clientID = twitchClientId;
 
-    api.users.usersByName({ users: channelName.substring(1, channelName.length) }, (err, res) => {
+    api.users.usersByName({
+        users: channelName.substring(1, channelName.length)
+    }, (err, res) => {
         if (err) {
             return false;
         } else {
             response = JSON.stringify(res);
             var id = res.users[0]["_id"];
-            api.streams.channel({ channelID: id }, (err, res) => {
+            api.streams.channel({
+                channelID: id
+            }, (err, res) => {
                 if (err) {
                     console.log("Get Channel Info Error: " + err);
                 } else {
@@ -566,8 +568,7 @@ function isLive(channelName) {
                     if (JSON.parse(response).stream === null || JSON.parse(response).stream === undefined) {
                         usersCooldown[channelName.substring(1, channelName.length)] = null;
                         return false;
-                    }
-                    else {
+                    } else {
                         if (usersCooldown[channelName.substring(1, channelName.length)] === null || typeof usersCooldown[channelName.substring(1, channelName.length)] === undefined) {
                             usersCooldown[channelName.substring(1, channelName.length)] = new Date();
                             console.log("Adding to cooldown: " + usersCooldown);
@@ -600,7 +601,9 @@ function generateImage(discordName, replyChannel) {
 
     return gulp.src([discordName.substring(0, discordName.length - 5) + ".html"])
         .pipe(tap(async (file) => {
-            const browser = await puppeteer.launch({ headless: true });
+            const browser = await puppeteer.launch({
+                headless: true
+            });
             const page = await browser.newPage();
             await page.setViewport({
                 width: 950,
@@ -609,9 +612,13 @@ function generateImage(discordName, replyChannel) {
             });
             console.log("set viewport");
             await page.goto(file.path);
-            await page.screenshot({ path: path.basename(file.basename, ".html") + ".png" });
+            await page.screenshot({
+                path: path.basename(file.basename, ".html") + ".png"
+            });
             console.log("Sending file for " + discordName);
-            await replyChannel.send("Here is your rank:", { files: [discordName.substring(0, discordName.length - 5) + ".png"] });
+            await replyChannel.send("Here is your rank:", {
+                files: [discordName.substring(0, discordName.length - 5) + ".png"]
+            });
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".png");
             fs.unlinkSync(discordName.substring(0, discordName.length - 5) + ".html");
             await browser.close();
@@ -629,7 +636,7 @@ function customizeHTML(discordName) {
     let path = require("path");
 
     var file = fs.readFileSync(path.join(__dirname, "badgeBanner.html"), "utf8");
-    
+
     file = file.replace("{{NAME}}", discordName.substring(0, discordName.length - 5));
 
     var name = discordName.substring(0, discordName.length - 5);
