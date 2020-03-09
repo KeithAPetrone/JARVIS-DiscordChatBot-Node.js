@@ -16,20 +16,18 @@ var app = require('http');
 app.createServer().listen(port, host);
 
 const Discord = require('discord.js');
+const Twitch = require('./Features/twitch.js');
+const YouTube = require('./Features/twitch.js');
 const client = new Discord.Client();
 
 const silver = 500;
 const gold = 2500;
 const diamond = 5000;
 
-const options = require("./option"); //The options file
+const options = require("./option"); //The twitch options file
 
 var users = {};
-
-var usersCooldown = {};
-
 var questionsOfTheDay = [];
-
 var youtubers = {};
 
 //Logging into Discord
@@ -166,66 +164,10 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content.includes('!twitch')) {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var addedUser = msg.content.replace("!twitch ", "");
-        console.log("Attemptimg to add " + addedUser + " to Twitch notifications.")
-        var exists = false;
-        for (i = 0; i < options.channels.length; i++) {
-            if (options.channels[i] === ("#" + addedUser)) {
-                exists = true;
-            }
-        }
-        if (!exists) {
-            options.channels.push('#' + addedUser);
-            var text = "";
-            for (i = 0; i < options.channels.length; i++) {
-                text += options.channels[i] + "\n";
-            }
-            let fs = require('fs');
-            fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('Twitch File written!');
-                }
-            });
-            console.log("User " + addedUser + " has been added to Twitch notifications.")
-            msg.reply("Twitch user " + addedUser + " has been added.");
-        } else {
-            console.log("User " + addedUser + " has already been added to Twitch notifications.")
-            msg.reply("Twitch user " + addedUser + " already exists!");
-        }
+        options.channels = Twitch.AddTwitchStreamer(msg, options.channels);
     } else if (msg.content.includes('!removetwitch')) {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var addedUser = msg.content.replace("!removetwitch ", "");
-        console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.")
-        var exists = false;
-        var placement = 0;
-        for (i = 0; i < options.channels.length; i++) {
-            if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
-                console.log("Found " + addedUser + " in the list.")
-                exists = true;
-                placement = i;
-            }
-        }
-        if (exists) {
-            options.channels.splice(placement, 1);
-            var text = "";
-            for (i = 0; i < options.channels.length; i++) {
-                text += options.channels[i] + "\n";
-            }
-            let fs = require('fs');
-            fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('Twitch File written!');
-                }
-            });
-            msg.reply("Twitch user " + addedUser + " has been removed.");
-        } else {
-            console.log("Didn't see " + addedUser + " in the list.")
-            msg.reply("Twitch user " + addedUser + " isn't in the list!");
-        }
+        options.channels = Twitch.RemoveTwitchStreamer();
     }
 });
 
@@ -329,7 +271,7 @@ twitchClientSecret = "698iwyzok0qh9yr7nakj61yo33rsv5";
 setInterval(() => {
     for (i = 0; i < options.channels.length; i++) {
         var broadcaster = options.channels[i].toString();
-        isLive(broadcaster);
+        Twitch.isLive(client, broadcaster);
     }
 }, 10000);
 
@@ -365,175 +307,17 @@ var keyword = "meme";
 }, (1000*60*60*24));
 */
 
-
-//YouTube Functionality
-var youtubeAPIKey = "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ";
-
 setInterval(() => {
     for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
-        fetchVideo(client, youtuber);
+        YouTube.fetchVideo(client, youtuber);
     }
 }, 10000);
 
 setInterval(() => {
     for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
-        fetchStream(client, youtuber);
+        YouTube.fetchStream(client, youtuber);
     }
 }, 10000);
-
-
-// Polls API and checks if there is a new video release
-function fetchVideo(client, youtuber) {
-    if (!youtubers[youtuber].latestVideo) return setLatestVideo(youtuber);
-
-    fetchData(youtuber).then((videoInfo) => {
-        if (videoInfo.error) return;
-        if (videoInfo.items[0].snippet.resourceId.videoId !== youtubers[youtuber].latestVideo) {
-
-            const path = `channels?part=snippet&id=${youtubers[youtuber].id}&key=${youtubeAPIKey}`;
-            callAPI(path).then((channelInfo) => {
-                if (channelInfo.error) return;
-
-                sendVideoAnnouncement(client, videoInfo, channelInfo);
-                youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
-                fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
-            });
-        }
-    });
-}
-
-// At start of the bot, fetches the latest video which is compared to if an announcement needs to be sent
-function setLatestVideo(youtuber) {
-    fetchData(youtuber).then((videoInfo) => {
-        if (videoInfo.error) return;
-
-        youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
-        fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
-    });
-}
-
-// Fetches data required to check if there is a new video release
-async function fetchData(youtuber) {
-    let path = `channels?part=contentDetails&id=${youtubers[youtuber].id}&key=${youtubeAPIKey}`;
-    const channelContent = await callAPI(path);
-
-    path = `playlistItems?part=snippet&maxResults=1&playlistId=${channelContent.items[0].contentDetails.relatedPlaylists.uploads}&key=${youtubeAPIKey}`;
-    const videoInfo = await callAPI(path);
-
-    return videoInfo;
-}
-
-// Constructs a MessageEmbed and sends it to new video announcements channel
-function sendVideoAnnouncement(client, videoInfo, channelInfo) {
-    const channel = client.channels.find((ch) => ch.id === "672866885020155936");
-
-    if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
-
-    // Regex to cut off the video description at the last whole word at 237 characters
-    const description = (videoInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
-
-    const embed = new Discord.RichEmbed()
-        .setAuthor(`${channelInfo.items[0].snippet.title} has uploaded a new YouTube video!`, channelInfo.items[0].snippet.thumbnails.high.url)
-        .setTitle(videoInfo.items[0].snippet.title)
-        .setURL(`https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId}`)
-        .setDescription(`${description}...\n\n[**Watch the video here!**](https://www.youtube.com/watch?v=${videoInfo.items[0].snippet.resourceId.videoId})`)
-        .setColor('#FF0000')
-        .setImage(videoInfo.items[0].snippet.thumbnails.maxres.url)
-        .setTimestamp(new Date(videoInfo.items[0].snippet.publishedAt));
-
-    return channel.send("A new YouTube video has been posted!!!", { embed });
-}
-
-// Polls API and checks whether channel is currently streaming
-function fetchStream(client, youtuber) {
-    const path = `search?part=snippet&channelId=${youtubers[youtuber].id}&maxResults=1&eventType=live&type=video&key=${youtubeAPIKey}`;
-
-    callAPI(path).then((streamInfo) => {
-        if (streamInfo.error || !streamInfo.items[0]) return;
-        if (streamID === streamInfo.items[0].id.videoId) return;
-
-        streamID = streamInfo.items[0].id.videoId;
-        sendStreamAnnouncement(client, streamInfo);
-    });
-}
-
-// Constructs a MessageEmbed and sends it to livestream announcements channel
-function sendStreamAnnouncement(client, streamInfo) {
-    const channel = client.channels.find((ch) => ch.id === "672866885020155936");
-
-    if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
-
-    // Regex to cut off the video description at the last whole word at 237 characters
-    const description = (streamInfo.items[0].snippet.description).replace(/^([\s\S]{237}[^\s]*)[\s\S]*/, '$1');
-
-    const embed = new Discord.RichEmbed()
-        .setAuthor(`${streamInfo.items[0].snippet.channelTitle} is now LIVE on YouTube!`)
-        .setTitle(streamInfo.items[0].snippet.title)
-        .setURL(`https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId}`)
-        .setDescription(`${description}...\n\n[**Watch the stream here!**](https://www.youtube.com/watch?v=${streamInfo.items[0].id.videoId})`)
-        .setColor('#FF0000')
-        .setImage(streamInfo.items[0].snippet.thumbnails.high.url)
-        .setTimestamp(new Date(streamInfo.items[0].snippet.publishedAt));
-
-    return channel.send("Someone is live on YouTube!!!", { embed });
-}
-
-// Template HTTPS get function that interacts with the YouTube API, wrapped in a Promise
-function callAPI(path) {
-    return new Promise((resolve) => {
-        const https = require('https');
-        const options = {
-            host: 'www.googleapis.com',
-            path: `/youtube/v3/${path}`
-        };
-
-        https.get(options, (res) => {
-            if (res.statusCode !== 200) {
-                console.error("Failed, Status: " + res.statusCode + " Headers: " + res.headers.toString())
-                return;
-            }
-            const rawData = [];
-            res.on('data', (chunk) => rawData.push(chunk));
-            res.on('end', () => {
-                try {
-                    var ytjson = rawData.toString().replace(",,", ",");
-                    console.log(rawData.toString())
-                    resolve(JSON.parse(ytjson));
-                } catch (error) {
-                    console.error(`An error occurred parsing the API response to JSON, ${error}`);
-                }
-            });
-
-        }).on('error', (error) => console.error(`Error occurred while polling YouTube API, ${error}`));
-    });
-}
-
-function escapeSpecialChars(jsonString) {
-
-    return jsonString.replace(/\n/g, "\\n")
-        .replace(/\r/g, "\\r")
-        .replace(/\t/g, "\\t")
-        .replace(/\f/g, "\\f");
-
-}
-
-//Add user to youtube list
-function AddYouTuber(id) {
-    var youtuber = undefined;
-    youtuber.id = id;
-    youtubers.push(youtuber);
-    fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
-}
-
-//Remove user from youtube list
-function RemoveYouTuber(id) {
-    for (i = 0; i < youtubers.length; i++) {
-        if (youtubers[i].id == id) {
-            youtubers = youtubers.splice(i, 1);
-        }
-    }
-    fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
-}
 
 function AskQuestion() {
     var qod = questionsOfTheDay.pop().toString();
@@ -599,50 +383,6 @@ function isLurking(lurker) {
     return false;
 }
 
-/**
- * Checks if Twitch channel went live and announces it to the Discord channel if true.
- *
- * @param {string} channelName
- */
-function isLive(channelName) {
-    var response;
-
-    var api = require('twitch-api-v5');
-
-    api.clientID = twitchClientId;
-
-    api.users.usersByName({
-        users: channelName.substring(1, channelName.length)
-    }, (err, res) => {
-        if (err) {
-            return false;
-        } else {
-            response = JSON.stringify(res);
-            var id = res.users[0]["_id"];
-            api.streams.channel({
-                channelID: id
-            }, (err, res) => {
-                if (err) {
-                    console.log("Get Channel Info Error: " + err);
-                } else {
-                    response = JSON.stringify(res);
-                    if (JSON.parse(response).stream === null || JSON.parse(response).stream === undefined) {
-                        usersCooldown[channelName.substring(1, channelName.length)] = null;
-                        return false;
-                    } else {
-                        if (usersCooldown[channelName.substring(1, channelName.length)] === null || typeof usersCooldown[channelName.substring(1, channelName.length)] === undefined) {
-                            usersCooldown[channelName.substring(1, channelName.length)] = new Date();
-                            console.log("Adding to cooldown: " + usersCooldown);
-                            console.log(channelName + " is live!!!");
-                            client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
-                            return true;
-                        }
-                    }
-                }
-            });
-        }
-    });
-}
 /**
  * Takes in channel name and uses it to generate custom badge banner from their info.
  *
