@@ -1,4 +1,7 @@
+var fs = require("fs-extra");
+
 var usersCooldown = {};
+var api = require('twitch-api-v5');
 
 /**
  * Checks if Twitch channel went live and announces it to the Discord channel if true.
@@ -7,8 +10,6 @@ var usersCooldown = {};
  */
 function isLive(client, channelName) {
     var response;
-
-    var api = require('twitch-api-v5');
 
     api.clientID = twitchClientId;
 
@@ -61,7 +62,6 @@ function AddTwitchStreamer(msg, channels) {
             for (i = 0; i < channels.length; i++) {
                 text += channels[i] + "\n";
             }
-            let fs = require('fs');
             fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
                 if (err) {
                     console.log(err);
@@ -97,7 +97,6 @@ function RemoveTwitchStreamer(id) {
             for (i = 0; i < options.channels.length; i++) {
                 text += options.channels[i] + "\n";
             }
-            let fs = require('fs');
             fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
                 if (err) {
                     console.log(err);

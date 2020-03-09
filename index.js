@@ -125,38 +125,10 @@ client.on('message', msg => {
 client.on('message', msg => {
     if (msg.content.includes('!youtube')) {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var addedYouTuber = msg.content.replace("!youtube ", "");
-        var exists = false;
-        for (i = 0; i < youtubers.length; i++) {
-            if (youtubers[i].id == addedYouTuber) {
-                exists = true;
-            }
-        }
-        if (!exists) {
-            AddYouTuber(addedYouTuber);
-            console.log("User " + addedYouTuber + " has been added to YouTube notifications.")
-            msg.reply("YouTube user " + addedYouTuber + " has been added.");
-        } else {
-            console.log("User " + addedYouTuber + " has already been added to YouTube notifications.")
-            msg.reply("YouTube user " + addedYouTuber + " already exists!");
-        }
+        youtubers = YouTube.AddYouTuber(msg, youtubers);
     } else if (msg.content.includes('!removeyoutube')) {
         console.log('Received #' + msg.id + ': ' + msg.content);
-        var removedYouTuber = msg.content.replace("!removeyoutube ", "");
-        var exists = false;
-        for (i = 0; i < youtubers.length; i++) {
-            if (youtubers[i].id == removedYouTuber) {
-                exists = true;
-            }
-        }
-        if (!exists) {
-            console.log("User " + removedYouTuber + " isn't in YouTube notifications.")
-            msg.reply("YouTube user " + removedYouTuber + " isn't in notifications.");
-        } else {
-            RemoveYouTuber(removedYouTuber);
-            console.log("User " + removedYouTuber + " has been removed from YouTube notifications.")
-            msg.reply("YouTube user " + removedYouTuber + " has been removed!");
-        }
+        youtubers = YouTube.RemoveYouTuber(msg, youtubers);
     }
 });
 
@@ -445,22 +417,22 @@ function customizeHTML(discordName) {
 
     file = file.replace("class=\"name\" style=\"left: 300px;\"", "class=\"name\" style=\"left: " + centering + "px;\"")
 
-    var points = users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()];
+    var points = users[name.toString().toLowerCase()];
     if (users === undefined || points === undefined || typeof points === "undefined" || points.toString() == "undefined" || points == null) {
         points = "0";
     }
     file = file.replace("{{POINTS}}", points);
     var cap = 500;
     var rank = "BRONZE";
-    if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= diamond) {
+    if (users[name.toString().toLowerCase()] >= diamond) {
         cap = "MAXED";
         rank = "DIAMOND";
         file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
-    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= gold) {
+    } else if (users[name.toString().toLowerCase()] >= gold) {
         cap = "5000";
         rank = "GOLD";
         file = file.replace("id=\"gold\" style=\"display: none;\"", "id=\"gold\"");
-    } else if (users[discordName.substring(0, discordName.length - 5).toString().toLowerCase()] >= silver) {
+    } else if (users[name.toString().toLowerCase()] >= silver) {
         cap = "2500";
         rank = "SILVER";
         file = file.replace("id=\"silver\" style=\"display: none;\"", "id=\"silver\"");
@@ -470,6 +442,6 @@ function customizeHTML(discordName) {
     file = file.replace("{{CAP}}", cap);
     file = file.replace("{{RANK}}", rank);
 
-    fs.writeFile("C:/Users/kpetrone/" + discordName.substring(0, discordName.length - 5) + ".html", file, "utf8");
+    fs.writeFile("C:/Users/kpetrone/" + name + ".html", file, "utf8");
     console.log("Created html file");
 }

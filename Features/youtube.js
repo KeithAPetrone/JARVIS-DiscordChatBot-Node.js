@@ -1,3 +1,5 @@
+var fs = require("fs-extra");
+
 //YouTube Functionality
 var youtubeAPIKey = "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ";
 
@@ -128,19 +130,44 @@ function callAPI(path) {
 }
 
 //Add user to youtube list
-function AddYouTuber(id) {
-    var youtuber = undefined;
-    youtuber.id = id;
-    youtubers.push(youtuber);
-    fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
+function AddYouTuber(msg, youtubers) {
+    var addedYouTuber = msg.content.replace("!youtube ", "");
+        var exists = false;
+        for (i = 0; i < youtubers.length; i++) {
+            if (youtubers[i].id == addedYouTuber) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            var youtuber = undefined;
+            youtuber.id = id;
+            youtubers.push(youtuber);
+            fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
+            console.log("User " + addedYouTuber + " has been added to YouTube notifications.")
+            msg.reply("YouTube user " + addedYouTuber + " has been added.");
+        } else {
+            console.log("User " + addedYouTuber + " has already been added to YouTube notifications.")
+            msg.reply("YouTube user " + addedYouTuber + " already exists!");
+        }
+    return youtubers;
 }
 
 //Remove user from youtube list
-function RemoveYouTuber(id) {
-    for (i = 0; i < youtubers.length; i++) {
-        if (youtubers[i].id == id) {
-            youtubers = youtubers.splice(i, 1);
+function RemoveYouTuber(msg, youtubers) {
+    var removedYouTuber = msg.content.replace("!removeyoutube ", "");
+        var exists = false;
+        for (i = 0; i < youtubers.length; i++) {
+            if (youtubers[i].id == removedYouTuber) {
+                exists = true;
+            }
         }
-    }
-    fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
+        if (!exists) {
+            console.log("User " + removedYouTuber + " isn't in YouTube notifications.")
+            msg.reply("YouTube user " + removedYouTuber + " isn't in notifications.");
+        } else {
+            RemoveYouTuber(removedYouTuber);
+            console.log("User " + removedYouTuber + " has been removed from YouTube notifications.")
+            msg.reply("YouTube user " + removedYouTuber + " has been removed!");
+        }
+    return youtubers;
 }
