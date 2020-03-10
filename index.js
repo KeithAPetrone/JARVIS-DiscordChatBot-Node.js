@@ -50,12 +50,14 @@ client.on('message', msg => {
     let announcementsObj = {
         twitch : options.channels,
         youtube : youtubers,
-        users : users
+        users : users,
+        questions : questionsOfTheDay
     };
     announcementsObj = DiscordFeatures.handleCommand(announcementsObj, msg, client);
     options.channels = announcementsObj.twitch;
     youtubers = announcementsObj.youtube;
     users = announcementsObj.users;
+    questionsOfTheDay = announcementsObj.questions;
 });
 
 client.login('NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c');

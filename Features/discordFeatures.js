@@ -121,6 +121,7 @@ function handleCommand(announcementsObj, msg, client) {
     let youtubers = announcementsObj.youtube;
     let twitchers = announcementsObj.twitch;
     let users = announcementsObj.users;
+    let questions = announcementsObj.questions;
     //Every message should increase exp by [number of words] points.
     console.log('Received #' + msg.id + ': ' + msg.content);
     let name = msg.author.tag.toString().toLowerCase();
@@ -176,7 +177,7 @@ function handleCommand(announcementsObj, msg, client) {
     }
     //Question of the day override
     else if (msg.content === '!qod') {
-        questionsOfTheDay = DiscordFeatures.AskQuestion(questionsOfTheDay, client);
+        questions = DiscordFeatures.AskQuestion(questions, client);
     }
     //Add youtube user to announcements
     else if (msg.content.includes('!youtube')) {
@@ -201,5 +202,6 @@ function handleCommand(announcementsObj, msg, client) {
     announcementsObj.twitch = twitchers;
     announcementsObj.youtube = youtubers;
     announcementsObj.users = users;
+    announcementsObj.questions = questions;
     return announcementsObj;
 }
