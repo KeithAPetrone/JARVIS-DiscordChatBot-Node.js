@@ -1,3 +1,5 @@
+// jshint esversion: 8
+
 const options = {
     options: {
         debug: true

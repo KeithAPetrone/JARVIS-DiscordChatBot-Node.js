@@ -1,7 +1,7 @@
-var fs = require("fs-extra");
+// jshint esversion: 8
 
-//YouTube Functionality
-var youtubeAPIKey = "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ";
+const fs = require("fs-extra");
+const youtubeAPIKey = "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ";
 
 // Polls API and checks if there is a new video release
 function fetchVideo(client, youtuber) {
@@ -110,7 +110,7 @@ function callAPI(path) {
 
         https.get(options, (res) => {
             if (res.statusCode !== 200) {
-                console.error("Failed, Status: " + res.statusCode + " Headers: " + res.headers.toString())
+                console.error("Failed, Status: " + res.statusCode + " Headers: " + res.headers.toString());
                 return;
             }
             const rawData = [];
@@ -118,7 +118,7 @@ function callAPI(path) {
             res.on('end', () => {
                 try {
                     var ytjson = rawData.toString().replace(",,", ",");
-                    console.log(rawData.toString())
+                    console.log(rawData.toString());
                     resolve(JSON.parse(ytjson));
                 } catch (error) {
                     console.error(`An error occurred parsing the API response to JSON, ${error}`);
@@ -139,14 +139,13 @@ function AddYouTuber(msg, youtubers) {
             }
         }
         if (!exists) {
-            var youtuber = undefined;
             youtuber.id = id;
             youtubers.push(youtuber);
             fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
-            console.log("User " + addedYouTuber + " has been added to YouTube notifications.")
+            console.log("User " + addedYouTuber + " has been added to YouTube notifications.");
             msg.reply("YouTube user " + addedYouTuber + " has been added.");
         } else {
-            console.log("User " + addedYouTuber + " has already been added to YouTube notifications.")
+            console.log("User " + addedYouTuber + " has already been added to YouTube notifications.");
             msg.reply("YouTube user " + addedYouTuber + " already exists!");
         }
     return youtubers;
@@ -162,11 +161,11 @@ function RemoveYouTuber(msg, youtubers) {
             }
         }
         if (!exists) {
-            console.log("User " + removedYouTuber + " isn't in YouTube notifications.")
+            console.log("User " + removedYouTuber + " isn't in YouTube notifications.");
             msg.reply("YouTube user " + removedYouTuber + " isn't in notifications.");
         } else {
             RemoveYouTuber(removedYouTuber);
-            console.log("User " + removedYouTuber + " has been removed from YouTube notifications.")
+            console.log("User " + removedYouTuber + " has been removed from YouTube notifications.");
             msg.reply("YouTube user " + removedYouTuber + " has been removed!");
         }
     return youtubers;

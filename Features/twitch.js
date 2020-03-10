@@ -1,7 +1,9 @@
-var fs = require("fs-extra");
+// jshint esversion: 8
+
+const fs = require("fs-extra");
+const api = require('twitch-api-v5');
 
 var usersCooldown = {};
-var api = require('twitch-api-v5');
 
 /**
  * Checks if Twitch channel went live and announces it to the Discord channel if true.
@@ -20,7 +22,7 @@ function isLive(client, channelName) {
             return false;
         } else {
             response = JSON.stringify(res);
-            var id = res.users[0]["_id"];
+            var id = res.users[0]._id;
             api.streams.channel({
                 channelID: id
             }, (err, res) => {
@@ -49,7 +51,7 @@ function isLive(client, channelName) {
 //Add user to twitch list
 function AddTwitchStreamer(msg, channels) {
     var addedUser = msg.content.replace("!twitch ", "");
-    console.log("Attemptimg to add " + addedUser + " to Twitch notifications.")
+    console.log("Attemptimg to add " + addedUser + " to Twitch notifications.");
         var exists = false;
         for (i = 0; i < channels.length; i++) {
             if (channels[i] === ("#" + addedUser)) {
@@ -69,24 +71,24 @@ function AddTwitchStreamer(msg, channels) {
                     console.log('Twitch File written!');
                 }
             });
-            console.log("User " + addedUser + " has been added to Twitch notifications.")
+            console.log("User " + addedUser + " has been added to Twitch notifications.");
             msg.reply("Twitch user " + addedUser + " has been added.");
         } else {
-            console.log("User " + addedUser + " has already been added to Twitch notifications.")
+            console.log("User " + addedUser + " has already been added to Twitch notifications.");
             msg.reply("Twitch user " + addedUser + " already exists!");
         }
     return channels;
 }
 
 //Remove user from twitch list
-function RemoveTwitchStreamer(id) {
+function RemoveTwitchStreamer(msg, channels) {
     var addedUser = msg.content.replace("!removetwitch ", "");
-        console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.")
+        console.log("Attemptimg to remove " + addedUser + " from Twitch notifications.");
         var exists = false;
         var placement = 0;
         for (i = 0; i < options.channels.length; i++) {
             if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
-                console.log("Found " + addedUser + " in the list.")
+                console.log("Found " + addedUser + " in the list.");
                 exists = true;
                 placement = i;
             }
@@ -106,7 +108,65 @@ function RemoveTwitchStreamer(id) {
             });
             msg.reply("Twitch user " + addedUser + " has been removed.");
         } else {
-            console.log("Didn't see " + addedUser + " in the list.")
+            console.log("Didn't see " + addedUser + " in the list.");
             msg.reply("Twitch user " + addedUser + " isn't in the list!");
         }
+}
+
+function handleCommand(channel, userstate, message, self, users) {
+    try {
+        // file not presenet
+        //var data = fs.readFileSync('sample.html');
+
+        //channel is which channel it comes from. Not very usable if you are in one channel only.
+
+        //Userstate is an object which contains a lot of information, if the user who wrote is a subscriber, what emotes he used etc.
+
+        //message is the message itself.
+
+        //self is your bot. 
+
+        if (self) return; //If your bot wrote something, then ignore it because you dont want to listen to your own messages
+
+        if ((message.toLowerCase()).includes("!ping")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+
+            client2.say(channel, `@${userstate.username} Pong!!!`);
+            console.log("Twitch: Pong!!!");
+        }
+
+        if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+            if (userstate.username.toString().toLowerCase() in users) {
+                users[userstate.username.toString().toLowerCase()]++;
+                client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
+                timeLurker(userstate, 1);
+            } else {
+                // users[userstate.username] = 1;
+                // console.log('Twitch: ' + msg.author + ' has been added to the points database!');
+                // console.log(users);
+                client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
+            }
+        }
+
+        if ((message.toLowerCase()).includes("!raid")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+            if (userstate.username.toString().toLowerCase() in users) {
+                users[userstate.username.toString().toLowerCase()]++;
+                client2.say(channel, `@${userstate.username} RAIDING!!!`);
+                timeLurker(userstate, 2);
+            } else {
+                // users[userstate.username] = 1;
+                // console.log('Twitch: ' + msg.author + ' has been added to the points database!');
+                // console.log(users);
+                client2.say(channel, `@${userstate.username} You have been added to the points database on the Discord server!`);
+            }
+        }
+
+        if ((message.toLowerCase()).includes("!badword")) {
+
+            client2.ban("channel", userstate.username, "He wrote a bad word"); //this is a promise so you can add .then and .catch if you want
+
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    return users;
 }
