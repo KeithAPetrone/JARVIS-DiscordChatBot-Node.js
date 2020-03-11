@@ -1,7 +1,8 @@
 // jshint esversion: 8
 
-const fs = require("fs-extra");
-const youtubeAPIKey = "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ";
+const fs = require('fs-extra');
+const config = require('./config.json');
+const youtubeAPIKey = config.youtube.APIKey;
 
 // Polls API and checks if there is a new video release
 function fetchVideo(client, youtuber) {
@@ -17,7 +18,7 @@ function fetchVideo(client, youtuber) {
 
                 sendVideoAnnouncement(client, videoInfo, channelInfo);
                 youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
-                fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
+                fs.writeFileSync(config.filePath + "youtube.json", JSON.stringify(youtubers));
             });
         }
     });
@@ -29,7 +30,7 @@ function setLatestVideo(youtuber) {
         if (videoInfo.error) return;
 
         youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
-        fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
+        fs.writeFileSync(config.filePath + "youtube.json", JSON.stringify(youtubers));
     });
 }
 
@@ -141,7 +142,7 @@ function AddYouTuber(msg, youtubers) {
         if (!exists) {
             youtuber.id = id;
             youtubers.push(youtuber);
-            fs.writeFileSync("C:/Users/kpetrone/youtube.json", JSON.stringify(youtubers));
+            fs.writeFileSync(config.filePath + "youtube.json", JSON.stringify(youtubers));
             console.log("User " + addedYouTuber + " has been added to YouTube notifications.");
             msg.reply("YouTube user " + addedYouTuber + " has been added.");
         } else {

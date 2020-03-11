@@ -16,14 +16,15 @@ const port = process.env.PORT || 3000;
 var app = require('http');
 app.createServer().listen(port, host);
 
+const config = require('./config.json');
 const Discord = require('discord.js');
 const DiscordFeatures = require('./Features/discordFeatures.js');
 const Twitch = require('./Features/twitch.js');
 const YouTube = require('./Features/youtube.js');
 const client = new Discord.Client();
 
-const options = require("./option"); //The twitch options file
-const fs = require("fs-extra");
+const options = require('./option.js'); //The twitch options file
+const fs = require('fs-extra');
 
 var users = {};
 var questionsOfTheDay = [];
@@ -32,16 +33,16 @@ var youtubers = {};
 //Logging into Discord
 client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
-    users = JSON.parse(fs.readFileSync("C:/Users/keith/users.json"));
+    users = JSON.parse(fs.readFileSync(config.filePath + "users.json"));
     console.log("Database has been loaded...");
-    let text = fs.readFileSync("C:/Users/keith/questions.txt");
+    let text = fs.readFileSync(config.filePath + "questions.txt");
     let textByLine = text.toString().split("\n");
     questionsOfTheDay = textByLine;
-    text = fs.readFileSync("C:/Users/keith/twitch.txt");
+    text = fs.readFileSync(config.filePath + "twitch.txt");
     textByLine = text.toString().split("\n");
     options.channels = textByLine;
     console.log("Twitch user list has been loaded...");
-    youtubers = JSON.parse(fs.readFileSync("C:/Users/keith/youtube.json"));
+    youtubers = JSON.parse(fs.readFileSync(config.filePath + "youtube.json"));
     console.log("YouTube user list has been loaded...");
 });
 
@@ -60,11 +61,11 @@ client.on('message', msg => {
     questionsOfTheDay = announcementsObj.questions;
 });
 
-client.login('NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c');
+client.login(config.twitch.APIkey);
 
 const tmi = require("tmi.js");
 
-var twitchText = fs.readFileSync("C:/Users/keith/twitch.txt");
+var twitchText = fs.readFileSync(config.filePath + "twitch.txt");
 var twitchTextByLine = twitchText.toString().split("\n");
 options.channels = twitchTextByLine;
 
@@ -88,8 +89,8 @@ client2.on("chat", (channel, userstate, message, self) => {
 //
 
 url = "https://api.twitch.tv/kraken/streams/";
-twitchClientId = "thwzykk3l7cckshmybn0vwf0ijww85";
-twitchClientSecret = "698iwyzok0qh9yr7nakj61yo33rsv5";
+twitchClientId = config.twitch.clientID;
+twitchClientSecret = config.twitch.clientSecret;
 
 //Check if stream is live
 //300000 is 5 minutes

@@ -1,0 +1,20 @@
+{
+    "filePath": "C:/Users/keith/",
+    "discord:": {
+        "APIkey": "NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c"
+    },
+    "youtube": {
+
+        "APIkey": "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ"
+    },
+    "twitch": {
+        "username": "THE_JARVIS_BOT",
+        "password": "oauth:msfv78j577jad2ejunus2y11miyx10",
+        "clientID": "thwzykk3l7cckshmybn0vwf0ijww85",
+        "clientSecret": "698iwyzok0qh9yr7nakj61yo33rsv5"
+    }, 
+    "channels": {
+        "questionOfTheDay": "683773761102807089",
+        "twitchLive": "671051742128898053"
+    }
+}

@@ -1,6 +1,7 @@
 // jshint esversion: 8
 
-const fs = require("fs-extra");
+const fs = require('fs-extra');
+const config = require('./config.json');
 const api = require('twitch-api-v5');
 
 var usersCooldown = {};
@@ -10,10 +11,10 @@ var usersCooldown = {};
  *
  * @param {string} channelName
  */
-function isLive(client, channelName) {
+function isLive(client, usersCooldown, channelName) {
     var response;
 
-    api.clientID = twitchClientId;
+    api.clientID = config.twitch.clientID;
 
     api.users.usersByName({
         users: channelName.substring(1, channelName.length)
@@ -32,20 +33,19 @@ function isLive(client, channelName) {
                     response = JSON.stringify(res);
                     if (JSON.parse(response).stream === null || JSON.parse(response).stream === undefined) {
                         usersCooldown[channelName.substring(1, channelName.length)] = null;
-                        return false;
                     } else {
                         if (usersCooldown[channelName.substring(1, channelName.length)] === null || typeof usersCooldown[channelName.substring(1, channelName.length)] === undefined) {
                             usersCooldown[channelName.substring(1, channelName.length)] = new Date();
                             console.log("Adding to cooldown: " + usersCooldown);
                             console.log(channelName + " is live!!!");
-                            client.channels.get("671051742128898053").send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
-                            return true;
+                            client.channels.get(config.channels.twitchLive).send(channelName.substring(1, channelName.length) + " is now live! Check them out at https://www.twitch.tv/" + channelName.substring(1, channelName.length));
                         }
                     }
                 }
             });
         }
     });
+    return usersCooldown;
 }
 
 //Add user to twitch list
@@ -64,7 +64,7 @@ function AddTwitchStreamer(msg, channels) {
             for (i = 0; i < channels.length; i++) {
                 text += channels[i] + "\n";
             }
-            fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
+            fs.writeFile(config.filePath + "twitch.txt", text, function (err) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -87,19 +87,19 @@ function RemoveTwitchStreamer(msg, channels) {
         var exists = false;
         var placement = 0;
         for (i = 0; i < options.channels.length; i++) {
-            if (options.channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
+            if (channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
                 console.log("Found " + addedUser + " in the list.");
                 exists = true;
                 placement = i;
             }
         }
         if (exists) {
-            options.channels.splice(placement, 1);
+            channels.splice(placement, 1);
             var text = "";
-            for (i = 0; i < options.channels.length; i++) {
-                text += options.channels[i] + "\n";
+            for (i = 0; i < channels.length; i++) {
+                text += channels[i] + "\n";
             }
-            fs.writeFile("C:/Users/kpetrone/twitch.txt", text, function (err) {
+            fs.writeFile(config.filePath + "twitch.txt", text, function (err) {
                 if (err) {
                     console.log(err);
                 } else {

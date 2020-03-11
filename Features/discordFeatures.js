@@ -1,6 +1,7 @@
 // jshint esversion: 8
 
-const fs = require("fs-extra");
+const fs = require('fs-extra');
+const config = require('./config.json');
 const YouTube = require('youtube.js');
 const Twitch = require('twitch.js');
 const silver = 500;
@@ -13,12 +14,12 @@ function AskQuestion(questionsOfTheDay, client) {
         qod = questionsOfTheDay.pop().toString();
     }
     console.log("Here's the question of the day: " + qod);
-    client.channels.get("683773761102807089").send(qod);
+    client.channels.get(config.channels.questionOfTheDay).send(qod);
     var text = "";
     for (i = 0; i < questionsOfTheDay.length; i++) {
         text += questionsOfTheDay[i] + "\n";
     }
-    fs.writeFile("C:/Users/kpetrone/questions.txt", text, function (err) {
+    fs.writeFile(config.filePath + "questions.txt", text, function (err) {
         if (err) {
             console.log(err);
         } else {
@@ -113,7 +114,7 @@ function customizeHTML(discordName) {
     file = file.replace("{{CAP}}", cap);
     file = file.replace("{{RANK}}", rank);
 
-    fs.writeFile("C:/Users/kpetrone/" + name + ".html", file, "utf8");
+    fs.writeFile(config.filePath + name + ".html", file, "utf8");
     console.log("Created html file");
 }
 
@@ -137,7 +138,7 @@ function handleCommand(announcementsObj, msg, client) {
         users[name] = pointsEarned;
         console.log('Discord: ' + msg.author + ' is added to database and gained a point');
     }
-    fs.writeFileSync("C:/Users/keith/users.json", JSON.stringify(users));
+    fs.writeFileSync(config.filePath + "users.json", JSON.stringify(users));
     //!ping command should issue "Pong!" response.
     if (msg.content === '!ping') {
         console.log('Received #' + msg.id + ': ' + msg.content);
