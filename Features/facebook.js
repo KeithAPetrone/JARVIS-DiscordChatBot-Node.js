@@ -68,7 +68,7 @@ function RemoveFacebookStreamer(msg, channels) {
         console.log("Attemptimg to remove " + addedUser + " from Facebook notifications.");
         var exists = false;
         var placement = 0;
-        for (i = 0; i < options.channels.length; i++) {
+        for (i = 0; i < channels.length; i++) {
             if (channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
                 console.log("Found " + addedUser + " in the list.");
                 exists = true;
@@ -93,4 +93,5 @@ function RemoveFacebookStreamer(msg, channels) {
             console.log("Didn't see " + addedUser + " in the list.");
             msg.reply("Facebook user " + addedUser + " isn't in the list!");
         }
+    return channels;
 }

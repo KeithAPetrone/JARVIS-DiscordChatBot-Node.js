@@ -79,3 +79,69 @@ function liveCheck(channelName) {
         }
     }
 }
+
+//Add user to mixer list
+function AddMixerStreamer(msg, channels) {
+    var addedUser = msg.content.replace("!mixer ", "");
+    console.log("Attemptimg to add " + addedUser + " to Mixer notifications.");
+        var exists = false;
+        for (i = 0; i < channels.length; i++) {
+            if (channels[i] === ("#" + addedUser)) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            channels.push('#' + addedUser);
+            var text = "";
+            for (i = 0; i < channels.length; i++) {
+                text += channels[i] + "\n";
+            }
+            fs.writeFile(config.filePath + "mixer.txt", text, function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Mixer File written!');
+                }
+            });
+            console.log("User " + addedUser + " has been added to Mixer notifications.");
+            msg.reply("Mixer user " + addedUser + " has been added.");
+        } else {
+            console.log("User " + addedUser + " has already been added to Mixer notifications.");
+            msg.reply("Mixer user " + addedUser + " already exists!");
+        }
+    return channels;
+}
+
+//Remove user from mixer list
+function RemoveMixerStreamer(msg, channels) {
+    var addedUser = msg.content.replace("!removemixer ", "");
+        console.log("Attemptimg to remove " + addedUser + " from Mixer notifications.");
+        var exists = false;
+        var placement = 0;
+        for (i = 0; i < channels.length; i++) {
+            if (channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
+                console.log("Found " + addedUser + " in the list.");
+                exists = true;
+                placement = i;
+            }
+        }
+        if (exists) {
+            channels.splice(placement, 1);
+            var text = "";
+            for (i = 0; i < channels.length; i++) {
+                text += channels[i] + "\n";
+            }
+            fs.writeFile(config.filePath + "mixer.txt", text, function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Mixer File written!');
+                }
+            });
+            msg.reply("Mixer user " + addedUser + " has been removed.");
+        } else {
+            console.log("Didn't see " + addedUser + " in the list.");
+            msg.reply("Mixer user " + addedUser + " isn't in the list!");
+        }
+    return channels;
+}

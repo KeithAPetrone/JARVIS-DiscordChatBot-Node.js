@@ -4,6 +4,8 @@ const fs = require('fs-extra');
 const config = require('./config.json');
 const YouTube = require('youtube.js');
 const Twitch = require('twitch.js');
+const Facebook = require('facebook.js');
+const MixerFeatures = require('./Features/mixerFeatures.js');
 const silver = 500;
 const gold = 2500;
 const diamond = 5000;
@@ -124,6 +126,7 @@ function handleCommand(announcementsObj, msg, client) {
     let users = announcementsObj.users;
     let questions = announcementsObj.questions;
     let facebookers = announcementsObj.facebook;
+    let mixers = announcementsObj.mixer;
     //Every message should increase exp by [number of words] points.
     console.log('Received #' + msg.id + ': ' + msg.content);
     let name = msg.author.tag.toString().toLowerCase();
@@ -142,30 +145,25 @@ function handleCommand(announcementsObj, msg, client) {
     fs.writeFileSync(config.filePath + "users.json", JSON.stringify(users));
     //!ping command should issue "Pong!" response.
     if (msg.content === '!ping') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         msg.reply('Pong!');
     }
     //Displays everyone's points to the chat.
     else if (msg.content === '!scoreboard') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         msg.reply('Here are the results: ' + JSON.stringify(users));
         console.log('Discord: Here are the results: ' + JSON.stringify(users));
     }
     //Clears everyone's scores
     else if (msg.content === '!clearscores') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         susers = {};
         msg.reply('Scores have been wiped!');
         console.log('Discord: Scores have been wiped!');
     }
     //Displays that user's rank and score.
     else if (msg.content === '!rank') {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         generateImage(msg.author.tag.toString().toLowerCase(), msg.channel);
     }
     //Magic 8ball command
     else if (msg.content.includes('!8jarvis')) {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         let question = msg.content.replace("!8jarvis ", "");
         let response = "";
         if (msg.author.tag.toString().toLowerCase().includes("devil") || msg.author.tag.toString().toLowerCase().includes("bird") || msg.author.tag.toString().toLowerCase().includes("wist")) {
@@ -183,34 +181,37 @@ function handleCommand(announcementsObj, msg, client) {
     }
     //Add youtube user to announcements
     else if (msg.content.includes('!youtube')) {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         youtubers = YouTube.AddYouTuber(msg, youtubers);
     } 
     //Remove youtube user to announcements
     else if (msg.content.includes('!removeyoutube')) {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         youtubers = YouTube.RemoveYouTuber(msg, youtubers);
     }
     //Adds twitch streamer to the announcements.
     else if (msg.content.includes('!twitch')) {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         twitchers = Twitch.AddTwitchStreamer(msg, twitchers);
     }
     //Removes twitch streamer from the announcements.
     else if (msg.content.includes('!removetwitch')) {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         twitchers = Twitch.RemoveTwitchStreamer(msg, twitchers);
     }
     //Adds facebook streamer to the announcements.
     else if (msg.content.includes('!facebook')) {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         facebookers = Facebook.AddFacebookStreamer(msg, facebookers);
     }
     //Removes facebook streamer from the announcements.
     else if (msg.content.includes('!removefacebook')) {
-        console.log('Received #' + msg.id + ': ' + msg.content);
         facebookers = Facebook.RemoveFacebookStreamer(msg, facebookers);
     }
+    //Adds mixer streamer to the announcements.
+    else if (msg.content.includes('!mixer')) {
+        mixers = MixerFeatures.AddMixerStreamer(msg, mixers);
+    }
+    //Removes mixer streamer from the announcements.
+    else if (msg.content.includes('!removemixer')) {
+        mixers = MixerFeatures.RemoveMixerStreamer(msg, mixers);
+    }
+    announcementsObj.mixers = mixers;
     announcementsObj.facebook = facebookers;
     announcementsObj.twitch = twitchers;
     announcementsObj.youtube = youtubers;

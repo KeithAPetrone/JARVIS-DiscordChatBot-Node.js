@@ -22,6 +22,7 @@ const DiscordFeatures = require('./Features/discordFeatures.js');
 const Twitch = require('./Features/twitch.js');
 const YouTube = require('./Features/youtube.js');
 const Facebook = require('./Features/facebook.js');
+const MixerFeatures = require('./Features/mixerFeatures.js');
 const Mixer = require('@mixer/client-node');
 
 const client = new Discord.Client();
