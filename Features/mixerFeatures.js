@@ -3,10 +3,6 @@
 const config = require('./config.json');
 const fs = require('fs-extra');
 const https = require('https');
-const options = {
-    host: 'https://mixer.com',
-    path: `/api/v1/${path}`
-};
 
 function getID(channelName) {
     const path = "channels/" + channelName + "?fields=id";
