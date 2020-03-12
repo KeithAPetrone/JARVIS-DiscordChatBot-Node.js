@@ -21,6 +21,7 @@ const Discord = require('discord.js');
 const DiscordFeatures = require('./Features/discordFeatures.js');
 const Twitch = require('./Features/twitch.js');
 const YouTube = require('./Features/youtube.js');
+const Facebook = require('./Features/facebook.js');
 const client = new Discord.Client();
 
 const options = require('./option.js'); //The twitch options file

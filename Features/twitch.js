@@ -11,7 +11,7 @@ var usersCooldown = {};
  *
  * @param {string} channelName
  */
-function isLive(client, usersCooldown, channelName) {
+function isLive(client, channelName) {
     var response;
 
     api.clientID = config.twitch.clientID;
