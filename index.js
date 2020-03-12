@@ -169,7 +169,12 @@ client3.use(new Mixer.OAuthProvider(client, {
     },
 }));
 
-
+//Check for new youtube streams
+setInterval(() => {
+    for (mixer = 0; mixer < mixers.length; mixer++) {
+        MixerFeatures.liveCheck(mixers[mixer]);
+    }
+}, 10000);
 
 /*
 //Meme of the day logic

@@ -23,7 +23,7 @@ function isLive(client, channelName) {
             usersCooldown[channelName] = new Date();
             console.log("Adding to cooldown: " + usersCooldown);
             console.log(channelName + " is live!!!");
-            client.channels.get(config.channels.faceBook).send(channelName + " is now live! Check them out at https://www.facebook.com/" + channelName);
+            client.channels.get(config.channels.faceBookLive).send(channelName + " is now live! Check them out at https://www.facebook.com/" + channelName);
         }
     } else {
         usersCooldown[channelName] = null;
