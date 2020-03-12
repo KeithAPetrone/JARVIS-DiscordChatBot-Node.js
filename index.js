@@ -22,6 +22,8 @@ const DiscordFeatures = require('./Features/discordFeatures.js');
 const Twitch = require('./Features/twitch.js');
 const YouTube = require('./Features/youtube.js');
 const Facebook = require('./Features/facebook.js');
+const Mixer = require('@mixer/client-node');
+
 const client = new Discord.Client();
 
 const options = require('./option.js'); //The twitch options file
@@ -31,6 +33,7 @@ var users = {};
 var questionsOfTheDay = [];
 var youtubers = {};
 var facebookers = {};
+var mixers = {};
 
 //Logging into Discord
 client.on('ready', () => {
@@ -51,6 +54,10 @@ client.on('ready', () => {
     textByLine = text.toString().split("\n");
     facebookers = textByLine;
     console.log("Facebook user list has been loaded...");
+    text = fs.readFileSync(config.filePath + "mixer.txt");
+    textByLine = text.toString().split("\n");
+    mixers = textByLine;
+    console.log("Mixer user list has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -102,7 +109,6 @@ twitchClientId = config.twitch.clientID;
 twitchClientSecret = config.twitch.clientSecret;
 
 
-
 //Check if twitch stream is live
 //300000 is 5 minutes
 setInterval(() => {
@@ -148,6 +154,22 @@ setInterval(() => {
         YouTube.fetchStream(client, youtuber);
     }
 }, 10000);
+
+var mixerText = fs.readFileSync(config.filePath + "mixer.txt");
+var mixerTextByLine = mixerText.toString().split("\n");
+mixers = mixerTextByLine;
+
+const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
+
+client3.use(new Mixer.OAuthProvider(client, {
+    tokens: {
+        access: config.mixer.accessToken,
+        // Tokens retrieved via this page last for 1 year.
+        expires: Date.now() + (365 * 24 * 60 * 60 * 1000)
+    },
+}));
+
+
 
 /*
 //Meme of the day logic

@@ -18,6 +18,9 @@
         "appID": "2553562974925842",
         "appSecret": "41ac9ce7533c3da740065d88ebb88c7c"
     },
+    "mixer": {
+        "accessToken": "zkO33xqWhUXLGJHuZ5oHEzDbjeOIQTHMUb69iqCCzLDeHd6QewHQgiqljuuI55qL"
+    },
     "channels": {
         "questionOfTheDay": "683773761102807089",
         "twitchLive": "671051742128898053",
