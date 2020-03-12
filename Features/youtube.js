@@ -47,7 +47,7 @@ async function fetchData(youtuber) {
 
 // Constructs a MessageEmbed and sends it to new video announcements channel
 function sendVideoAnnouncement(client, videoInfo, channelInfo) {
-    const channel = client.channels.find((ch) => ch.id === "672866885020155936");
+    const channel = client.channels.find((ch) => ch.id === client.youtube.youtubeVideo);
 
     if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
 
@@ -81,7 +81,7 @@ function fetchStream(client, youtuber) {
 
 // Constructs a MessageEmbed and sends it to livestream announcements channel
 function sendStreamAnnouncement(client, streamInfo) {
-    const channel = client.channels.find((ch) => ch.id === "672866885020155936");
+    const channel = client.channels.find((ch) => ch.id === config.youtube.youtubeVideo);
 
     if (!channel) return console.error(`Couldn't send YouTube new video announcement because the channel couldn't be found.`);
 

@@ -13,8 +13,15 @@
         "clientID": "thwzykk3l7cckshmybn0vwf0ijww85",
         "clientSecret": "698iwyzok0qh9yr7nakj61yo33rsv5"
     }, 
+    "facebook": {
+        "clientToken": "1e8b3b221a6f153e0e3e83913a04c65e",
+        "appID": "2553562974925842",
+        "appSecret": "41ac9ce7533c3da740065d88ebb88c7c"
+    },
     "channels": {
         "questionOfTheDay": "683773761102807089",
-        "twitchLive": "671051742128898053"
+        "twitchLive": "671051742128898053",
+        "youtubeVideo": "672866885020155936",
+        "facebookLive": "672866805055750202"
     }
 }

@@ -4,20 +4,22 @@
   "description": "the jarvis bot",
   "main": "index.js",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.5.1",
     "fs": "0.0.1-security",
     "fs-extra": "^8.1.0",
     "jshint": "^2.11.0",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
     "tmi": "^2.0.0",
     "tmi.js": "^1.5.0",
     "twitch-api-v5": "^2.0.4"
   },
   "devDependencies": {
+    "eslint": "^6.6.0",
     "gulp": "^4.0.2",
     "gulp-tap": "^2.0.0",
-    "puppeteer": "^2.1.1",
-    "eslint": "^6.6.0"
+    "puppeteer": "^2.1.1"
   },
   "scripts": {
     "start": "node index.js",

@@ -92,12 +92,23 @@ url = "https://api.twitch.tv/kraken/streams/";
 twitchClientId = config.twitch.clientID;
 twitchClientSecret = config.twitch.clientSecret;
 
-//Check if stream is live
+
+
+//Check if twitch stream is live
 //300000 is 5 minutes
 setInterval(() => {
     for (i = 0; i < options.channels.length; i++) {
-        var broadcaster = options.channels[i].toString();
+        let broadcaster = options.channels[i].toString();
         Twitch.isLive(client, broadcaster);
+    }
+}, 10000);
+
+//Check if facebook stream is live
+//300000 is 5 minutes
+setInterval(() => {
+    for (i = 0; i < facebookers.length; i++) {
+        let broadcaster = facebookers[i];
+        Facebook.isLive(client, broadcaster);
     }
 }, 10000);
 
