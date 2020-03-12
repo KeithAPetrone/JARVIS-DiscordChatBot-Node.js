@@ -170,6 +170,32 @@ client3.use(new Mixer.OAuthProvider(client, {
     },
 }));
 
+var sockets;
+var userInfo = MixerFeatures.getUserInfo(client3);
+
+for (i = 0; i < mixers.length; i++) {
+    let id = MixerFeatures.getID(mixers[i]);
+    sockets.push(MixerFeatures.joinChat(userInfo.id, id));
+}
+
+sockets.forEach(socket => {
+    //// Send a message once connected to chat.
+    //socket.call('msg', [`Hi! I'm connected!`]);
+
+    //// Greet a joined user
+    //socket.on('UserJoin', data => {
+    //    socket.call('msg',[
+    //        `Hi ${data.username}! I'm pingbot! Write !ping and I will pong back!`,
+    //    ]);
+    //});
+
+    // When there's a new chat message.
+    socket.on('ChatMessage', data => {
+        let msg = data.message.message[0].data;
+        MixerFeatures.handleCommand(socket, msg);
+    });
+});
+
 //Check for new youtube streams
 setInterval(() => {
     for (mixer = 0; mixer < mixers.length; mixer++) {

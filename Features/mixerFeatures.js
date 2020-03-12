@@ -3,6 +3,7 @@
 const config = require('./config.json');
 const fs = require('fs-extra');
 const https = require('https');
+const Mixer = require('@mixer/client-node');
 
 function getID(channelName) {
     const path = "channels/" + channelName + "?fields=id";
@@ -144,4 +145,58 @@ function RemoveMixerStreamer(msg, channels) {
             msg.reply("Mixer user " + addedUser + " isn't in the list!");
         }
     return channels;
+}
+
+/**
+ * Gets our Currently Authenticated Mixer user's information.
+ * This returns an object full of useful information about
+ * the user whose OAuth Token we provided above.
+ */
+async function getUserInfo(client) {
+    // Users Current will return information about the user who owns the OAuth
+    // token registered above.
+    return client.request('GET', 'users/current')
+    .then(response => response.body);
+}
+getUserInfo().then(userInfo => {
+    console.log(`Hi, ${userInfo.username}!`);
+});
+
+/**
+ * Gets connection information from Mixer's chat servers
+ * @param {Number} channelId The channelId of the channel you'd like
+ *  to get connection information for.
+ * @returns {Promise.<>}
+ */
+async function getConnectionInformation(channelId, client) {
+    return new Mixer.ChatService(client).join(channelId).then(response => response.body);
+}
+
+/**
+* Creates a Mixer chat socket and authenticates
+* @param {number} userId The user to authenticate as
+* @param {number} channelId The channel id of the channel you want to join
+* @returns {Promise.<>}
+*/
+async function joinChat(userId, channelId) {
+    const joinInformation = await getConnectionInformation(channelId);
+    // Create a chat socket and "boot" it(start it up and connect it)
+    const socket = new Mixer.Socket(ws, joinInformation.endpoints).boot();
+
+    /* Authenticates with the Chat Server, this requires 3 arguments:
+     * - The Channel Id of the channel you are connection to.
+     * - The user id of the user you are wanting to chat as.
+     * - The authentication key received from the server.
+     * The order of these arguments is VERY important.
+     */
+    return socket.auth(channelId, userId, joinInformation.authkey).then(() => socket);
+}
+
+function handleCommand(socket, msg) {
+    //ping command
+    if (msg.toLowerCase().startsWith('!ping')) {
+        // Respond with pong
+        socket.call('msg', [`@${data.user_name} PONG!`]);
+        console.log(`Ponged ${data.user_name}`);
+    }
 }
