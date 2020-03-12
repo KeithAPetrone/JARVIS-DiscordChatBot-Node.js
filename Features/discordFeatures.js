@@ -123,6 +123,7 @@ function handleCommand(announcementsObj, msg, client) {
     let twitchers = announcementsObj.twitch;
     let users = announcementsObj.users;
     let questions = announcementsObj.questions;
+    let facebookers = announcementsObj.facebook;
     //Every message should increase exp by [number of words] points.
     console.log('Received #' + msg.id + ': ' + msg.content);
     let name = msg.author.tag.toString().toLowerCase();
@@ -200,6 +201,17 @@ function handleCommand(announcementsObj, msg, client) {
         console.log('Received #' + msg.id + ': ' + msg.content);
         twitchers = Twitch.RemoveTwitchStreamer(msg, twitchers);
     }
+    //Adds facebook streamer to the announcements.
+    else if (msg.content.includes('!facebook')) {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        facebookers = Facebook.AddFacebookStreamer(msg, facebookers);
+    }
+    //Removes facebook streamer from the announcements.
+    else if (msg.content.includes('!removefacebook')) {
+        console.log('Received #' + msg.id + ': ' + msg.content);
+        facebookers = Facebook.RemoveFacebookStreamer(msg, facebookers);
+    }
+    announcementsObj.facebook = facebookers;
     announcementsObj.twitch = twitchers;
     announcementsObj.youtube = youtubers;
     announcementsObj.users = users;

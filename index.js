@@ -30,6 +30,7 @@ const fs = require('fs-extra');
 var users = {};
 var questionsOfTheDay = [];
 var youtubers = {};
+var facebookers = {};
 
 //Logging into Discord
 client.on('ready', () => {
@@ -39,12 +40,17 @@ client.on('ready', () => {
     let text = fs.readFileSync(config.filePath + "questions.txt");
     let textByLine = text.toString().split("\n");
     questionsOfTheDay = textByLine;
+    console.log("Questions of the day list has been loaded...");
     text = fs.readFileSync(config.filePath + "twitch.txt");
     textByLine = text.toString().split("\n");
     options.channels = textByLine;
     console.log("Twitch user list has been loaded...");
     youtubers = JSON.parse(fs.readFileSync(config.filePath + "youtube.json"));
     console.log("YouTube user list has been loaded...");
+    text = fs.readFileSync(config.filePath + "facebook.txt");
+    textByLine = text.toString().split("\n");
+    facebookers = textByLine;
+    console.log("Facebook user list has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
@@ -53,13 +59,15 @@ client.on('message', msg => {
         twitch : options.channels,
         youtube : youtubers,
         users : users,
-        questions : questionsOfTheDay
+        questions : questionsOfTheDay,
+        facebook: facebookers
     };
     announcementsObj = DiscordFeatures.handleCommand(announcementsObj, msg, client);
     options.channels = announcementsObj.twitch;
     youtubers = announcementsObj.youtube;
     users = announcementsObj.users;
     questionsOfTheDay = announcementsObj.questions;
+    facebookers = announcementsObj.facebook;
 });
 
 client.login(config.twitch.APIkey);
@@ -103,6 +111,10 @@ setInterval(() => {
         Twitch.isLive(client, broadcaster);
     }
 }, 10000);
+
+var facebookText = fs.readFileSync(config.filePath + "facebook.txt");
+var facebookTextByLine = facebookText.toString().split("\n");
+facebookers = facebookTextByLine;
 
 //Check if facebook stream is live
 //300000 is 5 minutes

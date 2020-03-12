@@ -8,7 +8,7 @@ const liveButton = '<div class="_4r1w _69o5  _50f7 _2iem" role="heading" aria-le
 
 var usersCooldown = {};
 
-function isLive(client, channelName, broadcaster) {
+function isLive(client, channelName) {
     let streamPage = url + channelName;
     let streamHTML;
     rp(streamPage)
@@ -28,4 +28,69 @@ function isLive(client, channelName, broadcaster) {
     } else {
         usersCooldown[channelName] = null;
     }
+}
+
+//Add user to facebook list
+function AddFacebookStreamer(msg, channels) {
+    var addedUser = msg.content.replace("!facebook ", "");
+    console.log("Attemptimg to add " + addedUser + " to Facebook notifications.");
+        var exists = false;
+        for (i = 0; i < channels.length; i++) {
+            if (channels[i] === ("#" + addedUser)) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            channels.push('#' + addedUser);
+            var text = "";
+            for (i = 0; i < channels.length; i++) {
+                text += channels[i] + "\n";
+            }
+            fs.writeFile(config.filePath + "facebook.txt", text, function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Facebook File written!');
+                }
+            });
+            console.log("User " + addedUser + " has been added to Facebook notifications.");
+            msg.reply("Facebook user " + addedUser + " has been added.");
+        } else {
+            console.log("User " + addedUser + " has already been added to Facebook notifications.");
+            msg.reply("Facebook user " + addedUser + " already exists!");
+        }
+    return channels;
+}
+
+//Remove user from facebook list
+function RemoveFacebookStreamer(msg, channels) {
+    var addedUser = msg.content.replace("!removefacebook ", "");
+        console.log("Attemptimg to remove " + addedUser + " from Facebook notifications.");
+        var exists = false;
+        var placement = 0;
+        for (i = 0; i < options.channels.length; i++) {
+            if (channels[i].toLowerCase().includes(addedUser.toLowerCase())) {
+                console.log("Found " + addedUser + " in the list.");
+                exists = true;
+                placement = i;
+            }
+        }
+        if (exists) {
+            channels.splice(placement, 1);
+            var text = "";
+            for (i = 0; i < channels.length; i++) {
+                text += channels[i] + "\n";
+            }
+            fs.writeFile(config.filePath + "facebook.txt", text, function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Facebook File written!');
+                }
+            });
+            msg.reply("Facebook user " + addedUser + " has been removed.");
+        } else {
+            console.log("Didn't see " + addedUser + " in the list.");
+            msg.reply("Facebook user " + addedUser + " isn't in the list!");
+        }
 }
