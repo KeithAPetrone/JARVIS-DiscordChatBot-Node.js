@@ -1,14 +1,15 @@
 // jshint esversion: 8
 
 const fs = require('fs-extra');
-const config = require('./config.json');
-const YouTube = require('youtube.js');
-const Twitch = require('twitch.js');
-const Facebook = require('facebook.js');
-const MixerFeatures = require('./Features/mixerFeatures.js');
-const silver = 500;
-const gold = 2500;
-const diamond = 5000;
+const config = require('./../config.json');
+const YouTube = require('./youtube');
+const Twitch = require('./twitch');
+const Facebook = require('./facebook');
+const MixerFeatures = require('./mixerFeatures');
+
+const silver = config.ranks.silver;
+const gold = config.ranks.gold;
+const diamond = config.ranks.diamond;
 
 function AskQuestion(questionsOfTheDay, client) {
     var qod = questionsOfTheDay.pop().toString();
@@ -177,7 +178,7 @@ function handleCommand(announcementsObj, msg, client) {
     }
     //Question of the day override
     else if (msg.content === '!qod') {
-        questions = DiscordFeatures.AskQuestion(questions, client);
+        questions = AskQuestion(questions, client);
     }
     //Add youtube user to announcements
     else if (msg.content.includes('!youtube')) {
@@ -219,3 +220,5 @@ function handleCommand(announcementsObj, msg, client) {
     announcementsObj.questions = questions;
     return announcementsObj;
 }
+
+module.exports.handleCommand = handleCommand;

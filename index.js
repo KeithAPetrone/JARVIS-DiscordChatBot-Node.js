@@ -36,38 +36,39 @@ var youtubers = {};
 var facebookers = {};
 var mixers = {};
 
+users = JSON.parse(fs.readFileSync(config.filePath + "users.json"));
+console.log("Database has been loaded...");
+let text = fs.readFileSync(config.filePath + "questions.txt");
+let textByLine = text.toString().split("\n");
+questionsOfTheDay = textByLine;
+console.log("Questions of the day list has been loaded...");
+text = fs.readFileSync(config.filePath + "twitch.txt");
+textByLine = text.toString().split("\n");
+options.channels = textByLine;
+console.log("Twitch user list has been loaded...");
+youtubers = JSON.parse(fs.readFileSync(config.filePath + "youtube.json"));
+console.log("YouTube user list has been loaded...");
+text = fs.readFileSync(config.filePath + "facebook.txt");
+textByLine = text.toString().split("\n");
+facebookers = textByLine;
+console.log("Facebook user list has been loaded...");
+text = fs.readFileSync(config.filePath + "mixer.txt");
+textByLine = text.toString().split("\n");
+mixers = textByLine;
+console.log("Mixer user list has been loaded...");
+
 //Logging into Discord
 client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
-    users = JSON.parse(fs.readFileSync(config.filePath + "users.json"));
-    console.log("Database has been loaded...");
-    let text = fs.readFileSync(config.filePath + "questions.txt");
-    let textByLine = text.toString().split("\n");
-    questionsOfTheDay = textByLine;
-    console.log("Questions of the day list has been loaded...");
-    text = fs.readFileSync(config.filePath + "twitch.txt");
-    textByLine = text.toString().split("\n");
-    options.channels = textByLine;
-    console.log("Twitch user list has been loaded...");
-    youtubers = JSON.parse(fs.readFileSync(config.filePath + "youtube.json"));
-    console.log("YouTube user list has been loaded...");
-    text = fs.readFileSync(config.filePath + "facebook.txt");
-    textByLine = text.toString().split("\n");
-    facebookers = textByLine;
-    console.log("Facebook user list has been loaded...");
-    text = fs.readFileSync(config.filePath + "mixer.txt");
-    textByLine = text.toString().split("\n");
-    mixers = textByLine;
-    console.log("Mixer user list has been loaded...");
 });
 
 //!ping command should issue "Pong!" response.
 client.on('message', msg => {
     let announcementsObj = {
-        twitch : options.channels,
-        youtube : youtubers,
-        users : users,
-        questions : questionsOfTheDay,
+        twitch: options.channels,
+        youtube: youtubers,
+        users: users,
+        questions: questionsOfTheDay,
         facebook: facebookers
     };
     announcementsObj = DiscordFeatures.handleCommand(announcementsObj, msg, client);
@@ -78,13 +79,9 @@ client.on('message', msg => {
     facebookers = announcementsObj.facebook;
 });
 
-client.login(config.twitch.APIkey);
+client.login(config.discord.APIkey);
 
 const tmi = require("tmi.js");
-
-var twitchText = fs.readFileSync(config.filePath + "twitch.txt");
-var twitchTextByLine = twitchText.toString().split("\n");
-options.channels = twitchTextByLine;
 
 //Connect to twitch server
 const client2 = new tmi.client(options);
@@ -119,10 +116,6 @@ setInterval(() => {
     }
 }, 10000);
 
-var facebookText = fs.readFileSync(config.filePath + "facebook.txt");
-var facebookTextByLine = facebookText.toString().split("\n");
-facebookers = facebookTextByLine;
-
 //Check if facebook stream is live
 //300000 is 5 minutes
 setInterval(() => {
@@ -145,20 +138,16 @@ setInterval(function () {
 //Check for new youtube videos
 setInterval(() => {
     for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
-        YouTube.fetchVideo(client, youtuber);
+        YouTube.fetchVideo(client, youtubers, youtuber);
     }
 }, 10000);
 
 //Check for new youtube streams
 setInterval(() => {
     for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
-        YouTube.fetchStream(client, youtuber);
+        YouTube.fetchStream(client, youtubers, youtuber);
     }
 }, 10000);
-
-var mixerText = fs.readFileSync(config.filePath + "mixer.txt");
-var mixerTextByLine = mixerText.toString().split("\n");
-mixers = mixerTextByLine;
 
 const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
 
@@ -170,36 +159,20 @@ client3.use(new Mixer.OAuthProvider(client, {
     },
 }));
 
-var sockets;
 var userInfo = MixerFeatures.getUserInfo(client3);
 
-for (i = 0; i < mixers.length; i++) {
-    let id = MixerFeatures.getID(mixers[i]);
-    sockets.push(MixerFeatures.joinChat(userInfo.id, id));
-}
-
-sockets.forEach(socket => {
-    //// Send a message once connected to chat.
-    //socket.call('msg', [`Hi! I'm connected!`]);
-
-    //// Greet a joined user
-    //socket.on('UserJoin', data => {
-    //    socket.call('msg',[
-    //        `Hi ${data.username}! I'm pingbot! Write !ping and I will pong back!`,
-    //    ]);
-    //});
-
-    // When there's a new chat message.
-    socket.on('ChatMessage', data => {
-        let msg = data.message.message[0].data;
-        MixerFeatures.handleCommand(socket, msg);
-    });
-});
+// for (i = 0; i < mixers.length; i++) {
+//     let id = MixerFeatures.getID(mixers[i]);
+//     MixerFeatures.joinChat(userInfo.id, id).on('ChatMessage', data => {
+//         let msg = data.message.message[0].data;
+//         MixerFeatures.handleCommand(socket, msg);
+//     });
+// }
 
 //Check for new youtube streams
 setInterval(() => {
     for (mixer = 0; mixer < mixers.length; mixer++) {
-        MixerFeatures.liveCheck(mixers[mixer]);
+        MixerFeatures.liveCheck(client, mixers[mixer]);
     }
 }, 10000);
 

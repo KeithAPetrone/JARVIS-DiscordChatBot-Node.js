@@ -1,14 +1,15 @@
 // jshint esversion: 8
 
 const fs = require('fs-extra');
-const config = require('./config.json');
-const youtubeAPIKey = config.youtube.APIKey;
+const config = require('./../config.json');
+const https = require('https');
+const youtubeAPIKey = config.youtube.APIkey;
 
 // Polls API and checks if there is a new video release
-function fetchVideo(client, youtuber) {
-    if (!youtubers[youtuber].latestVideo) return setLatestVideo(youtuber);
+function fetchVideo(client, youtubers, youtuber) {
+    if (!youtubers[youtuber].latestVideo) return setLatestVideo(youtubers, youtuber);
 
-    fetchData(youtuber).then((videoInfo) => {
+    fetchData(youtubers, youtuber).then((videoInfo) => {
         if (videoInfo.error) return;
         if (videoInfo.items[0].snippet.resourceId.videoId !== youtubers[youtuber].latestVideo) {
 
@@ -25,8 +26,8 @@ function fetchVideo(client, youtuber) {
 }
 
 // At start of the bot, fetches the latest video which is compared to if an announcement needs to be sent
-function setLatestVideo(youtuber) {
-    fetchData(youtuber).then((videoInfo) => {
+function setLatestVideo(youtubers, youtuber) {
+    fetchData(youtubers, youtuber).then((videoInfo) => {
         if (videoInfo.error) return;
 
         youtubers[youtuber].latestVideo = videoInfo.items[0].snippet.resourceId.videoId;
@@ -35,7 +36,7 @@ function setLatestVideo(youtuber) {
 }
 
 // Fetches data required to check if there is a new video release
-async function fetchData(youtuber) {
+async function fetchData(youtubers, youtuber) {
     let path = `channels?part=contentDetails&id=${youtubers[youtuber].id}&key=${youtubeAPIKey}`;
     const channelContent = await callAPI(path);
 
@@ -67,7 +68,7 @@ function sendVideoAnnouncement(client, videoInfo, channelInfo) {
 }
 
 // Polls API and checks whether channel is currently streaming
-function fetchStream(client, youtuber) {
+function fetchStream(client, youtubers, youtuber) {
     const path = `search?part=snippet&channelId=${youtubers[youtuber].id}&maxResults=1&eventType=live&type=video&key=${youtubeAPIKey}`;
 
     callAPI(path).then((streamInfo) => {
@@ -103,7 +104,6 @@ function sendStreamAnnouncement(client, streamInfo) {
 // Template HTTPS get function that interacts with the YouTube API, wrapped in a Promise
 function callAPI(path) {
     return new Promise((resolve) => {
-        const https = require('https');
         const options = {
             host: 'www.googleapis.com',
             path: `/youtube/v3/${path}`
@@ -111,7 +111,7 @@ function callAPI(path) {
 
         https.get(options, (res) => {
             if (res.statusCode !== 200) {
-                console.error("Failed, Status: " + res.statusCode + " Headers: " + res.headers.toString());
+                console.error("Failed, Request: " + JSON.stringify(options) + ", Status: " + res.statusCode);
                 return;
             }
             const rawData = [];
@@ -170,3 +170,6 @@ function RemoveYouTuber(msg, youtubers) {
         }
     return youtubers;
 }
+
+module.exports.fetchVideo = fetchVideo;
+module.exports.fetchStream = fetchStream;

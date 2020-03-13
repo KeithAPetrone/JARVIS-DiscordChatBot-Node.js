@@ -9,6 +9,7 @@
     "discord.js": "^11.5.1",
     "fs": "0.0.1-security",
     "fs-extra": "^8.1.0",
+    "got": "^10.4.0",
     "jshint": "^2.11.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",

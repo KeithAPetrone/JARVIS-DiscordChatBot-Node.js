@@ -1,10 +1,6 @@
 {
     "filePath": "C:/Users/keith/",
-    "discord:": {
-        "APIkey": "NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c"
-    },
     "youtube": {
-
         "APIkey": "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ"
     },
     "twitch": {
@@ -21,11 +17,19 @@
     "mixer": {
         "accessToken": "zkO33xqWhUXLGJHuZ5oHEzDbjeOIQTHMUb69iqCCzLDeHd6QewHQgiqljuuI55qL"
     },
+    "discord": {
+        "APIkey": "NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c"
+    },
     "channels": {
         "questionOfTheDay": "683773761102807089",
         "twitchLive": "671051742128898053",
         "youtubeVideo": "672866885020155936",
         "facebookLive": "672866805055750202",
         "mixerLive": "672866840480972820"
+    },
+    "ranks": {
+        "silver": 500,
+        "gold": 2500,
+        "diamond": 5000
     }
 }

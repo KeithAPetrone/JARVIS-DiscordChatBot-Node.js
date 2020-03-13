@@ -1,7 +1,7 @@
 // jshint esversion: 8
 
 const fs = require('fs-extra');
-const config = require('./config.json');
+const config = require('./../config.json');
 const api = require('twitch-api-v5');
 
 var usersCooldown = {};
@@ -170,3 +170,6 @@ function handleCommand(channel, userstate, message, self, users) {
     }
     return users;
 }
+
+module.exports.isLive = isLive;
+module.exports.handleCommand = handleCommand;
