@@ -2,31 +2,47 @@
 
 const config = require('./../config.json');
 const fs = require('fs-extra');
-const rp = require('request-promise');
-const url = 'https://www.facebook.com/';
-const liveButton = '<div class="_4r1w _69o5  _50f7 _2iem" role="heading" aria-level="4">LIVE</div>';
+const url = 'https://www.facebook.com/pg/';
+var request = require('request');
+const liveButton1 = 'mc9kygYtHQ0.png';
+const liveButton2 = 'lSMzfuVXCOB.png';
 
 var usersCooldown = {};
 
-function isLive(client, channelName) {
-    let streamPage = url + channelName;
-    rp(streamPage)
-        .then(function (html) {
-            if (html.includes(liveButton)) {
-                if (usersCooldown[channelName] === null || typeof usersCooldown[channelName] === undefined) {
-                    usersCooldown[channelName] = new Date();
-                    console.log("Adding to cooldown: " + usersCooldown);
-                    console.log(channelName + " is live!!!");
-                    client.channels.get(config.channels.faceBookLive).send(channelName + " is now live! Check them out at https://www.facebook.com/" + channelName);
-                }
-            } else {
-                usersCooldown[channelName] = null;
+async function fetchData(channelName) {
+    let path = url + channelName + "/videos/";
+    let streamHTML;
+    streamHTML = await getHTML(path);
+    return streamHTML;
+}
+
+function getHTML(path) {
+    return new Promise((resolve) => {
+        request(path, function (error, response, body) {
+            if (error) {
+                console.log("Error: " + error);
             }
-        })
-        .catch(function (err) {
-            //handle error
-            console.error("Couldn't grab Facebook site.");
+            console.log(body);
+            resolve(body);
         });
+    });
+}
+
+function isLive(client, channelName) {
+    fetchData(channelName).then((streamHTML) => {
+        if (streamHTML.error) return;
+
+        if (streamHTML.includes(liveButton1) || streamHTML.includes(liveButton2)) {
+            if (usersCooldown[channelName] === null || typeof usersCooldown[channelName] === undefined) {
+                usersCooldown[channelName] = new Date();
+                console.log("Adding to cooldown: " + usersCooldown);
+                console.log(channelName + " is live!!!");
+                client.channels.get("675458066979880963").send(channelName + " is now live! Check them out at https://www.facebook.com/" + channelName);
+            }
+        } else {
+            usersCooldown[channelName] = null;
+        }
+    });
 }
 
 //Add user to facebook list
