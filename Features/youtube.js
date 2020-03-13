@@ -119,6 +119,7 @@ function callAPI(path) {
             res.on('end', () => {
                 try {
                     var ytjson = rawData.toString().replace(",,", ",");
+                    ytjson = ytjson.replace(" ,    ", "");
                     resolve(JSON.parse(ytjson));
                 } catch (error) {
                     console.error(`An error occurred parsing the API response to JSON, ${error}`);

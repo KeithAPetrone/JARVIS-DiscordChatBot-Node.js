@@ -4,7 +4,7 @@
  * @author Keith Petrone
  * @email keithapetrone@gmail.com
  * @create date 2019-09-16 11:02:24
- * @modify date 2020-03-09 21:09:23
+ * @modify date 2020-03-13 11:24:58
  * @desc JARVIS is a bot designed around assisting the Fortify Streaming community.
  */
 
@@ -149,23 +149,29 @@ setInterval(() => {
     }
 }, 10000);
 
-const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
+// const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
 
-client3.use(new Mixer.OAuthProvider(client, {
-    tokens: {
-        access: config.mixer.accessToken,
-        // Tokens retrieved via this page last for 1 year.
-        expires: Date.now() + (365 * 24 * 60 * 60 * 1000)
-    },
-}));
-
-var userInfo = MixerFeatures.getUserInfo(client3);
+// client3.use(new Mixer.OAuthProvider(client, {
+//     tokens: {
+//         access: config.mixer.accessToken,
+//         // Tokens retrieved via this page last for 1 year.
+//         expires: Date.now() + (365 * 24 * 60 * 60 * 1000)
+//     },
+// }));
 
 // for (i = 0; i < mixers.length; i++) {
 //     let id = MixerFeatures.getID(mixers[i]);
-//     MixerFeatures.joinChat(userInfo.id, id).on('ChatMessage', data => {
-//         let msg = data.message.message[0].data;
-//         MixerFeatures.handleCommand(socket, msg);
+//     MixerChatBot(id);
+// }
+
+// function MixerChatBot(id) {
+//     MixerFeatures.getUserInfo(client3).then(async userInfo => {
+//         const socket = MixerFeatures.joinChat(userInfo.id, id);
+
+//         socket.on('ChatMessage', data => {
+//             // Does the message start with !ping
+//             MixerFeatures.handleCommand(socket, data);
+//         });
 //     });
 // }
 

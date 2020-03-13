@@ -20,6 +20,13 @@ async function isLive(channelName) {
     }
 }
 
+async function fetchID(channelName) {
+    let path = channelName + "?fields=id";
+    let response = await callAPI(path);
+    const id = response.id;
+    return id;
+}
+
 function liveCheck(client, channelName) {
     isLive(channelName).then((live) => {
         if (live.error) return;
@@ -145,12 +152,15 @@ async function joinChat(userId, channelId) {
     return socket.auth(channelId, userId, joinInformation.authkey).then(() => socket);
 }
 
-function handleCommand(socket, msg) {
+function handleCommand(socket, data) {
     //ping command
     if (msg.toLowerCase().startsWith('!ping')) {
         // Respond with pong
-        socket.call('msg', [`@${data.user_name} PONG!`]);
-        console.log(`Ponged ${data.user_name}`);
+        if (data.message.message[0].data.toLowerCase().startsWith('!ping')) {
+            // Respond with pong
+            socket.call('msg', [`@${data.user_name} PONG!`]);
+            console.log(`Ponged ${data.user_name}`);
+        }
     }
 }
 
@@ -185,6 +195,15 @@ function callAPI(path) {
     });
 }
 
+function getID(channelName) {
+    fetchID(channelName).then((id) => {
+        if (id.error) return;
+        
+        return id;
+    });
+} 
+
 module.exports.getUserInfo = getUserInfo;
 module.exports.joinChat = joinChat;
 module.exports.liveCheck = liveCheck;
+module.exports.getID = getID;
