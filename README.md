@@ -19,3 +19,7 @@ Progress:
 10. Can now easily add/remove users to Twitch notifications.
 11. Question of the Day will be sent out for chances for bonus points!
 12. !8jarvis command allows JARVIS to act as a Magic 8-Ball.
+13. YouTube video and stream announcements now work.
+14. Mixer video announcements now work.
+15. Facebook video announcements now work.
+16. Optimizations have been made. JARVIS is now more compatible to be used and configurated with multiple servers.
