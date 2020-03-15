@@ -174,3 +174,5 @@ function RemoveYouTuber(msg, youtubers) {
 
 module.exports.fetchVideo = fetchVideo;
 module.exports.fetchStream = fetchStream;
+module.exports.AddYouTuber = AddYouTuber;
+module.exports.RemoveYouTuber = RemoveYouTuber;

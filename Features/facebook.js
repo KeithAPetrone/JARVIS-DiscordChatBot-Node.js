@@ -116,3 +116,5 @@ function RemoveFacebookStreamer(msg, channels) {
 }
 
 module.exports.isLive = isLive;
+module.exports.AddFacebookStreamer = AddFacebookStreamer;
+module.exports.RemoveFacebookStreamer = RemoveFacebookStreamer;

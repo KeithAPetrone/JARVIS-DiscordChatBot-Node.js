@@ -32,6 +32,27 @@ function AskQuestion(questionsOfTheDay, client) {
     return questionsOfTheDay;
 }
 
+function SendMeme() {
+    var keyword = "gamingmeme";
+
+    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?", {
+            tags: keyword,
+            tagmode: "any",
+            format: "json"
+        },
+        function (data) {
+            var rnd = Math.floor(Math.random() * data.items.length);
+            var image_src = data.items[rnd]['media']['m'].replace("_m", "_b");
+            request.head(image_src, function (err, res, body) {
+                console.log('content-type:', res.headers['content-type']);
+                console.log('content-length:', res.headers['content-length']);
+                request(uri).pipe(fs.createWriteStream(config.filePath + "meme.png")).on('close', callback);
+            });
+            client.channels.get(config.channels.memes).send(image_src);
+            fs.unlinkSync(config.filePath + "meme.png");
+        });
+}
+
 /**
  * Takes in channel name and uses it to generate custom badge banner from their info.
  *
@@ -183,7 +204,7 @@ function handleCommand(announcementsObj, msg, client) {
     //Add youtube user to announcements
     else if (msg.content.includes('!youtube')) {
         youtubers = YouTube.AddYouTuber(msg, youtubers);
-    } 
+    }
     //Remove youtube user to announcements
     else if (msg.content.includes('!removeyoutube')) {
         youtubers = YouTube.RemoveYouTuber(msg, youtubers);
@@ -222,3 +243,5 @@ function handleCommand(announcementsObj, msg, client) {
 }
 
 module.exports.handleCommand = handleCommand;
+module.exports.SendMeme = SendMeme;
+module.exports.AskQuestion = AskQuestion;

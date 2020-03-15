@@ -173,3 +173,5 @@ function handleCommand(channel, userstate, message, self, users) {
 
 module.exports.isLive = isLive;
 module.exports.handleCommand = handleCommand;
+module.exports.AddTwitchStreamer = AddTwitchStreamer;
+module.exports.RemoveTwitchStreamer = RemoveTwitchStreamer;

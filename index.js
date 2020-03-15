@@ -117,7 +117,7 @@ setInterval(() => {
 }, 10000);
 
 //Question of the day logic
-setInterval(function () {
+setInterval(() => {
     var hour = new Date().getHours();
     console.log("Checking the time... Hour is " + hour);
     if (hour === 14) {
@@ -190,23 +190,7 @@ setInterval(() => {
     }
 }, 10000);
 
-/*
 //Meme of the day logic
-setTimeout(function(){
-var keyword = "meme";
-
-    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
-        {
-            tags: keyword,
-            tagmode: "any",
-            format: "json"
-        },
-        function(data) {
-            var rnd = Math.floor(Math.random() * data.items.length);
-
-            var image_src = data.items[rnd]['media']['m'].replace("_m", "_b");
-
-            client.channels.get("671054702632501248").send(image_src);
-        });
-}, (1000*60*60*24));
-*/
+setInterval(() => {
+    DiscordFeatures.SendMeme();
+}, (1000 * 60 * 60));

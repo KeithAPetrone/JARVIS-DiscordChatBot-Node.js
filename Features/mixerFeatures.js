@@ -189,3 +189,5 @@ module.exports.fetchID = fetchID;
 module.exports.handleCommand = handleCommand;
 module.exports.joinChat = joinChat;
 module.exports.getUserInfo = getUserInfo;
+module.exports.AddMixerStreamer = AddMixerStreamer;
+module.exports.RemoveMixerStreamer = RemoveMixerStreamer;
