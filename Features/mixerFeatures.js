@@ -4,6 +4,7 @@ const config = require('./../config.json');
 const fs = require('fs-extra');
 const https = require('https');
 const Mixer = require('@mixer/client-node');
+const ws = require('ws');
 
 var usersCooldown = {};
 
@@ -18,6 +19,20 @@ async function isLive(channelName) {
     } else {
         return false;
     }
+}
+
+/**
+ * Creates a Mixer chat socket and authenticates
+ * @param {number} userId The user to authenticate as
+ * @param {number} channelId The channel id of the channel you want to join
+ * @returns {Promise.<>}
+ */
+async function joinChat(client, userId, channelId) {
+    const joinInformation = await getConnectionInformation(client, channelId);
+    // Chat connection
+    const socket = new Mixer.Socket(ws, joinInformation.endpoints).boot();
+
+    return socket.auth(channelId, userId, joinInformation.authkey).then(() => socket);
 }
 
 async function fetchID(channelName) {
@@ -110,57 +125,12 @@ function RemoveMixerStreamer(msg, channels) {
     return channels;
 }
 
-/**
- * Gets our Currently Authenticated Mixer user's information.
- * This returns an object full of useful information about
- * the user whose OAuth Token we provided above.
- */
-async function getUserInfo(client) {
-    // Users Current will return information about the user who owns the OAuth
-    // token registered above.
-    return client.request('GET', 'users/current')
-        .then(response => response.body);
-}
-
-/**
- * Gets connection information from Mixer's chat servers
- * @param {Number} channelId The channelId of the channel you'd like
- *  to get connection information for.
- * @returns {Promise.<>}
- */
-async function getConnectionInformation(channelId, client) {
-    return new Mixer.ChatService(client).join(channelId).then(response => response.body);
-}
-
-/**
- * Creates a Mixer chat socket and authenticates
- * @param {number} userId The user to authenticate as
- * @param {number} channelId The channel id of the channel you want to join
- * @returns {Promise.<>}
- */
-async function joinChat(userId, channelId) {
-    const joinInformation = await getConnectionInformation(channelId);
-    // Create a chat socket and "boot" it(start it up and connect it)
-    const socket = new Mixer.Socket(ws, joinInformation.endpoints).boot();
-
-    /* Authenticates with the Chat Server, this requires 3 arguments:
-     * - The Channel Id of the channel you are connection to.
-     * - The user id of the user you are wanting to chat as.
-     * - The authentication key received from the server.
-     * The order of these arguments is VERY important.
-     */
-    return socket.auth(channelId, userId, joinInformation.authkey).then(() => socket);
-}
-
 function handleCommand(socket, data) {
     //ping command
-    if (msg.toLowerCase().startsWith('!ping')) {
+    if (data.message.message[0].data.toLowerCase().startsWith('!ping')) {
         // Respond with pong
-        if (data.message.message[0].data.toLowerCase().startsWith('!ping')) {
-            // Respond with pong
-            socket.call('msg', [`@${data.user_name} PONG!`]);
-            console.log(`Ponged ${data.user_name}`);
-        }
+        socket.call('msg', [`@${data.user_name} PONG!`]);
+        console.log(`Ponged ${data.user_name}`);
     }
 }
 
@@ -195,15 +165,27 @@ function callAPI(path) {
     });
 }
 
-function getID(channelName) {
-    fetchID(channelName).then((id) => {
-        if (id.error) return;
-        
-        return id;
-    });
-} 
+/**
+ * Gets connection information from Mixer's chat servers
+ * @param {Number} channelId The channelId of the channel you'd like to
+ *  get connection information for.
+ * @returns {Promise.<>}
+ */
+async function getConnectionInformation(client, channelId) {
+    return new Mixer.ChatService(client).join(channelId).then(response => response.body);
+}
 
-module.exports.getUserInfo = getUserInfo;
-module.exports.joinChat = joinChat;
+/* Gets our Currently Authenticated Mixer user's information. This returns an object
+ * full of useful information about the user whose OAuth Token we provided above.
+ */
+async function getUserInfo(client) {
+    // Users Current will return information about the user who owns the OAuth
+    // token registered above.
+    return client.request('GET', 'users/current').then(response => response.body);
+}
+
 module.exports.liveCheck = liveCheck;
-module.exports.getID = getID;
+module.exports.fetchID = fetchID;
+module.exports.handleCommand = handleCommand;
+module.exports.joinChat = joinChat;
+module.exports.getUserInfo = getUserInfo;

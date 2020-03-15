@@ -93,15 +93,6 @@ client2.on("chat", (channel, userstate, message, self) => {
     users = Twitch.handleCommand(channel, userstate, message, self, users);
 });
 
-////Maybe you want to advertise your youtube or facebook/twitter
-//
-//setInterval(() => {
-//
-//    client2.say("channel", "Heya, you should totally see my youtube. Or do you like what you se? Well you know what, subscribe then!");
-//
-//}, 300000); //Every 5 minute, your bot advertise your channel.
-//
-
 url = "https://api.twitch.tv/kraken/streams/";
 twitchClientId = config.twitch.clientID;
 twitchClientSecret = config.twitch.clientSecret;
@@ -149,31 +140,48 @@ setInterval(() => {
     }
 }, 10000);
 
-// const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
+// Instantiate a new Mixer Client
+const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
 
-// client3.use(new Mixer.OAuthProvider(client, {
-//     tokens: {
-//         access: config.mixer.accessToken,
-//         // Tokens retrieved via this page last for 1 year.
-//         expires: Date.now() + (365 * 24 * 60 * 60 * 1000)
-//     },
-// }));
+/* With OAuth we don't need to log in. The OAuth Provider will attach
+ * the required information to all of our requests after this call.
+ * They'll also be authenticated with the user information of the user
+ * who owns the token provided.
+ */
+client3.use(new Mixer.OAuthProvider(client3, {
+    tokens: {
+        access: config.mixer.accessToken,
+        // Tokens retrieved via this page last for 1 year.
+        expires: Date.now() + (365 * 24 * 60 * 60 * 1000)
+    },
+}));
 
-// for (i = 0; i < mixers.length; i++) {
-//     let id = MixerFeatures.getID(mixers[i]);
-//     MixerChatBot(id);
-// }
+// Get our Mixer Bot's User Information, Who are they?
+MixerFeatures.getUserInfo(client3).then(async userInfo => {
+    for (i = 0; i < mixers.length; i++) {
+        MixerFeatures.fetchID(mixers[i]).then((channelId) => {
+            if (channelId.error) return;
 
-// function MixerChatBot(id) {
-//     MixerFeatures.getUserInfo(client3).then(async userInfo => {
-//         const socket = MixerFeatures.joinChat(userInfo.id, id);
+            /* Join our target Chat Channel, in this case we'll join
+             * our Bot's channel.
+             * But you can replace the second argument of this function with ANY Channel ID.
+             */
+            MixerFeatures.joinChat(client3, userInfo.id, channelId).then((socket) => {
+                if (socket.error) return;
 
-//         socket.on('ChatMessage', data => {
-//             // Does the message start with !ping
-//             MixerFeatures.handleCommand(socket, data);
-//         });
-//     });
-// }
+                // When there's a new chat message.
+                socket.on('ChatMessage', data => {
+                    MixerFeatures.handleCommand(socket, data);
+                });
+                // Handle errors
+                socket.on('error', error => {
+                    console.error('Socket error');
+                    console.error(error);
+                });
+            });
+        });
+    }
+});
 
 //Check for new youtube streams
 setInterval(() => {
