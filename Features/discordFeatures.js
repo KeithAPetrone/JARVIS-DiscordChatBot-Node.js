@@ -201,6 +201,10 @@ function handleCommand(announcementsObj, msg, client) {
     else if (msg.content === '!qod') {
         questions = AskQuestion(questions, client);
     }
+    //Meme of the day override
+    else if (msg.content === '!meme') {
+        questions = SendMeme();
+    }
     //Add youtube user to announcements
     else if (msg.content.includes('!youtube')) {
         youtubers = YouTube.AddYouTuber(msg, youtubers);

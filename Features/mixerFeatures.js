@@ -65,7 +65,7 @@ function AddMixerStreamer(msg, channels) {
     console.log("Attemptimg to add " + addedUser + " to Mixer notifications.");
     var exists = false;
     for (i = 0; i < channels.length; i++) {
-        if (channels[i] === ("#" + addedUser)) {
+        if (channels[i] === (addedUser)) {
             exists = true;
         }
     }

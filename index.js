@@ -118,7 +118,7 @@ setInterval(() => {
 
 //Question of the day logic
 setInterval(() => {
-    var hour = new Date().getHours();
+    let hour = new Date().getHours();
     console.log("Checking the time... Hour is " + hour);
     if (hour === 14) {
         console.log("Time for Question of the Day!!!");
@@ -192,5 +192,10 @@ setInterval(() => {
 
 //Meme of the day logic
 setInterval(() => {
-    DiscordFeatures.SendMeme();
+    let hour = new Date().getHours();
+    console.log("Checking the time... Hour is " + hour);
+    if (hour === 14) {
+        console.log("Time for Meme of the Day!!!");
+        DiscordFeatures.SendMeme();
+    }
 }, (1000 * 60 * 60));

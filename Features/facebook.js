@@ -35,8 +35,7 @@ function isLive(client, channelName) {
     fetchData(channelName).then((streamHTML) => {
         if (streamHTML.error) return;
 
-        if (streamHTML.includes(liveButton1) || streamHTML.includes(liveButton2)) {
-            console.log(JSON.stringify(usersCooldown));
+        if (streamHTML.includes(liveButton1) || streamHTML.includes(liveButton2) || streamHTML.includes(">Live<")) {
             if (usersCooldown[channelName] === undefined || usersCooldown[channelName] === null || typeof usersCooldown[channelName] === undefined) {
                 usersCooldown[channelName] = new Date();
                 console.log("Adding to cooldown: " + usersCooldown);
@@ -55,12 +54,12 @@ function AddFacebookStreamer(msg, channels) {
     console.log("Attemptimg to add " + addedUser + " to Facebook notifications.");
     var exists = false;
     for (i = 0; i < channels.length; i++) {
-        if (channels[i] === ("#" + addedUser)) {
+        if (channels[i] === (addedUser)) {
             exists = true;
         }
     }
     if (!exists) {
-        channels.push('#' + addedUser);
+        channels.push(addedUser);
         var text = "";
         for (i = 0; i < channels.length; i++) {
             text += channels[i] + "\n";
