@@ -52,9 +52,9 @@ function liveCheck(client, channelName) {
                 console.log("Adding to cooldown: " + usersCooldown);
                 console.log(channelName + " is live!!!");
                 client.channels.get(config.channels.mixerLive).send(channelName + " is now live! Check them out at https://www.mixer.com/" + channelName);
-            } else {
-                usersCooldown[channelName] = null;
             }
+        } else {
+            usersCooldown[channelName] = null;
         }
     });
 }

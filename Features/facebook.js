@@ -59,7 +59,7 @@ function AddFacebookStreamer(msg, channels) {
         }
     }
     if (!exists) {
-        channels.push(addedUser);
+        channels.push('#' + addedUser);
         var text = "";
         for (i = 0; i < channels.length; i++) {
             text += channels[i] + "\n";
@@ -115,5 +115,3 @@ function RemoveFacebookStreamer(msg, channels) {
 }
 
 module.exports.isLive = isLive;
-module.exports.AddFacebookStreamer = AddFacebookStreamer;
-module.exports.RemoveFacebookStreamer = RemoveFacebookStreamer;
