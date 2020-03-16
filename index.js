@@ -131,14 +131,14 @@ setInterval(() => {
     for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
         YouTube.fetchVideo(client, youtubers, youtuber);
     }
-}, 10000);
+}, 500000);
 
 //Check for new youtube streams
 setInterval(() => {
     for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
         YouTube.fetchStream(client, youtubers, youtuber);
     }
-}, 10000);
+}, 500000);
 
 // Instantiate a new Mixer Client
 const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
