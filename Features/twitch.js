@@ -135,35 +135,11 @@ function handleCommand(channel, userstate, message, self, users) {
         }
 
         if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
-            if (userstate.username.toString().toLowerCase() in users) {
-                users[userstate.username.toString().toLowerCase()]++;
-                client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
-                timeLurker(userstate, 1);
-            } else {
-                // users[userstate.username] = 1;
-                // console.log('Twitch: ' + msg.author + ' has been added to the points database!');
-                // console.log(users);
-                client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
-            }
+            client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
         }
 
         if ((message.toLowerCase()).includes("!raid")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
-            if (userstate.username.toString().toLowerCase() in users) {
-                users[userstate.username.toString().toLowerCase()]++;
-                client2.say(channel, `@${userstate.username} RAIDING!!!`);
-                timeLurker(userstate, 2);
-            } else {
-                // users[userstate.username] = 1;
-                // console.log('Twitch: ' + msg.author + ' has been added to the points database!');
-                // console.log(users);
-                client2.say(channel, `@${userstate.username} You have been added to the points database on the Discord server!`);
-            }
-        }
-
-        if ((message.toLowerCase()).includes("!badword")) {
-
-            client2.ban("channel", userstate.username, "He wrote a bad word"); //this is a promise so you can add .then and .catch if you want
-
+            client2.say(channel, `@${userstate.username} Thank you for the raid!!!`);
         }
     } catch (err) {
         console.log(err);

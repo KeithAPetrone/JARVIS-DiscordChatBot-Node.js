@@ -131,6 +131,12 @@ function handleCommand(socket, data) {
         // Respond with pong
         socket.call('msg', [`@${data.user_name} PONG!`]);
         console.log(`Ponged ${data.user_name}`);
+    } else if (data.message.message[0].data.toLowerCase().startsWith('!lurk')) {
+        // Respond with pong
+        socket.call('msg', [`Thanks for lurking!!!`]);
+    } else if (data.message.message[0].data.toLowerCase().startsWith('!lurk')) {
+        // Respond with pong
+        socket.call('msg', [`Thank you for the raid!!!`]);
     }
 }
 
