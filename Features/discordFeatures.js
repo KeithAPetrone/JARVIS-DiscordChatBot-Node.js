@@ -33,9 +33,9 @@ function AskQuestion(questionsOfTheDay, client) {
 }
 
 function SendMeme() {
-    var keyword = "gamingmeme";
-
-    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?", {
+    let keyword = "gamingmeme";
+    let getJSON = require('get-json');
+    getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?", {
             tags: keyword,
             tagmode: "any",
             format: "json"
@@ -121,7 +121,7 @@ function customizeHTML(discordName) {
     var cap = 500;
     var rank = "BRONZE";
     if (users[name.toString().toLowerCase()] >= diamond) {
-        cap = "MAXED";
+        cap = "MAX";
         rank = "DIAMOND";
         file = file.replace("id=\"diamond\" style=\"display: none;\"", "id=\"diamond\"");
     } else if (users[name.toString().toLowerCase()] >= gold) {

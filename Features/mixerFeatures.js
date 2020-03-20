@@ -47,7 +47,7 @@ function liveCheck(client, channelName) {
         if (live.error) return;
         
         if (live) {
-            if (usersCooldown[channelName] === null || typeof usersCooldown[channelName] === undefined) {
+            if (usersCooldown[channelName] === undefined || usersCooldown[channelName] === null || typeof usersCooldown[channelName] === undefined) {
                 usersCooldown[channelName] = new Date();
                 console.log("Adding to cooldown: " + usersCooldown);
                 console.log(channelName + " is live!!!");

@@ -1,6 +1,6 @@
 /**
  * @application JARVIS
- * @version 1.0.0
+ * @version 1.2.4
  * @author Keith Petrone
  * @email keithapetrone@gmail.com
  * @create date 2019-09-16 11:02:24
@@ -186,6 +186,7 @@ MixerFeatures.getUserInfo(client3).then(async userInfo => {
 //Check for new youtube streams
 setInterval(() => {
     for (mixer = 0; mixer < mixers.length; mixer++) {
+        if (client != null)
         MixerFeatures.liveCheck(client, mixers[mixer]);
     }
 }, 10000);
