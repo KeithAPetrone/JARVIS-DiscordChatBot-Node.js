@@ -24,6 +24,7 @@ const YouTube = require('./Features/youtube.js');
 const Facebook = require('./Features/facebook.js');
 const MixerFeatures = require('./Features/mixerFeatures.js');
 const Mixer = require('@mixer/client-node');
+const Twitter = require('twitter');
 
 const client = new Discord.Client();
 
@@ -181,6 +182,30 @@ MixerFeatures.getUserInfo(client3).then(async userInfo => {
             });
         });
     }
+});
+
+var client4 = new Twitter({
+    consumer_key: config.twitter.APIkey,
+    consumer_secret: config.twitter.APIsecret,
+    access_token_key: config.twitter.accessToken,
+    access_token_secret: config.twitter.accessSecret
+  });
+
+var stream = client.stream('statuses/filter', {track: 'fortifystreamers'});
+stream.on('data', function(event) {
+  console.log(event && event.text);
+});
+var stream1 = client.stream('statuses/filter', {track: 'fortifystreaming'});
+stream1.on('data', function(event) {
+  console.log(event && event.text);
+});
+ 
+stream.on('error', function(error) {
+  throw error;
+});
+ 
+stream.on('error', function(error) {
+  throw error;
 });
 
 //Check for new youtube streams

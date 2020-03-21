@@ -20,6 +20,12 @@
     "discord": {
         "APIkey": "NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c"
     },
+    "twitter": {
+        "APIkey": "Y44Gp9L9YIFZifPeHvbCZNrml",
+        "APIsecret": "2lKrRAy1WZoQ2vKuxZGKBPDtMbbNlRpKJPFbcoaZTpujkRRsTT",
+        "accessToken": "1221491701690163210-XRhDqqeQLqmvP1pS39zlOoWdjB5e2g",
+        "accessSecret": "hoXUvHUz4tQx4IlqDx4jNj0PaKL28cTpMeIjdlGYweJwr"
+    },
     "channels": {
         "questionOfTheDay": "675458066979880963",
         "twitchLive": "675458066979880963",

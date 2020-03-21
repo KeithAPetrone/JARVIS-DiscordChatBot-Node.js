@@ -19,6 +19,7 @@
     "tmi": "^2.0.0",
     "tmi.js": "^1.5.0",
     "twitch-api-v5": "^2.0.4",
+    "twitter": "^1.7.1",
     "ws": "^7.2.3"
   },
   "devDependencies": {
