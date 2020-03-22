@@ -191,11 +191,11 @@ var client4 = new Twitter({
     access_token_secret: config.twitter.accessSecret
   });
 
-var stream = client.stream('statuses/filter', {track: 'fortifystreamers'});
+var stream = client4.stream('statuses/filter', {track: 'fortifystreamers'});
 stream.on('data', function(event) {
   console.log(event && event.text);
 });
-var stream1 = client.stream('statuses/filter', {track: 'fortifystreaming'});
+var stream1 = client4.stream('statuses/filter', {track: 'fortifystreaming'});
 stream1.on('data', function(event) {
   console.log(event && event.text);
 });
@@ -204,7 +204,7 @@ stream.on('error', function(error) {
   throw error;
 });
  
-stream.on('error', function(error) {
+stream1.on('error', function(error) {
   throw error;
 });
 
@@ -225,3 +225,9 @@ setInterval(() => {
         DiscordFeatures.SendMeme();
     }
 }, (1000 * 60 * 60));
+
+//Check for new Tweets to retweet
+setInterval(() => {
+        console.log("Checking for new Tweets...");
+        Twitter.retweetHashtags();
+}, 1000000);
