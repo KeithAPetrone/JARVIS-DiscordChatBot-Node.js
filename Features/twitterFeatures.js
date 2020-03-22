@@ -1,6 +1,6 @@
 // jshint esversion: 8
 
-const Twitter = require('twitter');
+const Twitter = require('twit');
 const config = require('./../config.json');
 
 function retweetHashtags() {
@@ -8,7 +8,7 @@ function retweetHashtags() {
             q: config.twitter.hashtags,  // REQUIRED
             result_type: 'recent',
             lang: 'en'
-        }
+        };
         // for more parameters, see: https://dev.twitter.com/rest/reference/get/search/tweets
     
         Twitter.get('search/tweets', params, function(err, data) {
@@ -34,6 +34,38 @@ function retweetHashtags() {
               console.log('Something went wrong while SEARCHING...');
             }
         });
+
+        function favoriteHashtags() {
+            var params = {
+                q: '#nodejs, #Nodejs',  // REQUIRED
+                result_type: 'recent',
+                lang: 'en'
+            };
+            // for more parametes, see: https://dev.twitter.com/rest/reference
+          
+            // find the tweet
+            Twitter.get('search/tweets', params, function(err,data){
+          
+              // find tweets
+              var tweet = data.statuses;
+              var randomTweet = ranDom(tweet);   // pick a random tweet
+          
+              // if random tweet exists
+              if(typeof randomTweet != 'undefined'){
+                // Tell TWITTER to 'favorite'
+                Twitter.post('favorites/create', {id: randomTweet.id_str}, function(err, response){
+                  // if there was an error while 'favorite'
+                  if(err){
+                    console.log('CANNOT BE FAVORITE... Error');
+                  }
+                  else{
+                    console.log('FAVORITED... Success!!!');
+                  }
+                });
+              }
+            });
+        }
 }
 
 module.exports.retweetHashtags = retweetHashtags;
+module.exports.favoriteHashtags = favoriteHashtags;

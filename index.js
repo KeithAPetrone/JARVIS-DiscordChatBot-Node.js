@@ -230,4 +230,5 @@ setInterval(() => {
 setInterval(() => {
         console.log("Checking for new Tweets...");
         Twitter.retweetHashtags();
+        Twitter.favoriteHashtags();
 }, 1000000);
