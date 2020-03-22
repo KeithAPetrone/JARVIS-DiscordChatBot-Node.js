@@ -6,11 +6,11 @@
   "dependencies": {
     "@mixer/client-node": "^3.5.0",
     "cheerio": "^1.0.0-rc.3",
-    "discord.js": "^11.5.1",
+    "discord.js": "^11.6.3",
     "fs": "0.0.1-security",
     "fs-extra": "^8.1.0",
     "get-json": "^1.0.1",
-    "got": "^10.4.0",
+    "got": "^10.6.0",
     "jquery": "^3.4.1",
     "jshint": "^2.11.0",
     "request": "^2.88.2",
