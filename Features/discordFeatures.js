@@ -168,8 +168,6 @@ function handleCommand(announcementsObj, msg, client) {
     //!ping command should issue "Pong!" response.
     if (msg.content === '!ping') {
         msg.reply('Pong!');
-    } else if (msg.content === '!test') {
-        msg.author.send(config.discord.welcomeMessage);
     }
     //Displays everyone's points to the chat.
     else if (msg.content === '!scoreboard') {
