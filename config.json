@@ -18,7 +18,8 @@
         "accessToken": "zkO33xqWhUXLGJHuZ5oHEzDbjeOIQTHMUb69iqCCzLDeHd6QewHQgiqljuuI55qL"
     },
     "discord": {
-        "APIkey": "NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c"
+        "APIkey": "NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c",
+        "welcomeMessage": "Welcome to Fortify Streamers!!\n\nWe are glad you have joined us. First, we have to establish some ground rules. You can find these pinned in the #announcements channel.\n\nPlease feel free to share your social media pages in the Social Media Promotion channels. Once you have shared your information, we will add you to the bot, and your streams will automatically be announced in the Stream Notifications channels. If you would like, feel free to tell us a little about yourself in the #introduce-yourself channel (not required). You can find people to play with in the Gaming Connections channels, and you can hang out and have fun in the Text Channels.\n\nPlease reach out to an Admin or Moderator if you ever have any questions or concerns! Have fun and support your fellow streamers!"
     },
     "twitter": {
         "APIkey": "Y44Gp9L9YIFZifPeHvbCZNrml",

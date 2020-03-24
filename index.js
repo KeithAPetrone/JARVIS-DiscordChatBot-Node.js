@@ -63,7 +63,11 @@ client.on('ready', () => {
     console.log(`Discord: Logged in as ${client.user.tag}!`);
 });
 
-//!ping command should issue "Pong!" response.
+client.on('guildMemberAdd', (member) => {
+    console.log(member.user.tag.toString() + " has joined the server!");
+    member.send(config.discord.welcomeMessage);
+});
+
 client.on('message', msg => {
     let announcementsObj = {
         twitch: options.channels,
