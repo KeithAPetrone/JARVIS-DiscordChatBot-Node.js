@@ -149,6 +149,7 @@ function handleCommand(announcementsObj, msg, client) {
     let questions = announcementsObj.questions;
     let facebookers = announcementsObj.facebook;
     let mixers = announcementsObj.mixer;
+    let ss = announcementsObj.ss;
     //Every message should increase exp by [number of words] points.
     console.log('Received #' + msg.id + ': ' + msg.content);
     let name = msg.author.tag.toString().toLowerCase();
@@ -205,6 +206,15 @@ function handleCommand(announcementsObj, msg, client) {
     else if (msg.content === '!meme') {
         questions = SendMeme();
     }
+    //Prints Streamer Spotlight Scores
+    else if (msg.content === '!ss') {
+        msg.reply(JSON.stringify(ss));
+    }
+    //Clears Streamer Spotlight Scores
+    else if (msg.content === '!ssclear') {
+        ss = {};
+        msg.reply("Streamer Spotlight scores have been cleared.");
+    }
     //Add youtube user to announcements
     else if (msg.content.includes('!youtube')) {
         youtubers = YouTube.AddYouTuber(msg, youtubers);
@@ -243,6 +253,7 @@ function handleCommand(announcementsObj, msg, client) {
     announcementsObj.youtube = youtubers;
     announcementsObj.users = users;
     announcementsObj.questions = questions;
+    announcementsObj.ss = ss;
     return announcementsObj;
 }
 

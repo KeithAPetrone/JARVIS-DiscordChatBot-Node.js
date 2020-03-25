@@ -125,19 +125,25 @@ function RemoveMixerStreamer(msg, channels) {
     return channels;
 }
 
-function handleCommand(socket, data) {
+function handleCommand(socket, data, announcementsObj) {
+    let ss = announcementsObj.ss;
+    let users = announcementsObj.users;
     //ping command
     if (data.message.message[0].data.toLowerCase().startsWith('!ping')) {
         // Respond with pong
         socket.call('msg', [`@${data.user_name} PONG!`]);
         console.log(`Ponged ${data.user_name}`);
     } else if (data.message.message[0].data.toLowerCase().startsWith('!lurk')) {
-        // Respond with pong
         socket.call('msg', [`Thanks for lurking!!!`]);
     } else if (data.message.message[0].data.toLowerCase().startsWith('!lurk')) {
-        // Respond with pong
         socket.call('msg', [`Thank you for the raid!!!`]);
+    } else if (data.message.message[0].data.toLowerCase().startsWith('!ss')) {
+        ss[channel._id]++;
+        socket.call('msg', [`Thank you for choosing this streamer for the Fortify Streamers Spotlight!!!`]);
     }
+    announcementsObj.ss = ss;
+    announcementsObj.users = users;
+    return announcementsObj;
 }
 
 // Template HTTPS get function that interacts with the Mixer API, wrapped in a Promise

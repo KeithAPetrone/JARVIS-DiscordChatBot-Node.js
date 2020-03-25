@@ -37,6 +37,7 @@ var questionsOfTheDay = [];
 var youtubers = {};
 var facebookers = {};
 var mixers = {};
+var streamerSpotlight = {};
 
 users = JSON.parse(fs.readFileSync(config.filePath + "users.json"));
 console.log("Database has been loaded...");
@@ -100,7 +101,8 @@ client.on('message', msg => {
         youtube: youtubers,
         users: users,
         questions: questionsOfTheDay,
-        facebook: facebookers
+        facebook: facebookers,
+        ss: streamerSpotlight
     };
     announcementsObj = DiscordFeatures.handleCommand(announcementsObj, msg, client);
     options.channels = announcementsObj.twitch;
@@ -108,6 +110,7 @@ client.on('message', msg => {
     users = announcementsObj.users;
     questionsOfTheDay = announcementsObj.questions;
     facebookers = announcementsObj.facebook;
+    streamerSpotlight = announcementsObj.ss;
 });
 
 client.login(config.discord.APIkey);
@@ -121,7 +124,13 @@ client2.connect();
 
 //on chat
 client2.on("chat", (channel, userstate, message, self) => {
-    users = Twitch.handleCommand(channel, userstate, message, self, users);
+    let announcementsObj = {
+        users: users,
+        ss: streamerSpotlight
+    };
+    announcementsObj = Twitch.handleCommand(channel, userstate, message, self, announcementsObj);
+    users = announcementsObj.users;
+    streamerSpotlight = announcementsObj.ss;
 });
 
 url = "https://api.twitch.tv/kraken/streams/";
@@ -202,7 +211,13 @@ MixerFeatures.getUserInfo(client3).then(async userInfo => {
 
                 // When there's a new chat message.
                 socket.on('ChatMessage', data => {
-                    MixerFeatures.handleCommand(socket, data);
+                    let announcementsObj = {
+                        users: users,
+                        ss: streamerSpotlight
+                    };
+                    announcementsObj = MixerFeatures.handleCommand(socket, data, announcementsObj);
+                    users = announcementsObj.users;
+                    streamerSpotlight = announcementsObj.ss;
                 });
                 // Handle errors
                 socket.on('error', error => {

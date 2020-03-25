@@ -113,7 +113,9 @@ function RemoveTwitchStreamer(msg, channels) {
         }
 }
 
-function handleCommand(channel, userstate, message, self, users) {
+function handleCommand(channel, userstate, message, self, announcementsObj) {
+    let ss = announcementsObj.ss;
+    let users = announcementsObj.users;
     try {
         // file not presenet
         //var data = fs.readFileSync('sample.html');
@@ -134,17 +136,24 @@ function handleCommand(channel, userstate, message, self, users) {
             console.log("Twitch: Pong!!!");
         }
 
-        if ((message.toLowerCase()).includes("!lurk")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+        if ((message.toLowerCase()).includes("!lurk")) {
             client2.say(channel, `@${userstate.username} Thanks for lurking!!!`);
         }
 
-        if ((message.toLowerCase()).includes("!raid")) { //using string.includes is case-sensitive, so it is better to just make it lowercase
+        if ((message.toLowerCase()).includes("!raid")) { 
             client2.say(channel, `@${userstate.username} Thank you for the raid!!!`);
+        }
+
+        if ((message.toLowerCase()).includes("!ss")) {
+            ss[channel._id]++;
+            client2.say(channel, `@${userstate.username} Thank you for choosing this streamer for the Fortify Streamers Spotlight!!!`);
         }
     } catch (err) {
         console.log(err);
     }
-    return users;
+    announcementsObj.ss = ss;
+    announcementsObj.users = users;
+    return announcementsObj;
 }
 
 module.exports.isLive = isLive;
