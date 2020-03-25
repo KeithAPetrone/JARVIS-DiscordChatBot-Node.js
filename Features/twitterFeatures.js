@@ -67,5 +67,22 @@ function retweetHashtags() {
         }
 }
 
+function sendGreeting(user) {
+  T.post(
+    'direct_messages/new',
+    {
+      user_id: user.id_str,
+      text: config.twitter.greeting
+    },
+    function(err) {
+      if (err) {
+        console.error('error in sendGreeting to user: %s %s %s', user.name, user.screen_name, user.id_str)
+        console.error(err)
+      }
+    }
+  )
+}
+
 module.exports.retweetHashtags = retweetHashtags;
 module.exports.favoriteHashtags = favoriteHashtags;
+module.exports.sendGreeting = sendGreeting;

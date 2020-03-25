@@ -25,6 +25,7 @@ const Facebook = require('./Features/facebook.js');
 const MixerFeatures = require('./Features/mixerFeatures.js');
 const Mixer = require('@mixer/client-node');
 const Twitter = require('twitter');
+const TwitterFeatures = require('./Features/twitterFeatures.js');
 
 const client = new Discord.Client();
 
@@ -203,12 +204,20 @@ var stream1 = client4.stream('statuses/filter', {track: 'fortifystreaming'});
 stream1.on('data', function(event) {
   console.log(event && event.text);
 });
+var stream2 = client4.stream('user');
+stream2.on('follow', function(json) {
+  if (json.event === 'follow') {
+      TwitterFeatures.sendGreeting(json.source)
+    }
+});
  
 stream.on('error', function(error) {
   throw error;
 });
- 
 stream1.on('error', function(error) {
+  throw error;
+});
+stream2.on('error', function(error) {
   throw error;
 });
 
