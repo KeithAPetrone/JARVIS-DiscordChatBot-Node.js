@@ -1,3 +1,7 @@
+// jshint esversion: 8
+
+const config = require('./config.json');
+
 const options = {
     options: {
         debug: true
@@ -6,8 +10,8 @@ const options = {
         reconnect: true
     },
     identity: {
-        username: "THE_JARVIS_BOT",
-        password: "oauth:msfv78j577jad2ejunus2y11miyx10"
+        username: config.twitch.username,
+        password: config.twitch.password
     },
     channels: []
 };

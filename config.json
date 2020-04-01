@@ -1,0 +1,45 @@
+{
+    "filePath": "C:/Users/keith/",
+    "youtube": {
+        "APIkey": "AIzaSyCBh_OPQYn8H34xNkFAb3kCNOVHZAdIVtQ"
+    },
+    "twitch": {
+        "username": "THE_JARVIS_BOT",
+        "password": "oauth:msfv78j577jad2ejunus2y11miyx10",
+        "clientID": "thwzykk3l7cckshmybn0vwf0ijww85",
+        "clientSecret": "698iwyzok0qh9yr7nakj61yo33rsv5"
+    }, 
+    "facebook": {
+        "clientToken": "1e8b3b221a6f153e0e3e83913a04c65e",
+        "appID": "2553562974925842",
+        "appSecret": "41ac9ce7533c3da740065d88ebb88c7c"
+    },
+    "mixer": {
+        "accessToken": "zkO33xqWhUXLGJHuZ5oHEzDbjeOIQTHMUb69iqCCzLDeHd6QewHQgiqljuuI55qL"
+    },
+    "discord": {
+        "APIkey": "NjExMzAzODcwODUzMDIxNzM1.XVR9Ww.o3zYBezLAJMc3czYl7PPe7RwU_c",
+        "welcomeMessage": "Welcome to Fortify Streamers!!\n\nWe are glad you have joined us. First, we have to establish some ground rules. You can find these pinned in the #announcements channel.\n\nPlease feel free to share your social media pages in the Social Media Promotion channels. Once you have shared your information, we will add you to the bot, and your streams will automatically be announced in the Stream Notifications channels. If you would like, feel free to tell us a little about yourself in the #introduce-yourself channel (not required). You can find people to play with in the Gaming Connections channels, and you can hang out and have fun in the Text Channels.\n\nPlease reach out to an Admin or Moderator if you ever have any questions or concerns! Have fun and support your fellow streamers!"
+    },
+    "twitter": {
+        "APIkey": "Y44Gp9L9YIFZifPeHvbCZNrml",
+        "APIsecret": "2lKrRAy1WZoQ2vKuxZGKBPDtMbbNlRpKJPFbcoaZTpujkRRsTT",
+        "accessToken": "1221491701690163210-XRhDqqeQLqmvP1pS39zlOoWdjB5e2g",
+        "accessSecret": "hoXUvHUz4tQx4IlqDx4jNj0PaKL28cTpMeIjdlGYweJwr",
+        "hashtags": "#fortifystreamers, #fortifystreaming",
+        "greeting": "Thank you so much for following us!!!"
+    },
+    "channels": {
+        "questionOfTheDay": "675458066979880963",
+        "twitchLive": "675458066979880963",
+        "youtubeVideo": "675458066979880963",
+        "facebookLive": "675458066979880963",
+        "mixerLive": "675458066979880963",
+        "memes": "675458066979880963"
+    },
+    "ranks": {
+        "silver": 500,
+        "gold": 2500,
+        "diamond": 5000
+    }
+}
