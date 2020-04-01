@@ -73,19 +73,20 @@ client.on('guildMemberAdd', (member) => {
     member.send(config.discord.welcomeMessage);
 
     // To compare, we need to load the current invite list.
-  member.guild.fetchInvites().then(guildInvites => {
-    // This is the *existing* invites for the guild.
-    const ei = invites[member.guild.id];
-    // Update the cached invites for the guild.
-    invites[member.guild.id] = guildInvites;
-    // Look through the invites, find the one for which the uses went up.
-    const invite = guildInvites.find(i => ei.get(i.code).uses < i.uses);
-    // This is just to simplify the message being sent below (inviter doesn't have a tag property)
-    const inviter = client.users.get(invite.inviter.id);
-    // Get the log channel (change to your liking)
-    const logChannel = member.guild.channels.find(channel => channel.name === "logging");
-    // A real basic message with the information we need. 
-    logChannel.send(`${member.user.tag} joined using invite code ${invite.code} from ${inviter.tag}. Invite was used ${invite.uses} times since its creation.`);
+    member.guild.fetchInvites().then(guildInvites => {
+        // This is the *existing* invites for the guild.
+        const ei = invites[member.guild.id];
+        // Update the cached invites for the guild.
+        invites[member.guild.id] = guildInvites;
+        // Look through the invites, find the one for which the uses went up.
+        const invite = guildInvites.find(i => ei.get(i.code).uses < i.uses);
+        // This is just to simplify the message being sent below (inviter doesn't have a tag property)
+        const inviter = client.users.get(invite.inviter.id);
+        // Get the log channel (change to your liking)
+        const logChannel = member.guild.channels.find(channel => channel.name === "logging");
+        // A real basic message with the information we need. 
+        logChannel.send(`${member.user.tag} joined using invite code ${invite.code} from ${inviter.tag}. Invite was used ${invite.uses} times since its creation.`);
+    });
 });
 
 // Load all invites for all guilds and save them to the cache.
@@ -234,38 +235,42 @@ var client4 = new Twitter({
     consumer_secret: config.twitter.APIsecret,
     access_token_key: config.twitter.accessToken,
     access_token_secret: config.twitter.accessSecret
-  });
-
-var stream = client4.stream('statuses/filter', {track: 'fortifystreamers'});
-stream.on('data', function(event) {
-  console.log(event && event.text);
 });
-var stream1 = client4.stream('statuses/filter', {track: 'fortifystreaming'});
-stream1.on('data', function(event) {
-  console.log(event && event.text);
+
+var stream = client4.stream('statuses/filter', {
+    track: 'fortifystreamers'
+});
+stream.on('data', function (event) {
+    console.log(event && event.text);
+});
+var stream1 = client4.stream('statuses/filter', {
+    track: 'fortifystreaming'
+});
+stream1.on('data', function (event) {
+    console.log(event && event.text);
 });
 var stream2 = client4.stream('user');
-stream2.on('follow', function(json) {
-  if (json.event === 'follow') {
-      TwitterFeatures.sendGreeting(json.source)
+stream2.on('follow', function (json) {
+    if (json.event === 'follow') {
+        TwitterFeatures.sendGreeting(json.source)
     }
 });
- 
-stream.on('error', function(error) {
-  throw error;
+
+stream.on('error', function (error) {
+    console.log(error);
 });
-stream1.on('error', function(error) {
-  throw error;
+stream1.on('error', function (error) {
+    console.log(error);
 });
-stream2.on('error', function(error) {
-  throw error;
+stream2.on('error', function (error) {
+    console.log(error);
 });
 
 //Check for new youtube streams
 setInterval(() => {
     for (mixer = 0; mixer < mixers.length; mixer++) {
         if (client != null)
-        MixerFeatures.liveCheck(client, mixers[mixer]);
+            MixerFeatures.liveCheck(client, mixers[mixer]);
     }
 }, 10000);
 
@@ -281,7 +286,7 @@ setInterval(() => {
 
 //Check for new Tweets to retweet
 setInterval(() => {
-        console.log("Checking for new Tweets...");
-        Twitter.retweetHashtags();
-        Twitter.favoriteHashtags();
+    console.log("Checking for new Tweets...");
+    Twitter.retweetHashtags();
+    Twitter.favoriteHashtags();
 }, 1000000);
