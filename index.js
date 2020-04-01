@@ -86,7 +86,8 @@ client.on('guildMemberAdd', (member) => {
     const logChannel = member.guild.channels.find(channel => channel.name === "logging");
     // A real basic message with the information we need. 
     logChannel.send(`${member.user.tag} joined using invite code ${invite.code} from ${inviter.tag}. Invite was used ${invite.uses} times since its creation.`);
-});
+}
+)});
 
 // Load all invites for all guilds and save them to the cache.
 client.guilds.forEach(g => {

@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@mixer/client-node": "^3.5.0",
+    "bitfield": "^3.0.0",
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.6.3",
     "fs": "0.0.1-security",
