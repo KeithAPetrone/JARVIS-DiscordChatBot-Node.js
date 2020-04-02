@@ -35,12 +35,12 @@ function isLive(client, channelName) {
     fetchData(channelName).then((streamHTML) => {
         if (streamHTML.error) return;
 
-        if (streamHTML.includes(liveButton1) || streamHTML.includes(liveButton2) || streamHTML.includes(">Live<")) {
+        if (streamHTML.includes(liveButton1) || streamHTML.includes(liveButton2) || streamHTML.includes("<u>Live</u>")) {
             if (usersCooldown[channelName] === undefined || usersCooldown[channelName] === null || typeof usersCooldown[channelName] === undefined) {
                 usersCooldown[channelName] = new Date();
                 console.log("Adding to cooldown: " + usersCooldown);
                 console.log(channelName + " is live!!!");
-                client.channels.get(config.channels.facebookLive).send(channelName + " is now live! Check them out at https://www.facebook.com/" + channelName);
+                client.channels.get(config.channels.facebookLive).send(channelName + " is now live! Check them out at https://www.facebook.com/" + channelName + "/live");
             }
         } else {
             usersCooldown[channelName] = null;

@@ -59,9 +59,11 @@ function SendMeme() {
  * @param {string} discordName
  * @returns Gulp output. May be useful for logging.
  */
-function generateImage(discordName, replyChannel) {
+function generateImage(discordName, replyChannel, users) {
+    if (replyChannel == null || replyChannel == undefined) return;
+    
     console.log("Customizing HTML for " + discordName);
-    customizeHTML(discordName);
+    customizeHTML(discordName, users);
 
     console.log("Generating image for " + discordName);
     const gulp = require("gulp");
@@ -99,7 +101,7 @@ function generateImage(discordName, replyChannel) {
  *
  * @param {string} discordName
  */
-function customizeHTML(discordName) {
+function customizeHTML(discordName, users) {
     console.log("Writing custom HTML for " + discordName);
 
     let path = require("path");
@@ -138,7 +140,7 @@ function customizeHTML(discordName) {
     file = file.replace("{{CAP}}", cap);
     file = file.replace("{{RANK}}", rank);
 
-    fs.writeFile(config.filePath + name + ".html", file, "utf8");
+    fs.writeFile(name + ".html", file, "utf8");
     console.log("Created html file");
 }
 
@@ -183,7 +185,7 @@ function handleCommand(announcementsObj, msg, client) {
     }
     //Displays that user's rank and score.
     else if (msg.content === '!rank') {
-        generateImage(msg.author.tag.toString().toLowerCase(), msg.channel);
+        generateImage(msg.author.tag.toString().toLowerCase(), msg.channel, users);
     }
     //Magic 8ball command
     else if (msg.content.includes('!8jarvis')) {
