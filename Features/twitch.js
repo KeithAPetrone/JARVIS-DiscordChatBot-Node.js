@@ -115,7 +115,7 @@ function RemoveTwitchStreamer(msg, channels) {
 
 function handleCommand(client2, channel, userstate, message, self, announcementsObj) {
     let ss = announcementsObj.ss;
-    let users = announcementsObj.users;
+    let users = announcementsObj.announceUsers;
     try {
         // file not presenet
         //var data = fs.readFileSync('sample.html');
@@ -152,7 +152,7 @@ function handleCommand(client2, channel, userstate, message, self, announcements
         console.log(err);
     }
     announcementsObj.ss = ss;
-    announcementsObj.users = users;
+    announcementsObj.announceUsers = users;
     return announcementsObj;
 }
 

@@ -100,7 +100,7 @@ client.on('message', msg => {
     let announcementsObj = {
         twitch: options.channels,
         youtube: youtubers,
-        users: users,
+        announceUsers: users,
         questions: questionsOfTheDay,
         facebook: facebookers,
         ss: streamerSpotlight
@@ -108,7 +108,7 @@ client.on('message', msg => {
     announcementsObj = DiscordFeatures.handleCommand(announcementsObj, msg, client);
     options.channels = announcementsObj.twitch;
     youtubers = announcementsObj.youtube;
-    users = announcementsObj.users;
+    users = announcementsObj.announceUsers;
     questionsOfTheDay = announcementsObj.questions;
     facebookers = announcementsObj.facebook;
     streamerSpotlight = announcementsObj.ss;
@@ -126,11 +126,11 @@ client2.connect();
 //on chat
 client2.on("chat", (channel, userstate, message, self) => {
     let announcementsObj = {
-        users: users,
+        announceUsers: users,
         ss: streamerSpotlight
     };
     announcementsObj = Twitch.handleCommand(client2, channel, userstate, message, self, announcementsObj);
-    users = announcementsObj.users;
+    users = announcementsObj.announceUsers;
     streamerSpotlight = announcementsObj.ss;
 });
 

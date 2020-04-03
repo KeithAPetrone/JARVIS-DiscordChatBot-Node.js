@@ -148,7 +148,7 @@ function customizeHTML(discordName, users) {
 function handleCommand(announcementsObj, msg, client) {
     let youtubers = announcementsObj.youtube;
     let twitchers = announcementsObj.twitch;
-    let users = announcementsObj.users;
+    let users = announcementsObj.announceUsers;
     let questions = announcementsObj.questions;
     let facebookers = announcementsObj.facebook;
     let mixers = announcementsObj.mixer;
@@ -254,7 +254,7 @@ function handleCommand(announcementsObj, msg, client) {
     announcementsObj.facebook = facebookers;
     announcementsObj.twitch = twitchers;
     announcementsObj.youtube = youtubers;
-    announcementsObj.users = users;
+    announcementsObj.announceUsers = users;
     announcementsObj.questions = questions;
     announcementsObj.ss = ss;
     return announcementsObj;
