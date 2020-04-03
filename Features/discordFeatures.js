@@ -74,7 +74,8 @@ function generateImage(discordName, replyChannel, users) {
     return gulp.src([discordName.substring(0, discordName.length - 5) + ".html"])
         .pipe(tap(async (file) => {
             const browser = await puppeteer.launch({
-                headless: true
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
             const page = await browser.newPage();
             await page.setViewport({
@@ -82,8 +83,8 @@ function generateImage(discordName, replyChannel, users) {
                 height: 300,
                 deviceScaleFactor: 1,
             });
-            console.log("set viewport");
-            await page.goto(file.path);
+            console.log("set viewport: " + file.path);
+            await page.goto("file://" + file.path);
             await page.screenshot({
                 path: path.basename(file.basename, ".html") + ".png"
             });

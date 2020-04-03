@@ -40,7 +40,9 @@ function isLive(client, channelName) {
                 usersCooldown[channelName] = new Date();
                 console.log("Adding to cooldown: " + usersCooldown);
                 console.log(channelName + " is live!!!");
-                client.channels.get(config.channels.facebookLive).send(channelName + " is now live! Check them out at https://www.facebook.com/" + channelName + "/live");
+                let streamURL = "https://www.facebook.com/" + channelName + "/live";
+                let announcementMessage = (channelName + " is now live! " + streamURL).replace(/\s/g, "");
+                client.channels.get(config.channels.facebookLive).send(announcementMessage);
             }
         } else {
             usersCooldown[channelName] = null;

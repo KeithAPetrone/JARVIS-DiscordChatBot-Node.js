@@ -129,7 +129,7 @@ client2.on("chat", (channel, userstate, message, self) => {
         users: users,
         ss: streamerSpotlight
     };
-    announcementsObj = Twitch.handleCommand(channel, userstate, message, self, announcementsObj);
+    announcementsObj = Twitch.handleCommand(client2, channel, userstate, message, self, announcementsObj);
     users = announcementsObj.users;
     streamerSpotlight = announcementsObj.ss;
 });
@@ -274,19 +274,19 @@ setInterval(() => {
     }
 }, 10000);
 
-//Meme of the day logic
-setInterval(() => {
-    let hour = new Date().getHours();
-    console.log("Checking the time... Hour is " + hour);
-    if (hour === 14) {
-        console.log("Time for Meme of the Day!!!");
-        DiscordFeatures.SendMeme();
-    }
-}, (1000 * 60 * 60));
+// //Meme of the day logic
+// setInterval(() => {
+//     let hour = new Date().getHours();
+//     console.log("Checking the time... Hour is " + hour);
+//     if (hour === 14) {
+//         console.log("Time for Meme of the Day!!!");
+//         DiscordFeatures.SendMeme();
+//     }
+// }, (1000 * 60 * 60));
 
-//Check for new Tweets to retweet
-setInterval(() => {
-    console.log("Checking for new Tweets...");
-    Twitter.retweetHashtags();
-    Twitter.favoriteHashtags();
-}, 1000000);
+// //Check for new Tweets to retweet
+// setInterval(() => {
+//     console.log("Checking for new Tweets...");
+//     Twitter.retweetHashtags();
+//     Twitter.favoriteHashtags();
+// }, 1000000);

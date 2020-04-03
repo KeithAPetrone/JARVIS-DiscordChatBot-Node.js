@@ -113,7 +113,7 @@ function RemoveTwitchStreamer(msg, channels) {
         }
 }
 
-function handleCommand(channel, userstate, message, self, announcementsObj) {
+function handleCommand(client2, channel, userstate, message, self, announcementsObj) {
     let ss = announcementsObj.ss;
     let users = announcementsObj.users;
     try {
