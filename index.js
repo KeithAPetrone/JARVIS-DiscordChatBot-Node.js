@@ -238,31 +238,17 @@ var client4 = new Twitter({
 });
 
 var stream = client4.stream('statuses/filter', {
-    track: 'fortifystreamers'
+    track: ['fortifystreamers', 'fortifystreaming']
 });
-stream.on('data', function (event) {
+stream.on(['data', 'user'], function (event) {
     console.log(event && event.text);
 });
-var stream1 = client4.stream('statuses/filter', {
-    track: 'fortifystreaming'
-});
-stream1.on('data', function (event) {
-    console.log(event && event.text);
-});
-var stream2 = client4.stream('user');
-stream2.on('follow', function (json) {
+stream.on('follow', function (json) {
     if (json.event === 'follow') {
         TwitterFeatures.sendGreeting(json.source)
     }
 });
-
 stream.on('error', function (error) {
-    console.log(error);
-});
-stream1.on('error', function (error) {
-    console.log(error);
-});
-stream2.on('error', function (error) {
     console.log(error);
 });
 
