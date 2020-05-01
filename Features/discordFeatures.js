@@ -180,7 +180,7 @@ function handleCommand(announcementsObj, msg, client) {
     }
     //Clears everyone's scores
     else if (msg.content === '!clearscores') {
-        susers = {};
+        users = {};
         msg.reply('Scores have been wiped!');
         console.log('Discord: Scores have been wiped!');
     }
