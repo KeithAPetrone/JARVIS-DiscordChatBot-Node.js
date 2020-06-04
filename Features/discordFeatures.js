@@ -205,6 +205,13 @@ function handleCommand(announcementsObj, msg, client) {
     else if (msg.content === '!qod') {
         questions = AskQuestion(questions, client);
     }
+    //Manual check youtube
+    else if (msg.content === '!checkyoutube') {
+        for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
+            YouTube.fetchVideo(client, youtubers, youtuber);
+            YouTube.fetchStream(client, youtubers, youtuber);
+        }
+    }
     //Meme of the day override
     else if (msg.content === '!meme') {
         questions = SendMeme();

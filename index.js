@@ -169,17 +169,25 @@ setInterval(() => {
 
 //Check for new youtube videos
 setInterval(() => {
-    for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
-        YouTube.fetchVideo(client, youtubers, youtuber);
+    let hour = new Date().getHours();
+    console.log("Checking the time... Hour is " + hour);
+    if (hour === 0 || hour === 6 || hour === 12 || hour === 18) {
+        for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
+            YouTube.fetchVideo(client, youtubers, youtuber);
+        }
     }
-}, 21600000);
+}, 1800000);
 
 //Check for new youtube streams
 setInterval(() => {
-    for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
-        YouTube.fetchStream(client, youtubers, youtuber);
+    let hour = new Date().getHours();
+    console.log("Checking the time... Hour is " + hour);
+        if (hour === 0 || hour === 6 || hour === 12 || hour === 18) {
+        for (youtuber = 0; youtuber < youtubers.length; youtuber++) {
+            YouTube.fetchStream(client, youtubers, youtuber);
+        }
     }
-}, 21600000);
+}, 1800000);
 
 // Instantiate a new Mixer Client
 const client3 = new Mixer.Client(new Mixer.DefaultRequestRunner());
