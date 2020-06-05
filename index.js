@@ -90,7 +90,7 @@ client.on('guildMemberAdd', (member) => {
 });
 
 // Load all invites for all guilds and save them to the cache.
-client.guilds.forEach(g => {
+client.guilds.cache.forEach(g => {
     g.fetchInvites().then(guildInvites => {
         invites[g.id] = guildInvites;
     });

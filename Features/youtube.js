@@ -103,6 +103,7 @@ function sendStreamAnnouncement(client, streamInfo) {
 
 // Template HTTPS get function that interacts with the YouTube API, wrapped in a Promise
 function callAPI(path) {
+    console.log("Path = " + path);
     return new Promise((resolve) => {
         const options = {
             host: 'www.googleapis.com',
