@@ -10,7 +10,7 @@
     "discord.js": "^12.2.0",
     "fs": "0.0.1-security",
     "fs-extra": "^9.0.1",
-    "get-json": "^1.0.1",
+    "get-json": "^1.1.0",
     "got": "^11.8.5",
     "jquery": "^3.5.1",
     "jshint": "^2.11.1",
