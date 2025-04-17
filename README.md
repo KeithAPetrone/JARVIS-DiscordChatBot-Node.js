@@ -1,4 +1,4 @@
-# JARVIS
+# JARVIS - Discord Chat Bot Node.js
 
 This is a Discord/Twitch(YouTube, Mixer, and Facebook support coming soon) bot designed to moderate chat in both and integrate between both userbases.
 Things such as participation and raids will be rewarded with points.
